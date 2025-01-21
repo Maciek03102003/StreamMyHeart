@@ -33,7 +33,7 @@ jobs:
 
           case "${GITHUB_EVENT_NAME}" in
             pull_request)
-              config_data=('codesign:false' 'notarize:false' 'package:true' 'config:RelWithDebInfo')
+              config_data=('codesign:false' 'notarize:false' 'package:false' 'config:RelWithDebInfo')
               if gh pr view ${{ github.event.number }} --json labels \
                 | jq -e -r '.labels[] | select(.name == "Seeking Testers")' > /dev/null; then
                 config_data[0]='codesign:true'
@@ -280,6 +280,7 @@ jobs:
 
       - name: Upload Artifacts 📡
         uses: actions/upload-artifact@v4
+        if: needs.check-event.outputs.package == 'true'
         with:
           name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-windows-x64-${{ needs.check-event.outputs.commitHash }}
           path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-windows-x64*.*
