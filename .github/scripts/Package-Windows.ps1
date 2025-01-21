@@ -82,6 +82,7 @@ function Package {
     Log-Group
 
     Log-Information "Debug: Packaging ${ProductName}..."
+    $BuildInstaller = $true
     Log-Information "Debug: the build installer flag is set to ${BuildInstaller}"
     if ( ( $BuildInstaller ) ) {
         Log-Information "Debug: Packaging ${ProductName} with installer..."
