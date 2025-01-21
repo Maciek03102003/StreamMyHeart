@@ -2,6 +2,19 @@ name: Pull Request
 run-name: ${{ github.event.pull_request.title }} pull request run 🚀
 on:
   workflow_dispatch:
+    inputs: 
+      target:
+        description: 'Build target for dependencies'
+        required: true
+        default: 'x64'
+      config:
+        description: 'Build configuration'
+        required: false
+        default: 'RelWithDebInfo'
+      package:
+        description: 'Create Windows or macOS installation package'
+        required: false
+        default: 'true'  # Set to true to trigger the condition
   pull_request:
     paths-ignore:
       - '**.md'
