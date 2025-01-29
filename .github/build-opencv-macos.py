@@ -1,3 +1,5 @@
+from utils import download_and_extract_tarball
+
 import os
 import subprocess
 import tarfile
@@ -7,25 +9,6 @@ import shutil
 REPO_URL = "https://github.com/opencv/opencv/archive/refs/tags/4.11.0.tar.gz"
 TARBALL_NAME = "opencv-4.11.0.tar.gz"
 EXTRACTED_DIR_NAME = "opencv-4.11.0"
-
-def download_opencv_source_code(target_dir):
-    # Ensure the target directory exists
-    os.makedirs(os.path.dirname(target_dir), exist_ok=True)
-
-    print(f"Downloading repository tarball from {REPO_URL}...")
-    download_opencv_cmd = ["wget", "-O", f"./{TARBALL_NAME}", REPO_URL]
-    subprocess.run(download_opencv_cmd, check=True)
-
-    print(f"Extracting {TARBALL_NAME}...")
-    with tarfile.open(TARBALL_NAME, "r:gz") as tar:
-        tar.extractall(path=os.path.dirname(target_dir))
-
-    os.rename(os.path.join(os.path.dirname(target_dir), EXTRACTED_DIR_NAME), target_dir)
-    print(f"Repository extracted to {target_dir}")
-
-    # Clean up the tarball
-    os.remove(TARBALL_NAME)
-    print(f"Removed tarball {TARBALL_NAME}")
 
 def cmake_build():
     cmake_configure_cmd = [
@@ -165,7 +148,7 @@ if os.path.exists(opencv_out_dir_path):
     print(f"Output directory {opencv_out_dir_path} already contains files. Keep it.")
 else:
     os.makedirs(opencv_out_dir_path)
-    download_opencv_source_code(opencv_src_dir_path)
+    download_and_extract_tarball(REPO_URL, TARBALL_NAME, EXTRACTED_DIR_NAME, opencv_src_dir_path)
 
     # Have a temporary directory for building OpenCV
     if os.path.exists(opencv_tmp_dir_path):

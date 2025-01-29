@@ -16,10 +16,10 @@ setopt FUNCTION_ARGZERO
 # setopt WARN_NESTED_VAR
 # setopt XTRACE
 
-if (( ! ${+CI} )) {
-  print -u2 -PR "%F{1}    ✖︎ ${ZSH_ARGZERO:t:r} requires CI environment.%f"
-  exit 1
-}
+# if (( ! ${+CI} )) {
+#   print -u2 -PR "%F{1}    ✖︎ ${ZSH_ARGZERO:t:r} requires CI environment.%f"
+#   exit 1
+# }
 
 autoload -Uz is-at-least && if ! is-at-least 5.9; then
   print -u2 -PR "${CI:+::error::}%F{1}${funcstack[1]##*/}:%f Running on Zsh version %B${ZSH_VERSION}%b, but Zsh %B5.2%b is the minimum supported version. Upgrade Zsh to fix this issue."
@@ -119,11 +119,11 @@ build() {
       xcodebuild ${@}
     } else {
       xcodebuild ${@} 2>&1 | xcbeautify --renderer terminal
-      if [[ ${GITHUB_EVENT_NAME} == push ]] {
-        xcodebuild ${@} 2>&1 | xcbeautify --renderer terminal
-      } else {
-        xcodebuild ${@} 2>&1 | xcbeautify --renderer github-actions
-      }
+      # if [[ ${GITHUB_EVENT_NAME} == push ]] {
+      #   xcodebuild ${@} 2>&1 | xcbeautify --renderer terminal
+      # } else {
+      #   xcodebuild ${@} 2>&1 | xcbeautify --renderer github-actions
+      # }
     }
   }
 

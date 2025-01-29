@@ -3,10 +3,12 @@
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing.h>
 
+#include "patches-face-detection.h"
+
 using namespace dlib;
 using namespace std;
 
-cv::Mat faceMask(struct input_BGRA_data *frame)
+std::vector<double_t> faceMask(struct input_BGRA_data *frame)
 {
 	// Extract frame parameters
 	uint8_t *data = frame->data;
@@ -15,13 +17,13 @@ cv::Mat faceMask(struct input_BGRA_data *frame)
 	uint32_t linesize = frame->linesize;
 
 	// Convert BGRA to OpenCV Mat
-	cv::Mat frame(height, width, CV_8UC4, data, linesize);
+	cv::Mat frameOriginal(height, width, CV_8UC4, data, linesize);
 
 	// frame = frame(cv::Rect(0, 0, width, height));
 
 	// Convert BGRA to BGR (dlib works with BGR format)
 	cv::Mat frameBGR;
-	cv::cvtColor(frame, frameBGR, cv::COLOR_BGRA2BGR);
+	cv::cvtColor(frameOriginal, frameBGR, cv::COLOR_BGRA2BGR);
 
 	// Initialize dlib face detector and shape predictor
 	frontal_face_detector detector = get_frontal_face_detector();
@@ -76,6 +78,8 @@ cv::Mat faceMask(struct input_BGRA_data *frame)
 
 	// Apply the skin mask to the frame
 	cv::Mat result;
+	// Returns the original frame but with all non-face + eyes + mouth regions as black so [0, 0, 0]
+	// And face regions is 
 	frameBGR.copyTo(result, skinMask);
 
 	return result;

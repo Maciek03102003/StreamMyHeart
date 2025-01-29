@@ -10,4 +10,4 @@
 
 #include "heart_rate_source.h"
 
-cv::Mat faceMask(struct input_BGRA_data *frame);
+std::vector<double_t> faceMask(struct input_BGRA_data *frame);
