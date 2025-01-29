@@ -70,16 +70,17 @@ link_directories(${OpenCV_LIBRARIES})
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${OpenCV_LIBRARIES})
 
 # Apply compiler options to ignore Dlib-specific warnings
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
-  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
-    -Wno-newline-eof       # Ignore missing newline at end of file
-    -Wno-unused-but-set-variable  # Ignore unused variables
-    -Wno-pessimizing-move  # Ignore pessimizing move warnings
-    -Wno-comma             # Ignore comma operator warnings
-    -Wno-error             # Do not treat warnings as errors
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+  target_compile_options(
+    ${CMAKE_PROJECT_NAME}
+    PRIVATE
+      -Wno-newline-eof # Ignore missing newline at end of file
+      -Wno-unused-but-set-variable # Ignore unused variables
+      -Wno-pessimizing-move # Ignore pessimizing move warnings
+      -Wno-comma # Ignore comma operator warnings
+      -Wno-error # Do not treat warnings as errors
   )
 endif()
-
 
 # include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
 # link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
@@ -94,9 +95,7 @@ include_directories(${DLIB_INCLUDE_DIR})
 
 # Link against the static Dlib library
 add_library(libdlib STATIC IMPORTED)
-set_target_properties(libdlib PROPERTIES
-    IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a
-)
+set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
 
 # Link your OBS plugin with Dlib
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
