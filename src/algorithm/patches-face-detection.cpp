@@ -4,30 +4,32 @@
 #include <dlib/image_processing.h>
 
 #include "patches-face-detection.h"
+#include "plugin-support.h"
 
 using namespace dlib;
 using namespace std;
 
-static struct vec4 getBoundingBox(const std::vector<cv::Point>& landmarks, uint32_t width, uint32_t height)
+static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint32_t width, uint32_t height)
 {
 	float minX = std::numeric_limits<float>::max();
 	float maxX = std::numeric_limits<float>::lowest();
 	float minY = std::numeric_limits<float>::max();
 	float maxY = std::numeric_limits<float>::lowest();
 
-	for (const auto& landmark : landmarks) {
+	for (const auto &landmark : landmarks) {
 		minX = std::min(minX, static_cast<float>(landmark.x));
 		maxX = std::max(maxX, static_cast<float>(landmark.x));
 		minY = std::min(minY, static_cast<float>(landmark.y));
 		maxY = std::max(maxY, static_cast<float>(landmark.y));
 	}
 	struct vec4 rect;
-	vec4_set(&rect, minX, maxX, minY, maxY);
+	vec4_set(&rect, minX / width, maxX / width, minY / height, maxY / height);
 	return rect;
 }
 
 std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
 {
+	obs_log(LOG_INFO, "Start face mask!!!!");
 	// Extract frame parameters
 	uint8_t *data = frame->data;
 	uint32_t width = frame->width;
@@ -41,11 +43,25 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 	cv::Mat frameBGR;
 	cv::cvtColor(frameMat, frameBGR, cv::COLOR_BGRA2BGR);
 
+	obs_log(LOG_INFO, "Dlib initialzation");
+
+	char *face_landmark_path =
+		obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+
+	if (!face_landmark_path) {
+		obs_log(LOG_ERROR, "Failed to find face landmark file");
+		throw std::runtime_error("Failed to find face landmark file");
+	}
+
 	// Initialize Dlib face detector and shape predictor
 	frontal_face_detector detector = get_frontal_face_detector();
+	obs_log(LOG_INFO, "Dlib detector!!!!");
 	shape_predictor sp;
-	deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
+	obs_log(LOG_INFO, "Dlib shape predictor!!!!");
+	deserialize(face_landmark_path) >> sp;
+	obs_log(LOG_INFO, "Dlib deserialize!!!!");
 
+	obs_log(LOG_INFO, "Detect faces!!!!");
 	// Detect faces
 	std::vector<rectangle> faces = detector(cv_image<bgr_pixel>(frameBGR));
 
@@ -65,13 +81,13 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 		cv::fillConvexPoly(mask, faceContour, cv::Scalar(255));
 
 		// Exclude eyes and mouth
-		std::vector<cv::Point> leftEyes; 
-    std::vector<cv::Point> rightEyes;
-    std::vector<cv::Point> mouth;
-    for (int i = 36; i <= 47; i++) { // Right eye (37–42)
-      leftEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
-    }
-		for (int i = 36; i <= 48; i++) { // Left eye (43–47)
+		std::vector<cv::Point> leftEyes;
+		std::vector<cv::Point> rightEyes;
+		std::vector<cv::Point> mouth;
+		for (int i = 36; i <= 41; i++) { // Right eye (37–42)
+			leftEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
+		}
+		for (int i = 42; i <= 47; i++) { // Left eye (43–47)
 			rightEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
 		}
 		for (int i = 48; i <= 60; i++) { // Mouth (48–60)
@@ -86,6 +102,7 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 		cv::fillConvexPoly(mask, rightEyes, cv::Scalar(0));
 		cv::fillConvexPoly(mask, mouth, cv::Scalar(0)); // Black out mouth
 	}
+	obs_log(LOG_INFO, "Finish processing faces!!!!");
 
 	// Convert mask to a 2D boolean vector
 	std::vector<std::vector<bool>> binaryMask(height, std::vector<bool>(width, false));
@@ -94,6 +111,8 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 			binaryMask[y][x] = (mask.at<uint8_t>(y, x) > 0);
 		}
 	}
+
+	bfree(face_landmark_path);
 
 	return binaryMask;
 }

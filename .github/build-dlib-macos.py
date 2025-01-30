@@ -28,6 +28,26 @@ else:
     os.makedirs(dlib_build_path)
     os.chdir(dlib_build_path)
     
+    cmake_configure_cmd = [
+        "cmake", 
+        "-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_SHARED_LIBS=OFF", 
+        "-DLIB_USE_MKL_FFT=ON",
+        "-DLIB_USE_MKL_SEQUENTIAL=OFF",
+        "-DLIB_USE_MKL_WITH_TBB=ON",
+        "-DLIB_USE_CUDA=ON",
+        "-DLIB_USE_BLAS=ON",
+        "-DLIB_USE_LAPACK=ON",
+        "-DLIB_JPEG_SUPPORT=ON",
+        "-DLIB_PNG_SUPPORT=ON",
+        "-DLIB_WEBP_SUPPORT=ON",
+        "-DLIB_ENABLE_ASSERTS=OFF",
+        "-DLIB_ENABLE_STACK_TRACE=OFF",
+        "-DLIB_USE_CUDA_COMPUTE_CAPABILI=50",
+        ".."
+    ]
+    
     # Used to disable errors: -DCMAKE_CXX_FLAGS="-Wno-newline-eof -Wno-comma -Wno-error"
-    subprocess.run(["cmake", "-DBUILD_SHARED_LIBS=OFF", ".."], check=True)
+    subprocess.run(cmake_configure_cmd, check=True)
     subprocess.run(["cmake", "--build", ".", "--config", "Release"], check=True)    
