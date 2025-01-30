@@ -8,18 +8,18 @@
 using namespace dlib;
 using namespace std;
 
-static struct vec4 getBoundingBox(std::vector<cv::Point> landmarks, uint32_t width, uint32_t height)
+static struct vec4 getBoundingBox(const std::vector<cv::Point>& landmarks, uint32_t width, uint32_t height)
 {
 	float minX = std::numeric_limits<float>::max();
 	float maxX = std::numeric_limits<float>::lowest();
 	float minY = std::numeric_limits<float>::max();
 	float maxY = std::numeric_limits<float>::lowest();
 
-	for (const cv::Point2f &landmark : landmarks) {
-		minX = std::min(minX, landmark.x);
-		maxX = std::max(maxX, landmark.x);
-		minY = std::min(minY, landmark.y);
-		maxY = std::max(maxY, landmark.y);
+	for (const auto& landmark : landmarks) {
+		minX = std::min(minX, static_cast<float>(landmark.x));
+		maxX = std::max(maxX, static_cast<float>(landmark.x));
+		minY = std::min(minY, static_cast<float>(landmark.y));
+		maxY = std::max(maxY, static_cast<float>(landmark.y));
 	}
 	struct vec4 rect;
 	vec4_set(&rect, minX, maxX, minY, maxY);
@@ -65,13 +65,14 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 		cv::fillConvexPoly(mask, faceContour, cv::Scalar(255));
 
 		// Exclude eyes and mouth
-		std::vector<cv::Point> leftEyes, rightEyesmouth;
-		for (int i = 37;)
-			for (int i = 36; i <= 47; i++) { // Right eye (37–42)
-				leftEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
-			}
+		std::vector<cv::Point> leftEyes; 
+    std::vector<cv::Point> rightEyes;
+    std::vector<cv::Point> mouth;
+    for (int i = 36; i <= 47; i++) { // Right eye (37–42)
+      leftEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
+    }
 		for (int i = 36; i <= 48; i++) { // Left eye (43–47)
-			eyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
+			rightEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
 		}
 		for (int i = 48; i <= 60; i++) { // Mouth (48–60)
 			mouth.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
@@ -88,8 +89,8 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 
 	// Convert mask to a 2D boolean vector
 	std::vector<std::vector<bool>> binaryMask(height, std::vector<bool>(width, false));
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (uint32_t y = 0; y < height; y++) {
+		for (uint32_t x = 0; x < width; x++) {
 			binaryMask[y][x] = (mask.at<uint8_t>(y, x) > 0);
 		}
 	}
