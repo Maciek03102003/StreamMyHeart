@@ -54,7 +54,8 @@ vector<double_t> green(Window windowsRGB)
 	return framesG;
 }
 
-vector<double_t> pca(Window windowsRGB) {
+vector<double_t> pca(Window windowsRGB)
+{
 	int numSamples = static_cast<int>(windowsRGB.size());
 	int numFeatures = 3;
 
