@@ -4,6 +4,7 @@
 #include "HeartRateAlgorithm.h"
 #include <fstream>
 #include <string>
+#include "patches-face-detection.h"
 #include <cstdlib>
 #include <cmath>
 
@@ -205,7 +206,7 @@ double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vec
 
 	FrameRGB frameRGB = extractRGB(BGRA_data);
 	if (windows.empty() || windows.back().size() % 10 == 0 || !detectFace) {
-		vector<vector<bool>> skinKey = detectFacesAndCreateMask(BGRA_data, face_coordinates);
+		vector<vector<bool>> skinKey = faceMask(BGRA_data, face_coordinates);
 		vector<double_t> avg = averageRGB(frameRGB, skinKey);
 		if (avg[0] == 0 && avg[1] == 0 && avg[2] == 0) {
 			detectFace = false;
