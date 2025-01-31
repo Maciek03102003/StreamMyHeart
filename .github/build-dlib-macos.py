@@ -30,7 +30,7 @@ else:
     
     cmake_configure_cmd = [
         "cmake", 
-        "-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
+        "-DCMAKE_OSX_ARCHITECTURES='x86_64'",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DBUILD_SHARED_LIBS=OFF", 
         "-DLIB_USE_MKL_FFT=ON",
