@@ -54,6 +54,31 @@ vector<double_t> green(Window windowsRGB)
 	return framesG;
 }
 
+vector<double_t> pca(Window windowsRGB) {
+	int numSamples = static_cast<int>(windowsRGB.size());
+	int numFeatures = 3;
+
+	MatrixXd mat(numSamples, numFeatures);
+	for (int i = 0; i < numSamples; ++i) {
+		for (int j = 0; j < numFeatures; ++j) {
+			mat(i, j) = windowsRGB[i][j];
+		}
+	}
+
+	VectorXd mean = mat.colwise().mean();
+	MatrixXd centered = mat.rowwise() - mean.transpose();
+
+	MatrixXd cov = (centered.transpose() * centered) / double(numSamples - 1);
+	SelfAdjointEigenSolver<MatrixXd> solver(cov);
+	MatrixXd eigenvects = solver.eigenvectors();
+
+	VectorXd pc = eigenvects.col(numFeatures - 1);
+	VectorXd transformed = centered * pc;
+
+	vector<double_t> result(transformed.data(), transformed.data() + transformed.size());
+	return result;
+}
+
 void MovingAvg::updateWindows(vector<double_t> frame_avg)
 {
 	if (windows.empty()) {
@@ -226,6 +251,9 @@ double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vec
 		switch (ppg) {
 		case 0:
 			ppgSignal = green(currentWindow);
+			break;
+		case 1:
+			ppgSignal = pca(currentWindow);
 			break;
 		default:
 			break;
