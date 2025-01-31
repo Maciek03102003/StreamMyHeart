@@ -9,6 +9,7 @@
 #include <graphics/matrix4.h>
 #include <util/platform.h>
 #include <vector>
+#include <thread>
 #include <sstream>
 #include "plugin-support.h"
 #include "heart_rate_source.h"
@@ -119,21 +120,36 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 	struct heart_rate_source *hrs = new (data) heart_rate_source();
 
 	hrs->source = source;
+	hrs->latest_heart_rate = 0.0;
+	hrs->newDataAvailable = false;
+	hrs->isDisabled = false;
 
-	char *effect_file;
+	// acts like a lock to ensure only one thread can access the current graphics context at a time
 	obs_enter_graphics();
+
+	// Initialize the effect file
+	char *effect_file;
 	effect_file = obs_module_file("test.effect");
-
 	hrs->testing = gs_effect_create_from_file(effect_file, NULL);
-
 	bfree(effect_file);
+
 	if (!hrs->testing) {
+		obs_leave_graphics();
 		heart_rate_source_destroy(hrs);
 		hrs = NULL;
 	}
+
+	// Create the texture renderer
+	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
+	if (!hrs->texrender) {
+		obs_leave_graphics();
+		obs_log(LOG_ERROR, "Failed to create texrender!");
+		return nullptr;
+	}
+
 	obs_leave_graphics();
 
-	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
+	// Create the OBS text source if it doesn't exist
 	create_obs_heart_display_source_if_needed();
 
 	return hrs;
@@ -180,21 +196,16 @@ void heart_rate_source_deactivate(void *data)
 	hrs->isDisabled = true;
 }
 
-// Tick function
-void heart_rate_source_tick(void *data, float seconds)
-{
-	UNUSED_PARAMETER(seconds);
+// static std::string processBGRAData(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates)
+// {
+// 	double heart_rate = avg.calculateHeartRate(BGRA_data, face_coordinates);
+// 	std::string log = "Heart Rate: " + std::to_string(heart_rate);
+// 	obs_log(LOG_INFO, log.c_str());
+// 	return log;
 
-	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
-
-	if (hrs->isDisabled) {
-		return;
-	}
-
-	if (!obs_source_enabled(hrs->source)) {
-		return;
-	}
-}
+// 	// CalculateHeartRate only updates the heart rate every n secs, so may return the same
+// 	// number multiple times (shouldn't affect plugin)
+// }
 
 static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 {
@@ -219,14 +230,21 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 		return false;
 	}
 
+	obs_enter_graphics();
+
 	// Resets the texture renderer and begins rendering with the specified width and height
 	gs_texrender_reset(hrs->texrender);
 	if (!hrs->texrender) {
+		obs_log(LOG_INFO, "Texrender not found!");
 		return false;
 	}
 	if (!gs_texrender_begin(hrs->texrender, width, height)) {
+		obs_log(LOG_INFO, "Could not open texrender!");
+		obs_leave_graphics();
 		return false;
 	}
+
+	obs_log(LOG_INFO, "Texrender begun");
 
 	// Clear up and set up rendering
 	// - Clears the rendering surface with a zeroed background
@@ -298,22 +316,35 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 	uint8_t *video_data; // A pointer to the memory location where the BGRA data will be accessible
 	uint32_t linesize;   // The number of bytes per line (or row) of the image data
 	// The gs_stagesurface_map function creates a mapping between the GPU memory and the CPU memory. This allows the CPU to access the pixel data directly from the GPU memory
-	if (!gs_stagesurface_map(hrs->stagesurface, &video_data, &linesize)) {
+	bool mapped = gs_stagesurface_map(hrs->stagesurface, &video_data, &linesize);
+	
+	if (!mapped) {
+		obs_log(LOG_INFO, "Could not map BGRA data");
+		obs_leave_graphics();
 		return false;
 	}
 
+	obs_log(LOG_INFO, "BGRA data mapped");
+
 	{
-		std::lock_guard<std::mutex> lock(hrs->BGRA_data_mutex);
-		struct input_BGRA_data *BGRA_data = (struct input_BGRA_data *)bzalloc(sizeof(struct input_BGRA_data));
-		BGRA_data->width = width;
-		BGRA_data->height = height;
-		BGRA_data->linesize = linesize;
-		BGRA_data->data = video_data;
-		hrs->BGRA_data = BGRA_data;
+		// std::lock_guard<std::mutex> lock(hrs->BGRA_data_mutex);
+
+		if (!hrs->BGRA_data) {
+			hrs->BGRA_data = std::make_unique<input_BGRA_data>();
+		}
+
+		// Copy new frame data
+		hrs->BGRA_data->width = width;
+		hrs->BGRA_data->height = height;
+		hrs->BGRA_data->linesize = linesize;
+		hrs->BGRA_data->data = video_data;
 	}
 
 	// Use gs_stagesurface_unmap to unmap the stage surface, releasing the mapped memory.
 	gs_stagesurface_unmap(hrs->stagesurface);
+
+	obs_leave_graphics();
+
 	return true;
 }
 
@@ -351,9 +382,70 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	return blurredTexture;
 }
 
+// Tick function
+void heart_rate_source_tick(void *data, float seconds)
+{
+	UNUSED_PARAMETER(seconds);
+
+	obs_log(LOG_INFO, "Heart rate monitor ticked");
+
+	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
+
+	if (hrs->isDisabled || !obs_source_enabled(hrs->source)) {
+		obs_log(LOG_INFO, "Heart rate monitor is disabled");
+		return;
+	}
+
+	// Fetch the BGRA data from the stage surface
+	if (!getBGRAFromStageSurface(hrs)) {
+		obs_log(LOG_INFO, "Could not get BGRA data from stage surface");
+		return;
+	}
+
+	obs_log(LOG_INFO, "Start copying frame data");
+	{
+		std::lock_guard<std::mutex> lock(hrs->processingMutex);
+
+		// Ensure `currentFrameData` is allocated
+		if (!hrs->currentFrameData) {
+			hrs->currentFrameData = std::make_unique<input_BGRA_data>();
+		}
+
+		*hrs->currentFrameData = *hrs->BGRA_data; // Copy the latest frame
+	}
+
+	obs_log(LOG_INFO, "Start async processing");
+	// Run face detection & heart rate calculation in a **separate thread**
+	std::thread([hrs]() {
+		std::lock_guard<std::mutex> lock(hrs->processingMutex);
+		obs_log(LOG_INFO, "Start a thread for processing");
+
+		// **Ensure `processingFrameData` is allocated**
+		if (!hrs->processingFrameData) {
+			hrs->processingFrameData = std::make_unique<input_BGRA_data>();
+		}
+
+		*hrs->processingFrameData = *hrs->currentFrameData; // Copy frame for processing
+
+		// **Process the Copied Frame**
+		obs_log(LOG_INFO, "Start face detection");
+		// Clear the face coordinates in case of multiple faces
+		hrs->face_coordinates.clear();
+		double heart_rate = avg.calculateHeartRate(hrs->processingFrameData.get(), hrs->face_coordinates);
+
+		hrs->latest_heart_rate = heart_rate;
+		hrs->newDataAvailable = true;
+
+		obs_log(LOG_INFO, "End a thread for processing");
+	}).detach(); // Detach so OBS remains smooth
+
+	obs_log(LOG_INFO, "Heart rate monitor ticked end");
+}
+
 // Render function
 void heart_rate_source_render(void *data, gs_effect_t *effect)
 {
+	obs_log(LOG_INFO, "Heart rate monitor rendering");
 	UNUSED_PARAMETER(effect);
 
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
@@ -367,10 +459,10 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 
-	if (!getBGRAFromStageSurface(hrs)) {
-		obs_source_skip_video_filter(hrs->source);
-		return;
-	}
+	// if (!getBGRAFromStageSurface(hrs)) {
+	// 	obs_source_skip_video_filter(hrs->source);
+	// 	return;
+	// }
 
 	if (!hrs->testing) {
 		obs_log(LOG_INFO, "Effect not loaded");
@@ -378,12 +470,31 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		obs_source_skip_video_filter(hrs->source);
 		return;
 	}
-	std::vector<struct vec4> face_coordinates;
-	double heart_rate = avg.calculateHeartRate(hrs->BGRA_data, face_coordinates);
-	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
+	// std::vector<struct vec4> face_coordinates;
+	// std::string result = processBGRAData(hrs->BGRA_data, face_coordinates);
+
+	// Ensure we only render when **new data is available**
+	std::lock_guard<std::mutex> lock(hrs->processingMutex);
+	if (!hrs->newDataAvailable) {
+		obs_source_skip_video_filter(hrs->source);
+		return;
+	}
+	hrs->newDataAvailable = false; // Reset flag
+
+	obs_enter_graphics();
+
+	obs_log(LOG_INFO, "Start bounding box drawing with width: %d, height: %d", hrs->BGRA_data->width,
+		hrs->BGRA_data->height);
+	
 	gs_texture_t *testingTexture =
-		draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
+		draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, hrs->face_coordinates);
+
+	// print all face coords
+	for (int i = 0; i < static_cast<int>(hrs->face_coordinates.size()); i++) {
+		obs_log(LOG_INFO, "Face %d: %f, %f, %f, %f", i, hrs->face_coordinates[i].x, hrs->face_coordinates[i].y,
+			hrs->face_coordinates[i].z, hrs->face_coordinates[i].w);
+	}
 
 	if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
 		obs_source_skip_video_filter(hrs->source);
@@ -405,15 +516,20 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 					   "Draw");
 
 	gs_blend_state_pop();
+	gs_texture_destroy(testingTexture);
 
-	if (heart_rate != 0.0) {
-		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+	obs_leave_graphics();
+
+	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+	if (source) {
 		obs_data_t *source_settings = obs_source_get_settings(source);
-		obs_data_set_string(source_settings, "text", result.c_str());
+		std::string heartRateText = "Heart Rate: " + std::to_string(hrs->latest_heart_rate) + " BPM";
+		obs_data_set_string(source_settings, "text", heartRateText.c_str());
 		obs_source_update(source, source_settings);
 		obs_data_release(source_settings);
 		obs_source_release(source);
 	}
 
-	gs_texture_destroy(testingTexture);
+	obs_log(LOG_INFO, "Heart rate monitor rendering end");
+
 }

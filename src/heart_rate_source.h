@@ -28,12 +28,29 @@ struct heart_rate_source {
 	gs_stagesurf_t *stagesurface;
 	gs_effect_t *testing;
 #ifdef __cplusplus
-	input_BGRA_data *BGRA_data;
-	std::mutex BGRA_data_mutex;
+	// **Frame Buffers**
+	std::unique_ptr<input_BGRA_data> BGRA_data;           // Stores the current frame from OBS
+	std::unique_ptr<input_BGRA_data> currentFrameData;    // Stores a stable frame copy
+	std::unique_ptr<input_BGRA_data> processingFrameData; // Stores a copy for processing
+
+	// **Mutexes for Thread Safety**
+	std::mutex BGRA_data_mutex;                           // Mutex to sync BGRA data access
+	std::mutex processingMutex;    // Mutex to sync face detection & heart rate processing
+
+	// **Face Detection Data**
+	std::vector<struct vec4> face_coordinates; // Stores detected face regions
 #else
-	struct input_BGRA_data *BGRA_data;
+	void *BGRA_data; // Placeholder for C compatibility
+	void *currentFrameData;
+	void *processingFrameData;
+
 	void *BGRA_data_mutex; // Placeholder for C compatibility
+	void *face_coordinates;
+	
+	void *processingMutex;
 #endif
+	double latest_heart_rate; // Stores the most recent heart rate
+	bool newDataAvailable; // Flag to indicate new processed data is ready
 	bool isDisabled;
 };
 
