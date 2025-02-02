@@ -124,6 +124,7 @@ target_sources(
     src/algorithm/FaceDetection.cpp
     src/algorithm/HeartRateAlgorithm.cpp
     src/algorithm/patches-face-detection.cpp
+    src/algorithm/face-tracker.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c
