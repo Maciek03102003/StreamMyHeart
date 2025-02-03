@@ -107,18 +107,6 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 	// Initialize AOI mask (false for non-face pixels)
 	std::vector<std::vector<bool>> mask(frame->height, std::vector<bool>(frame->width, false));
 
-	obs_log(LOG_INFO, "Mark face region!!!!");
-	// Mark the detected/tracked face region as true
-	for (int y = initial_face.top(); y < initial_face.bottom(); y++) {
-		for (int x = initial_face.left(); x < initial_face.right(); x++) {
-			if (x >= 0 && x < static_cast<int>(width) && y >= 0 && y < static_cast<int>(height)) {
-				mask[y][x] = true;
-			}
-		}
-	}
-	obs_log(LOG_INFO, "Face region: top=%d, bottom=%d, left=%d, right=%d", initial_face.top(), initial_face.bottom(), initial_face.left(), initial_face.right());
-	// face_coordinates.push_back(getBoundingBox({cv::Point(initial_face.left(), initial_face.top()), cv::Point(initial_face.right(), initial_face.bottom())}, width, height));
-
 	obs_log(LOG_INFO, "Mark eye regions!!!!");
 	// Exclude eyes and mouth from the mask
 	std::vector<cv::Point> leftEyes, rightEyes, mouth, faceContour;
