@@ -1,11 +1,9 @@
-#include "FaceDetection.h"
+#include "face_detection/opencv_dlib_68_landmarks.h"
 #include <obs-module.h>
 #include "plugin-support.h"
 #include "HeartRateAlgorithm.h"
 #include <fstream>
 #include <string>
-#include "patches-face-detection.h"
-#include "face-tracker.h"
 
 using namespace std;
 using namespace Eigen;
@@ -220,7 +218,8 @@ double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vec
 	}
 
 	// uncomment this when face detect fixed and add to next line as param
-	std::vector<std::vector<bool>> skinKey = detectFaceAOI(BGRA_data, face_coordinates);
+	std::vector<std::vector<bool>> skinKey = faceMask(BGRA_data, face_coordinates);
+	// detectFaceAOI(BGRA_data, face_coordinates);
 	// faceMask(BGRA_data, face_coordinates);
 	// detectFacesAndCreateMask(BGRA_data, face_coordinates);
 	vector<double_t> averageRGBValues = average_keyed(rgb, skinKey);

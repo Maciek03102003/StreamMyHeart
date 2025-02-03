@@ -1,4 +1,4 @@
-#include "FaceDetection.h"
+#include "opencv_haarcascade.h"
 
 #include <graphics/matrix4.h>
 #include <algorithm>

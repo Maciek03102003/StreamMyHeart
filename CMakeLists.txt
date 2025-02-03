@@ -121,10 +121,11 @@ endif()
 target_sources(
   ${CMAKE_PROJECT_NAME}
   PRIVATE
-    src/algorithm/FaceDetection.cpp
     src/algorithm/HeartRateAlgorithm.cpp
-    src/algorithm/patches-face-detection.cpp
-    src/algorithm/face-tracker.cpp
+    src/algorithm/face_detection/opencv_haarcascade.cpp
+    src/algorithm/face_detection/opencv_dlib_dnn.cpp
+    src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
+    src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c
