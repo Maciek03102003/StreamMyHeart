@@ -41,7 +41,7 @@ static shape_predictor sp;
 static char *face_landmark_path;
 static bool isLoaded = false;
 
-void loadFiles() {
+static void loadFiles() {
 	face_landmark_path =
 		obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
 
@@ -83,7 +83,6 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 		obs_log(LOG_INFO, "Load files!!!!");
 		loadFiles();
 	}
-
 
 	uint64_t start_ns = os_gettime_ns();
 

@@ -15,7 +15,9 @@ static correlation_tracker tracker;
 static bool is_tracking = false;
 static rectangle initial_face;
 static shape_predictor sp;
-static frontal_face_detector detector = get_frontal_face_detector();
+static frontal_face_detector detector;
+static char *face_landmark_path;
+static bool isLoaded = false;
 
 static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint32_t width, uint32_t height)
 {
@@ -35,6 +37,25 @@ static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint3
 	return rect;
 }
 
+static void loadFiles() {
+	face_landmark_path =
+		obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+
+	if (!face_landmark_path) {
+		obs_log(LOG_ERROR, "Failed to find face landmark file");
+		throw std::runtime_error("Failed to find face landmark file");
+	}
+
+	// Initialize dlib shape predictor and face detector
+	detector = get_frontal_face_detector();
+	
+	deserialize(face_landmark_path) >> sp;
+	obs_log(LOG_INFO, "Dlib deserialize!!!!");
+
+	isLoaded = true;
+	obs_log(LOG_INFO, "Model loaded!!!!");
+}
+
 // Function to detect face on the first frame and track in subsequent frames
 std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
 {
@@ -51,6 +72,10 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 	cv::cvtColor(frameMat, frameGray, cv::COLOR_BGRA2GRAY);
 
     obs_log(LOG_INFO, "Dlib initialization");
+
+	if (!isLoaded) {	
+		loadFiles();
+	}
 
 	dlib::cv_image<unsigned char> dlibImg(frameGray);
 
@@ -75,16 +100,6 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 		initial_face = tracker.get_position();
 	}
 
-    obs_log(LOG_INFO, "Perform landmark detection!!!!");
-    char *face_landmark_path =
-        obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
-
-    if (!face_landmark_path) {
-        obs_log(LOG_ERROR, "Failed to find face landmark file");
-        throw std::runtime_error("Failed to find face landmark file");
-    }
-    deserialize(face_landmark_path) >> sp;
-
     // Perform landmark detection
     full_object_detection shape = sp(dlibImg, initial_face);
 
@@ -95,6 +110,7 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 
     obs_log(LOG_INFO, "Mark face region!!!!");
 	// Mark the detected/tracked face region as true
+	// TODO: why top, bottom, left, right is all 0???
 	for (int y = initial_face.top(); y < initial_face.bottom(); y++) {
 		for (int x = initial_face.left(); x < initial_face.right(); x++) {
 			if (x >= 0 && x < static_cast<int>(width) && y >= 0 && y < static_cast<int>(height)) {
@@ -131,8 +147,6 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 			mask[y][x] = (maskMat.at<uint8_t>(y, x) > 0);
 		}
 	}
-
-	bfree(face_landmark_path);
 
 	return mask;
 }
