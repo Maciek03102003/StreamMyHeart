@@ -109,7 +109,6 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 
 	obs_log(LOG_INFO, "Mark face region!!!!");
 	// Mark the detected/tracked face region as true
-	// TODO: why top, bottom, left, right is all 0???
 	for (int y = initial_face.top(); y < initial_face.bottom(); y++) {
 		for (int x = initial_face.left(); x < initial_face.right(); x++) {
 			if (x >= 0 && x < static_cast<int>(width) && y >= 0 && y < static_cast<int>(height)) {
@@ -118,11 +117,13 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 		}
 	}
 	obs_log(LOG_INFO, "Face region: top=%d, bottom=%d, left=%d, right=%d", initial_face.top(), initial_face.bottom(), initial_face.left(), initial_face.right());
-	face_coordinates.push_back(getBoundingBox({cv::Point(initial_face.left(), initial_face.top()), cv::Point(initial_face.right(), initial_face.bottom())}, width, height));
+	// face_coordinates.push_back(getBoundingBox({cv::Point(initial_face.left(), initial_face.top()), cv::Point(initial_face.right(), initial_face.bottom())}, width, height));
 
 	obs_log(LOG_INFO, "Mark eye regions!!!!");
 	// Exclude eyes and mouth from the mask
-	std::vector<cv::Point> leftEyes, rightEyes, mouth;
+	std::vector<cv::Point> leftEyes, rightEyes, mouth, faceContour;
+	for (int i = 1; i <= 17; i++)
+		faceContour.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
 	for (int i = 36; i <= 41; i++)
 		leftEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
 	for (int i = 42; i <= 47; i++)
@@ -131,12 +132,14 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 		mouth.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
 
 	obs_log(LOG_INFO, "Get bounding boxes!!!!");
+	face_coordinates.push_back(getBoundingBox(faceContour, width, height));
 	face_coordinates.push_back(getBoundingBox(leftEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(rightEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(mouth, width, height));
 
 	obs_log(LOG_INFO, "Fill eye and mouth regions!!!!");
 	cv::Mat maskMat = cv::Mat::zeros(frameMat.size(), CV_8UC1);
+	cv::fillConvexPoly(maskMat, faceContour, cv::Scalar(255));
 	cv::fillConvexPoly(maskMat, leftEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, rightEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, mouth, cv::Scalar(0));
@@ -144,7 +147,7 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 	obs_log(LOG_INFO, "Convert mask to 2D boolean vector!!!!");
 	for (uint32_t y = 0; y < height; y++) {
 		for (uint32_t x = 0; x < width; x++) {
-			mask[y][x] = (maskMat.at<uint8_t>(y, x) > 0);
+			mask[y][x] = (maskMat.at<uint8_t>(y, x) == 255);
 		}
 	}
 
