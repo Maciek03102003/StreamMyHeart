@@ -41,9 +41,9 @@ static shape_predictor sp;
 static char *face_landmark_path;
 static bool isLoaded = false;
 
-static void loadFiles() {
-	face_landmark_path =
-		obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+static void loadFiles()
+{
+	face_landmark_path = obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
 
 	if (!face_landmark_path) {
 		obs_log(LOG_ERROR, "Failed to find face landmark file");
@@ -52,14 +52,13 @@ static void loadFiles() {
 
 	// Initialize dlib shape predictor and face detector
 	detector = get_frontal_face_detector();
-	
+
 	deserialize(face_landmark_path) >> sp;
 	obs_log(LOG_INFO, "Dlib deserialize!!!!");
 
 	isLoaded = true;
 	obs_log(LOG_INFO, "Model loaded!!!!");
 }
-
 
 std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
 {

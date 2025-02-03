@@ -44,9 +44,9 @@ static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint3
 	return rect;
 }
 
-static void loadFiles() {
-	face_landmark_path =
-		obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+static void loadFiles()
+{
+	face_landmark_path = obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
 
 	if (!face_landmark_path) {
 		obs_log(LOG_ERROR, "Failed to find face landmark file");
