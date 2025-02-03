@@ -18,6 +18,7 @@ static shape_predictor sp;
 static frontal_face_detector detector;
 static char *face_landmark_path;
 static bool isLoaded = false;
+static int frame_count = 0;
 
 static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint32_t width, uint32_t height)
 {
@@ -59,10 +60,8 @@ static void loadFiles()
 // Function to detect face on the first frame and track in subsequent frames
 std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
 {
-	// uint8_t *data = frame->data;
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
-	// uint32_t linesize = frame->linesize;
 
 	// Convert BGRA to OpenCV Mat
 	cv::Mat frameMat(frame->height, frame->width, CV_8UC4, frame->data, frame->linesize);
@@ -118,6 +117,8 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 			}
 		}
 	}
+	obs_log(LOG_INFO, "Face region: top=%d, bottom=%d, left=%d, right=%d", initial_face.top(), initial_face.bottom(), initial_face.left(), initial_face.right());
+	face_coordinates.push_back(getBoundingBox({cv::Point(initial_face.left(), initial_face.top()), cv::Point(initial_face.right(), initial_face.bottom())}, width, height));
 
 	obs_log(LOG_INFO, "Mark eye regions!!!!");
 	// Exclude eyes and mouth from the mask
@@ -145,6 +146,15 @@ std::vector<std::vector<bool>> detectFaceAOI(struct input_BGRA_data *frame, std:
 		for (uint32_t x = 0; x < width; x++) {
 			mask[y][x] = (maskMat.at<uint8_t>(y, x) > 0);
 		}
+	}
+
+	frame_count++;
+	obs_log(LOG_INFO, "Frame count: %d", frame_count);
+
+	if (frame_count == 30) {
+		obs_log(LOG_INFO, "Reset tracker!!!!");
+		is_tracking = false;
+		frame_count = 0;
 	}
 
 	return mask;
