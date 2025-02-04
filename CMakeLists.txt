@@ -123,6 +123,16 @@ elseif(WIN32)
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 endif()
 
+if(WIN32)
+	# Enable Multicore Builds and disable FH4 (to not depend on VCRUNTIME140_1.DLL when building with VS2019)
+	if (MSVC)
+		add_definitions(/MP /d2FH4-)
+		add_definitions("-D_USE_MATH_DEFINES")
+		add_definitions("-D_CRT_SECURE_NO_WARNINGS") # to avoid a warning for `fopen`
+		add_definitions("-D_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR") # TODO: Remove once requiring OBS 30.2 or later.
+	endif()
+endif()
+
 if(ENABLE_FRONTEND_API)
   find_package(obs-frontend-api REQUIRED)
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE OBS::obs-frontend-api)
