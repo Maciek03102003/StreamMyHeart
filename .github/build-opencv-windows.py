@@ -53,7 +53,7 @@ def cmake_build():
         f"-DBUILD_PERF_TESTS=OFF",
         f"-DBUILD_PNG=OFF",
         f"-DBUILD_PROTOBUF=OFF",
-        f"-DBUILD_SHARED_LIBS=OFF",
+        f"-DBUILD_SHARED_LIBS=ON",
         f"-DBUILD_TBB=OFF",
         f"-DBUILD_IPP_IW=OFF",
         f"-DWITH_IPP=OFF",
@@ -159,7 +159,7 @@ print(f"OpenCV source directory path is {opencv_src_dir_path}")
 binary_dir_path = os.path.join(parent_dir_path, "binary")
 print(f"Binary directory path is {binary_dir_path}")
 
-opencv_out_dir_path = os.path.join(binary_dir_path, "opencv-4.11.0-macos")
+opencv_out_dir_path = os.path.join(binary_dir_path, "opencv-4.11.0-windows")
 print(f"OpenCV output directory path is {opencv_out_dir_path}")
 
 opencv_tmp_dir_path = os.path.join(opencv_src_dir_path, ".build")
