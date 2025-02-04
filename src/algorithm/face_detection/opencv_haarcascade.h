@@ -13,7 +13,7 @@
 
 #include "heart_rate_source.h"
 
-std::vector<std::vector<bool>> detectFacesAndCreateMask(struct input_BGRA_data *frame,
+std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 							std::vector<struct vec4> &face_coordinates);
 
 #endif

@@ -60,19 +60,61 @@ static void loadFiles()
 
 	obs_log(LOG_INFO, "Detect faces using DNN!!!!");
 
-	// Load OpenCV DNN face detection model (Caffe-based)
-	modelConfiguration = obs_find_module_file(obs_get_module("pulse-obs"), "deploy.prototxt");
-	obs_log(LOG_INFO, "Model configuration: %s", modelConfiguration);
-	modelWeights =
-		obs_find_module_file(obs_get_module("pulse-obs"), "res10_300x300_ssd_iter_140000_fp16.caffemodel");
-	obs_log(LOG_INFO, "Model weights: %s", modelWeights);
+	obs_module_t *module = obs_get_module("pulse-obs");
+	if (!module) {
+		obs_log(LOG_ERROR, "Failed to get OBS module: pulse-obs");
+		return;
+	}
 
-	// cast char * to string
-	std::string modelConfiguration_str(modelConfiguration);
-	std::string modelWeights_str(modelWeights);
+	modelConfiguration = obs_find_module_file(module, "deploy.prototxt");
+	if (!modelConfiguration) {
+		obs_log(LOG_ERROR, "Failed to find deploy.prototxt");
+		return;
+	}
+	
+	obs_log(LOG_INFO, "Loading prototxt failed!!!!");
+
+
+
+	modelWeights = obs_find_module_file(module, "res10_300x300_ssd_iter_140000_fp16.caffemodel");
+	if (!modelConfiguration) {
+		obs_log(LOG_ERROR, "Failed to find deploy.prototxt");
+		return;
+	}
+
+	// Check if files exist
+	if (!modelConfiguration || !modelWeights) {
+		obs_log(LOG_ERROR, "Error: Could not find model files!");
+		return;
+	}
+
+	obs_log(LOG_INFO, "Loading caffemodel failed!!!!");
+
+	// Convert char* to std::string safely
+	std::string modelConfiguration_str = modelConfiguration ? std::string(modelConfiguration) : "";
+	std::string modelWeights_str = modelWeights ? std::string(modelWeights) : "";
+
+	obs_log(LOG_INFO, "String conversion done!!!!");
+
+
+	// Ensure strings are not empty
+	if (modelConfiguration_str.empty() || modelWeights_str.empty()) {
+		obs_log(LOG_ERROR, "Error: Model file paths are empty!");
+		return;
+	}
 
 	// Load the pre-trained model
-	net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
+	try
+	{
+		net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+		throw std::runtime_error("Failed to load model");
+	}
+	
+	// net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
 	isLoaded = true;
 	obs_log(LOG_INFO, "Model loaded!!!!");
 }
@@ -127,6 +169,7 @@ std::vector<std::vector<bool>> faceMaskDNN(struct input_BGRA_data *frame, std::v
 
 	uint64_t for_loop_before = os_gettime_ns();
 	// Loop over detections and process each face
+
 	for (int i = 0; i < detections.size[2]; ++i) {
 		float confidence = detections.at<float>(i, 2);
 		if (confidence > 0.5) { // Confidence threshold
