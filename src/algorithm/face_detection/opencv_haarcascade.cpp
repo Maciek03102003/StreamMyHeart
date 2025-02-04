@@ -36,7 +36,7 @@ static void initializeFaceCascade()
 }
 
 // Mark pixels within detected regions as true/false depending on whether its the face/eyes/mouth
-static void mask_face(std::vector<std::vector<bool>> face_mask, cv::Rect rect, bool is_face)
+static void mask_face(std::vector<std::vector<bool>> &face_mask, cv::Rect rect, bool is_face)
 {
 	for (int y = rect.y; y < rect.y + rect.height; ++y) {
 		for (int x = rect.x; x < rect.x + rect.width; ++x) {
@@ -110,10 +110,10 @@ std::vector<std::vector<bool>> detectFacesAndCreateMask(struct input_BGRA_data *
 		std::vector<cv::Rect> left_eyes;
 		left_eye_cascade.detectMultiScale(upperFaceROI, left_eyes, 1.1, 10, 0, cv::Size(15, 15));
 		std::vector<vec4> left_eye_rects;
-		for (size_t i = 0; i < std::min(static_cast<size_t>(1), left_eyes.size()); i++) {
-			const auto &eye = left_eyes[i];
+		for (size_t j = 0; j < std::min(static_cast<size_t>(1), left_eyes.size()); j++) {
+			const auto &eye = left_eyes[j];
 			// Calculate absolute coordinates for the eye
-			cv::Rect absolute_eye(eye.x + faces[i].x, eye.y + faces[i].y, eye.width, eye.height);
+			cv::Rect absolute_eye(eye.x + faces[j].x, eye.y + faces[j].y, eye.width, eye.height);
 
 			// Push absolute eye bounding box as normalized coordinates
 			face_coordinates.push_back(getNormalisedRect(absolute_eye, width, height));
@@ -123,10 +123,10 @@ std::vector<std::vector<bool>> detectFacesAndCreateMask(struct input_BGRA_data *
 		std::vector<cv::Rect> right_eyes;
 		right_eye_cascade.detectMultiScale(upperFaceROI, right_eyes, 1.1, 10, 0, cv::Size(15, 15));
 		std::vector<vec4> right_eye_rects;
-		for (size_t i = 0; i < std::min(static_cast<size_t>(1), right_eyes.size()); i++) {
-			const auto &eye = right_eyes[i];
+		for (size_t j = 0; j < std::min(static_cast<size_t>(1), right_eyes.size()); j++) {
+			const auto &eye = right_eyes[j];
 			// Calculate absolute coordinates for the eye
-			cv::Rect absolute_eye(eye.x + faces[i].x, eye.y + faces[i].y, eye.width, eye.height);
+			cv::Rect absolute_eye(eye.x + faces[j].x, eye.y + faces[j].y, eye.width, eye.height);
 
 			// Push absolute eye bounding box as normalized coordinates
 			face_coordinates.push_back(getNormalisedRect(absolute_eye, width, height));
@@ -136,10 +136,10 @@ std::vector<std::vector<bool>> detectFacesAndCreateMask(struct input_BGRA_data *
 		std::vector<cv::Rect> mouths;
 		mouth_cascade.detectMultiScale(lowerFaceROI, mouths, 1.05, 35, 0, cv::Size(30, 15));
 		std::vector<vec4> mouth_rects;
-		for (size_t i = 0; i < std::min(static_cast<size_t>(1), mouths.size()); i++) {
-			const auto &mouth = mouths[i];
+		for (size_t j = 0; j < std::min(static_cast<size_t>(1), mouths.size()); j++) {
+			const auto &mouth = mouths[j];
 			// Calculate absolute coordinates for the mouth
-			cv::Rect absolute_mouth(mouth.x + faces[i].x, mouth.y + faces[i].y + faceROI.rows / 2,
+			cv::Rect absolute_mouth(mouth.x + faces[j].x, mouth.y + faces[j].y + faceROI.rows / 2,
 						mouth.width, mouth.height);
 
 			// Push absolute mouth bounding box as normalized coordinates
@@ -156,9 +156,9 @@ std::vector<std::vector<bool>> detectFacesAndCreateMask(struct input_BGRA_data *
 			if (right_eyes.size() > 0) {
 				mask_face(face_mask, right_eyes[0], false);
 			}
-			for (size_t i = 0; i < std::min(static_cast<size_t>(1), mouths.size()); i++) {
+			for (size_t j = 0; j < std::min(static_cast<size_t>(1), mouths.size()); j++) {
 				// Mark pixels within detected mouth region as false
-				mask_face(face_mask, mouths[i], false);
+				mask_face(face_mask, mouths[j], false);
 			}
 		}
 	}

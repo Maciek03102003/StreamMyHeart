@@ -196,17 +196,6 @@ void heart_rate_source_tick(void *data, float seconds)
 	}
 }
 
-static std::string processBGRAData(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates)
-{
-	double heart_rate = avg.calculateHeartRate(BGRA_data, face_coordinates);
-	std::string log = "Heart Rate: " + std::to_string(heart_rate);
-	obs_log(LOG_INFO, log.c_str());
-	return log;
-
-	// CalculateHeartRate only updates the heart rate every n secs, so may return the same
-	// number multiple times (shouldn't affect plugin)
-}
-
 static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 {
 	uint32_t width;
@@ -390,7 +379,8 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 	std::vector<struct vec4> face_coordinates;
-	std::string result = processBGRAData(hrs->BGRA_data, face_coordinates);
+	double heart_rate = avg.calculateHeartRate(hrs->BGRA_data, face_coordinates);
+	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	gs_texture_t *testingTexture =
 		draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
@@ -416,12 +406,14 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 
 	gs_blend_state_pop();
 
-	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
-	obs_data_t *source_settings = obs_source_get_settings(source);
-	obs_data_set_string(source_settings, "text", result.c_str());
-	obs_source_update(source, source_settings);
-	obs_data_release(source_settings);
-	obs_source_release(source);
+	if (heart_rate != 0.0) {
+		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+		obs_data_t *source_settings = obs_source_get_settings(source);
+		obs_data_set_string(source_settings, "text", result.c_str());
+		obs_source_update(source, source_settings);
+		obs_data_release(source_settings);
+		obs_source_release(source);
+	}
 
 	gs_texture_destroy(testingTexture);
 }

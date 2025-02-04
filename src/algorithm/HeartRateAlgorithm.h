@@ -17,24 +17,26 @@
 
 class MovingAvg {
 private:
-	double fps = 60.0;
-	double update_time = 2.0; // Time between heart rate updates in secs
-	int maxBufSize = 60;
-	double prev_hr = 0.0;
-	std::vector<std::vector<double>> frame_data = {}; // Store the average RGB values for each frame
+	int windowSize = 60;
+	int windowStride = 1;
+	int fps = 30;
+	int maxNumWindows = 8;
 
-	std::vector<std::vector<double>> moving_average(const std::vector<std::vector<double>> &rgb, int n = 3);
+	std::vector<std::vector<std::vector<double_t>>> windows;
 
-	std::vector<double_t> average_keyed(std::vector<std::vector<std::tuple<double, double, double>>> rgb,
-					    std::vector<std::vector<bool>> skinkey = {});
+	std::vector<std::vector<bool>> latestSkinKey;
+	bool detectFace = false;
 
-	std::vector<std::vector<double>> magnify_colour_ma(const std::vector<std::vector<double>> &rgb,
-							   double delta = 50, int n_bg_ma = 60, int n_smooth_ma = 3);
+	std::vector<double_t> averageRGB(std::vector<std::vector<std::vector<uint8_t>>> rgb,
+					 std::vector<std::vector<bool>> skinKey = {});
 
-	double Welch_cpu_heart_rate(const std::vector<std::vector<double>> &bvps, int num_data_points);
+	void updateWindows(std::vector<double_t> frame_avg);
+
+	double welch(std::vector<double_t> ppgSignal);
 
 public:
-	double calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates);
+	double calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
+				  int preFilter = 0, int ppg = 0, int postFilter = 0);
 };
 
 #endif
