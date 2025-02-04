@@ -84,23 +84,23 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Apple
   )
 endif()
 
-# include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
-# link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
-# target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 
 # Set paths for Dlib
-# set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
-# set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
+set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
 
 # Include Dlib headers
-# include_directories(${DLIB_INCLUDE_DIR})
+include_directories(${DLIB_INCLUDE_DIR})
 
 # Link against the static Dlib library
-# add_library(libdlib STATIC IMPORTED)
-# set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+add_library(libdlib STATIC IMPORTED)
+set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
 
 # Link your OBS plugin with Dlib
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
 
 if(ENABLE_FRONTEND_API)
   find_package(obs-frontend-api REQUIRED)
