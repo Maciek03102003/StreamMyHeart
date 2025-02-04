@@ -73,7 +73,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // 
     cv::Mat frame;
     std::vector<struct vec4> faceCoordinates;
 
-    int frameCount = 0;
+    int seconds = 1;
     int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
 
     std::vector<double> predicted;
@@ -90,18 +90,13 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // 
         // Calculate heart rate using your algorithm
         double heartRate = avg.calculateHeartRate(&bgraData, faceCoordinates, 0, 0, 0, fps, 1, false);
         if (heartRate != 0) {
-            std::cout << heartRate << std::endl;
+            predicted.push_back(heartRate);
+            std::cout << seconds << std::endl;
+            seconds++;
         }
 
         // Clean up
         delete[] bgraData.data;
-
-        // if (frameCount != 0 && frameCount % fps == 0) {
-        //     predicted.push_back(heartRate);
-        //     std::cout << "Push" << heartRate << std::endl;
-        // }
-
-        frameCount++;
     }
 
     cap.release();
@@ -115,8 +110,8 @@ void evaluateHeartRate(const std::string &csvFilePath) {
     for (const auto &videoData : videoDataList) {
         std::vector<double> predicted = calculateHeartRateForVideo(videoData);
         std::cout << "Predicted values: " << predicted.size() << std::endl;
-        //std::cout << "RMSE: " << calculateRMSE(videoData.groundTruthHeartRate, predicted) << std::endl;
-        //std::cout << "MAE: " << calculateMAE(videoData.groundTruthHeartRate, predicted) << std::endl;
+        std::cout << "RMSE: " << calculateRMSE(videoData.groundTruthHeartRate, predicted) << std::endl;
+        std::cout << "MAE: " << calculateMAE(videoData.groundTruthHeartRate, predicted) << std::endl;
     }
 }
 
