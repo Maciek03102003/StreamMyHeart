@@ -107,6 +107,7 @@ if (UNIX)
   # Link your OBS plugin with Dlib
   target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
 elseif(WIN32)
+  set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
   set(CMAKE_POSITION_INDEPENDENT_CODE True)
   set(DLIB_NO_GUI_SUPPORT ON)
   set(DLIB_PNG_SUPPORT OFF)
