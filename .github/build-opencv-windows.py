@@ -13,7 +13,7 @@ def download_opencv_source_code(target_dir):
     os.makedirs(os.path.dirname(target_dir), exist_ok=True)
 
     print(f"Downloading repository tarball from {REPO_URL}...")
-    download_opencv_cmd = ["wget", "-O", f"./{TARBALL_NAME}", REPO_URL]
+    download_opencv_cmd = ["curl", "-L", "-o", f"./{TARBALL_NAME}", REPO_URL]
     subprocess.run(download_opencv_cmd, check=True)
 
     print(f"Extracting {TARBALL_NAME}...")
@@ -30,8 +30,14 @@ def download_opencv_source_code(target_dir):
 def cmake_build():
     cmake_configure_cmd = [
         "cmake",
-        "-G", "Unix Makefiles",
-        f"-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
+        "-G", "Visual Studio 17 2022",
+        "-T", "host=x64",
+        # f"-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
+        "-DCMAKE_CXX_FLAGS=/MT",
+        "-DCMAKE_CXX_FLAGS_DEBUG=/MTd",
+        "-DCMAKE_CXX_FLAGS_RELEASE=/MT",
+        "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=/MT",
+        "-DCMAKE_CXX_FLAGS_MINSIZEREL=/MT",
         f"-DCMAKE_BUILD_TYPE=Release",
         f"-DCMAKE_INSTALL_PREFIX={opencv_out_dir_path}",
         f"-DBUILD_CUDA_STUBS=OFF",
@@ -137,9 +143,8 @@ def cmake_build():
 
     # Run cmake configure
     subprocess.run(cmake_configure_cmd, check=True)
-    build_cmd = ["make", f"-j{os.cpu_count()}"]
+    build_cmd = ["cmake", "--build", ".", "--target", "install", "--config", "Release"]
     subprocess.run(build_cmd, check=True)
-    subprocess.run(["make", "install"], check=True)
 
 # Build OpenCV
 parent_dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -178,4 +183,4 @@ else:
     cmake_build()
 
     # Remove the temporary directory and downloaded source
-    shutil.rmtree(third_party_dir_path)
+    # shutil.rmtree(third_party_dir_path)
