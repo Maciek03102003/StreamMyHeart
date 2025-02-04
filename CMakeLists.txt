@@ -118,7 +118,7 @@ elseif(WIN32)
   target_link_libraries(${CMAKE_PROJECT_NAME} dlib)
 endif()
 
-console.log();if(ENABLE_FRONTEND_API)
+if(ENABLE_FRONTEND_API)
   find_package(obs-frontend-api REQUIRED)
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE OBS::obs-frontend-api)
 endif()
