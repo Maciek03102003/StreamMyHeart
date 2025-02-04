@@ -230,20 +230,10 @@ double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vec
 	UNUSED_PARAMETER(postFilter);
 
 	FrameRGB frameRGB = extractRGB(BGRA_data);
-	if (windows.empty() || windows.back().size() % 10 == 0 || !detectFace) {
-		vector<vector<bool>> skinKey = detectFaceAOI(BGRA_data, face_coordinates);
-		vector<double_t> avg = averageRGB(frameRGB, skinKey);
-		if (avg[0] == 0 && avg[1] == 0 && avg[2] == 0) {
-			detectFace = false;
-		} else {
-			detectFace = true;
-			latestSkinKey = skinKey;
-			updateWindows(avg);
-		}
-	} else {
-		vector<double_t> avg = averageRGB(frameRGB, latestSkinKey);
-		updateWindows(avg);
-	}
+	// vector<vector<bool>> skinKey = detectFaceAOI(BGRA_data, face_coordinates);
+	vector<double_t> avg = detectFaceAOI(BGRA_data, face_coordinates);
+	// vector<double_t> avg = averageRGB(frameRGB, skinKey);
+	updateWindows(avg);
 
 	vector<double_t> ppgSignal;
 
