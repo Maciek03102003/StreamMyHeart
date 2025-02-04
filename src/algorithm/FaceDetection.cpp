@@ -7,9 +7,14 @@
 static cv::CascadeClassifier face_cascade, mouth_cascade, left_eye_cascade, right_eye_cascade;
 static bool cascade_loaded = false;
 
-static void loadCascade(cv::CascadeClassifier &cascade, const char *module_name, const char *file_name)
+static void loadCascade(cv::CascadeClassifier &cascade, const char *module_name, const char *file_name, bool plugin = true)
 {
-	char *cascade_path = obs_find_module_file(obs_get_module(module_name), file_name);
+	char *cascade_path;
+	if (plugin) {
+		cascade_path = obs_find_module_file(obs_get_module(module_name), file_name);
+	} else {
+		cascade_path = strdup((std::string("./") + file_name).c_str());
+	}
 	if (!cascade_path) {
 		obs_log(LOG_INFO, "Error finding %s file!", file_name);
 		throw std::runtime_error("Error finding cascade file!");
@@ -19,18 +24,19 @@ static void loadCascade(cv::CascadeClassifier &cascade, const char *module_name,
 		obs_log(LOG_INFO, "Error loading %s!", file_name);
 		throw std::runtime_error("Error loading cascade!");
 	}
-
-	bfree(cascade_path);
+	if (plugin) {
+		bfree(cascade_path);
+	}
 }
 
 // Ensure the face cascade is loaded once
-static void initializeFaceCascade()
+static void initializeFaceCascade(bool plugin)
 {
 	if (!cascade_loaded) {
-		loadCascade(face_cascade, "pulse-obs", "haarcascade_frontalface_default.xml");
-		loadCascade(mouth_cascade, "pulse-obs", "haarcascade_mcs_mouth.xml");
-		loadCascade(left_eye_cascade, "pulse-obs", "haarcascade_lefteye_2splits.xml");
-		loadCascade(right_eye_cascade, "pulse-obs", "haarcascade_righteye_2splits.xml");
+		loadCascade(face_cascade, "pulse-obs", "haarcascade_frontalface_default.xml", plugin);
+		loadCascade(mouth_cascade, "pulse-obs", "haarcascade_mcs_mouth.xml", plugin);
+		loadCascade(left_eye_cascade, "pulse-obs", "haarcascade_lefteye_2splits.xml", plugin);
+		loadCascade(right_eye_cascade, "pulse-obs", "haarcascade_righteye_2splits.xml", plugin);
 		cascade_loaded = true;
 	}
 }
@@ -60,14 +66,14 @@ static struct vec4 getNormalisedRect(const cv::Rect &region, uint32_t width, uin
 
 // Function to detect faces and create a mask
 std::vector<std::vector<bool>> detectFacesAndCreateMask(struct input_BGRA_data *frame,
-							std::vector<struct vec4> &face_coordinates)
+							std::vector<struct vec4> &face_coordinates, bool plugin = true)
 {
 	if (!frame || !frame->data) {
 		throw std::runtime_error("Invalid BGRA frame data!");
 	}
 
 	// Initialize the face cascade
-	initializeFaceCascade();
+	initializeFaceCascade(plugin);
 
 	// Extract frame parameters
 	uint8_t *data = frame->data;

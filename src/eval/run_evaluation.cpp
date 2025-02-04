@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <opencv2/opencv.hpp>
-//#include "HeartRateAlgorithm.h" // Include your heart rate algorithm header
+#include "../algorithm/HeartRateAlgorithm.h" // Include your heart rate algorithm header
 
 struct VideoData {
     std::string videoPath;
@@ -35,72 +35,98 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath) {
     return videoDataList;
 }
 
-// // Function to extract BGRA data from a video frame
-// input_BGRA_data extractBGRAData(const cv::Mat &frame) {
-//     input_BGRA_data bgraData;
-//     bgraData.width = frame.cols;
-//     bgraData.height = frame.rows;
-//     bgraData.linesize = frame.step;
-//     bgraData.data = new uint8_t[frame.total() * frame.elemSize()];
-//     std::memcpy(bgraData.data, frame.data, frame.total() * frame.elemSize());
-//     return bgraData;
-// }
+// Function to extract BGRA data from a video frame
+input_BGRA_data extractBGRAData(const cv::Mat &frame) {
+    input_BGRA_data bgraData;
+    bgraData.width = frame.cols;
+    bgraData.height = frame.rows;
+    bgraData.linesize = static_cast<uint32_t>(frame.step);
+    bgraData.data = new uint8_t[frame.total() * frame.elemSize()];
+    std::memcpy(bgraData.data, frame.data, frame.total() * frame.elemSize());
+    return bgraData;
+}
 
-// double calculateHeartRateForVideo(const std::string &videoPath) {
-//     cv::VideoCapture cap(videoPath);
-//     if (!cap.isOpened()) {
-//         std::cerr << "Error: Could not open video file " << videoPath << std::endl;
-//         return -1;
-//     }
+double calculateMAE(const std::vector<double>& actual, const std::vector<double>& predicted) {
+    double mae = 0.0;
+    for (size_t i = 0; i < static_cast<int>(actual.size()); ++i) {
+        mae += std::fabs(actual[i] - predicted[i]); // Absolute error
+    }
+    return mae / actual.size();
+}
 
-//     MovingAvg avg;
-//     cv::Mat frame;
-//     std::vector<struct vec4> faceCoordinates;
+double calculateRMSE(const std::vector<double>& actual, const std::vector<double>& predicted) {
+    double rmse = 0.0;
+    for (size_t i = 0; i < static_cast<int>(actual.size()); ++i) {
+        rmse += std::pow(actual[i] - predicted[i], 2); // Squared error
+    }
+    return std::sqrt(rmse / actual.size());
+}
 
-//     while (cap.read(frame)) {
-//         // Convert the frame to BGRA format
-//         cv::Mat bgraFrame;
-//         cv::cvtColor(frame, bgraFrame, cv::COLOR_BGR2BGRA);
+std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // {MAE, RMSE}
+    cv::VideoCapture cap(videoData.videoPath);
+    if (!cap.isOpened()) {
+        std::cerr << "Error: Could not open video file " << videoData.videoPath << std::endl;
+        return {};
+    }
 
-//         // Extract BGRA data
-//         input_BGRA_data bgraData = extractBGRAData(bgraFrame);
+    MovingAvg avg;
+    cv::Mat frame;
+    std::vector<struct vec4> faceCoordinates;
 
-//         // Calculate heart rate using your algorithm
-//         double heartRate = avg.calculateHeartRate(&bgraData, faceCoordinates);
+    int frameCount = 0;
+    int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
 
-//         // Clean up
-//         delete[] bgraData.data;
+    std::vector<double> predicted;
 
-//         std::cout << "Calculated Heart Rate: " << heartRate << std::endl;
-//     }
+    while (cap.read(frame)) {
+        // Convert the frame to BGRA format
+        cv::Mat bgraFrame;
+        cv::cvtColor(frame, bgraFrame, cv::COLOR_BGR2BGRA);
 
-//     cap.release();
-//     // Return the final calculated heart rate (this is a placeholder)
-//     return avg.getFinalHeartRate();
-// }
+        // Extract BGRA data
+        input_BGRA_data bgraData = extractBGRAData(bgraFrame);
 
-// void evaluateHeartRate(const std::string &csvFilePath) {
-//     std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
-//     for (const auto &videoData : videoDataList) {
-//         double calculatedHeartRate = calculateHeartRateForVideo(videoData.videoPath);
-//         std::cout << "Video: " << videoData.videoPath << std::endl;
-//         std::cout << "Ground Truth Heart Rate: " << videoData.groundTruthHeartRate << std::endl;
-//         std::cout << "Calculated Heart Rate: " << calculatedHeartRate << std::endl;
-//         std::cout << "Difference: " << std::abs(calculatedHeartRate - videoData.groundTruthHeartRate) << std::endl;
-//         std::cout << "----------------------------------------" << std::endl;
-//     }
-// }
+        // Calculate heart rate using your algorithm
+        double heartRate = avg.calculateHeartRate(&bgraData, faceCoordinates, 0, 0, 0, fps, 1, false);
+        if (heartRate != 0) {
+            std::cout << heartRate << std::endl;
+        }
+
+        // Clean up
+        delete[] bgraData.data;
+
+        // if (frameCount != 0 && frameCount % fps == 0) {
+        //     predicted.push_back(heartRate);
+        //     std::cout << "Push" << heartRate << std::endl;
+        // }
+
+        frameCount++;
+    }
+
+    cap.release();
+    // Return the final calculated heart rate (this is a placeholder)
+    return predicted;
+}
+
+void evaluateHeartRate(const std::string &csvFilePath) {
+    std::vector<VideoData> videoDataList = readCSV(csvFilePath);
+
+    for (const auto &videoData : videoDataList) {
+        std::vector<double> predicted = calculateHeartRateForVideo(videoData);
+        std::cout << "Predicted values: " << predicted.size() << std::endl;
+        //std::cout << "RMSE: " << calculateRMSE(videoData.groundTruthHeartRate, predicted) << std::endl;
+        //std::cout << "MAE: " << calculateMAE(videoData.groundTruthHeartRate, predicted) << std::endl;
+    }
+}
 
 int main() {
-    std::string csvFilePath = "./ground_truth.csv";
-    std::vector<VideoData> videoDataList = readCSV(csvFilePath);
-    
-    for (VideoData d : videoDataList) {
-        std::cout << d.videoPath << std::endl;
-        for (double bpm : d.groundTruthHeartRate) {
-            std::cout << bpm << std::endl;
-        }
+    std::string csvFilePath = "../../src/eval/ground_truth.csv";
+
+    evaluateHeartRate(csvFilePath);
+
+    while(true) {
+
     }
     
     return 0;

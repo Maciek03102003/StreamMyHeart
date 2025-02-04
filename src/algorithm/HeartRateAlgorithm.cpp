@@ -99,6 +99,7 @@ FrameRGB extractRGB(struct input_BGRA_data *BGRA_data)
 
 double MovingAvg::welch(vector<double_t> bvps)
 {
+
 	using Eigen::ArrayXd;
 
 	int num_frames = static_cast<int>(bvps.size());
@@ -111,11 +112,7 @@ double MovingAvg::welch(vector<double_t> bvps)
 	double frequency_resolution = (fps * 60.0) / num_frames;
 	int nyquist_limit = segment_size / 2;
 
-	// Hann window
-	ArrayXd hann_window(segment_size);
-	for (int i = 0; i < segment_size; ++i) {
-		hann_window[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (segment_size - 1)));
-	}
+	
 
 	// Convert signal to Eigen array
 	ArrayXd signal = Eigen::Map<const ArrayXd>(bvps.data(), bvps.size());
@@ -124,28 +121,63 @@ double MovingAvg::welch(vector<double_t> bvps)
 	int num_segments = 0;
 	ArrayXd psd = ArrayXd::Zero(nfft / 2 + 1);
 
-	for (int start = 0; start + segment_size <= num_frames; start += (segment_size - overlap)) {
-		// Extract segment and apply window
-		ArrayXd segment = signal.segment(start, segment_size) * hann_window;
+	if (num_frames < segment_size) {
 
-		Eigen::ArrayXcd fft_result(segment_size);
-		for (int k = 0; k < segment_size; ++k) {
+		// Hann window
+		ArrayXd hann_window(num_frames);
+		for (int i = 0; i < num_frames; ++i) {
+			hann_window[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (num_frames - 1)));
+		}
+
+		ArrayXd windowed_signal = signal * hann_window;
+		Eigen::ArrayXcd fft_result(num_frames);
+		for (int k = 0; k < num_frames; ++k) {
 			std::complex<double> sum(0.0, 0.0);
-			for (int n = 0; n < segment_size; ++n) {
-				double angle = -2.0 * M_PI * k * n / segment_size;
-				sum += segment[n] * std::exp(std::complex<double>(0, angle));
+			for (int n = 0; n < num_frames; ++n) {
+				double angle = -2.0 * M_PI * k * n / num_frames;
+				sum += windowed_signal[n] * std::exp(std::complex<double>(0, angle));
 			}
 			fft_result[k] = sum;
 		}
 
 		// Compute power spectrum
 		ArrayXd power_spectrum =
-			ArrayXd::Zero(nyquist_limit + 1); // Only half the spectrum (0 to Nyquist frequency)
-		for (int k = 0; k <= nyquist_limit; ++k) {
-			psd[k] += std::norm(fft_result[k]) / segment_size;
+			ArrayXd::Zero(num_frames / 2 + 1); // Only half the spectrum (0 to Nyquist frequency)
+		for (int k = 0; k <= num_frames / 2; ++k) {
+			psd[k] += std::norm(fft_result[k]) / num_frames;
 		}
 
 		++num_segments;
+	} else {
+		
+		ArrayXd hann_window(segment_size);
+		for (int i = 0; i < segment_size; ++i) {
+			hann_window[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (segment_size - 1)));
+		}
+
+		for (int start = 0; start + segment_size <= num_frames; start += (segment_size - overlap)) {
+			// Extract segment and apply window
+			ArrayXd segment = signal.segment(start, segment_size) * hann_window;
+
+			Eigen::ArrayXcd fft_result(segment_size);
+			for (int k = 0; k < segment_size; ++k) {
+				std::complex<double> sum(0.0, 0.0);
+				for (int n = 0; n < segment_size; ++n) {
+					double angle = -2.0 * M_PI * k * n / segment_size;
+					sum += segment[n] * std::exp(std::complex<double>(0, angle));
+				}
+				fft_result[k] = sum;
+			}
+
+			// Compute power spectrum
+			ArrayXd power_spectrum =
+				ArrayXd::Zero(nyquist_limit + 1); // Only half the spectrum (0 to Nyquist frequency)
+			for (int k = 0; k <= nyquist_limit; ++k) {
+				psd[k] += std::norm(fft_result[k]) / segment_size;
+			}
+
+			++num_segments;
+		}
 	}
 
 	// Average PSD for this estimator
@@ -154,7 +186,7 @@ double MovingAvg::welch(vector<double_t> bvps)
 	}
 
 	// Adjust Nyquist limit for human heart rates
-	int nyquist_limit_bpm = min(nyquist_limit, static_cast<int>(200 / frequency_resolution));
+	int nyquist_limit_bpm = min(min(num_frames / 2, nyquist_limit), static_cast<int>(200 / frequency_resolution));
 
 	double lower_limit = 50;
 	for (int k = 0; k <= nyquist_limit_bpm; ++k) {
@@ -162,19 +194,6 @@ double MovingAvg::welch(vector<double_t> bvps)
 			psd[k] = 0;
 		}
 	}
-
-	// Log power spectrum to OBS console in BPM
-	std::ostringstream log_stream;
-	for (int k = 0; k <= nyquist_limit_bpm; ++k) {
-		if (psd[k] > 0) {
-			double bpm = k * frequency_resolution;
-			log_stream << bpm << " BPM: " << psd[k];
-			if (k < nyquist_limit_bpm) {
-				log_stream << ", ";
-			}
-		}
-	}
-	obs_log(LOG_INFO, "%s", log_stream.str().c_str());
 
 	// Find dominant frequency in BPM
 	int max_index;
@@ -198,7 +217,7 @@ Window concatWindows(Windows windows)
 }
 
 double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
-				     int preFilter, int ppg, int postFilter, int Fps, int sampleRate)
+				     int preFilter, int ppg, int postFilter, int Fps, int sampleRate, bool plugin)
 { // Assume frame in YUV format: struct obs_source_frame *source
 	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);
@@ -208,7 +227,7 @@ double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vec
 
 	FrameRGB frameRGB = extractRGB(BGRA_data);
 	if (windows.empty() || windows.back().size() % 10 == 0 || !detectFace) {
-		vector<vector<bool>> skinKey = detectFacesAndCreateMask(BGRA_data, face_coordinates);
+		vector<vector<bool>> skinKey = detectFacesAndCreateMask(BGRA_data, face_coordinates, plugin);
 		vector<double_t> avg = averageRGB(frameRGB, skinKey);
 		if (avg[0] == 0 && avg[1] == 0 && avg[2] == 0) {
 			detectFace = false;

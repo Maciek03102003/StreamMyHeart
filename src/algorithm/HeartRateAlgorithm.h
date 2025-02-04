@@ -36,7 +36,8 @@ private:
 
 public:
 	double calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
-				  int preFilter = 0, int ppg = 0, int postFilter = 0, int Fps = 30, int sampleRate = 2);
+				  int preFilter = 0, int ppg = 0, int postFilter = 0, int Fps = 30, int sampleRate = 2,
+				  bool plugin = true);
 };
 
 #endif
