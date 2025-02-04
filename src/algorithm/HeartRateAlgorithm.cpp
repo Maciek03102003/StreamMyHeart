@@ -198,10 +198,13 @@ Window concatWindows(Windows windows)
 }
 
 double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
-				     int preFilter, int ppg, int postFilter)
+				     int preFilter, int ppg, int postFilter, int Fps, int sampleRate)
 { // Assume frame in YUV format: struct obs_source_frame *source
 	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);
+
+	fps = Fps;
+	windowSize = sampleRate * fps;
 
 	FrameRGB frameRGB = extractRGB(BGRA_data);
 	if (windows.empty() || windows.back().size() % 10 == 0 || !detectFace) {
