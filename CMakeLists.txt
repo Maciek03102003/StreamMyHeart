@@ -119,7 +119,7 @@ elseif(WIN32)
   set(DLIB_JXL_SUPPORT OFF)
   set(DLIB_TEST_COMPILE_ALL_SOURCE_CPP OFF)
   add_subdirectory(dlib)
-  include_directories(${CMAKE_SOURCE_DIR}/dlib)
+  # include_directories(${CMAKE_SOURCE_DIR}/dlib)
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 endif()
 
