@@ -71,10 +71,8 @@ static void loadFiles()
 		obs_log(LOG_ERROR, "Failed to find deploy.prototxt");
 		return;
 	}
-	
+
 	obs_log(LOG_INFO, "Loading prototxt failed!!!!");
-
-
 
 	modelWeights = obs_find_module_file(module, "res10_300x300_ssd_iter_140000_fp16.caffemodel");
 	if (!modelConfiguration) {
@@ -96,7 +94,6 @@ static void loadFiles()
 
 	obs_log(LOG_INFO, "String conversion done!!!!");
 
-
 	// Ensure strings are not empty
 	if (modelConfiguration_str.empty() || modelWeights_str.empty()) {
 		obs_log(LOG_ERROR, "Error: Model file paths are empty!");
@@ -104,16 +101,13 @@ static void loadFiles()
 	}
 
 	// Load the pre-trained model
-	try
-	{
+	try {
 		net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
-	}
-	catch(const std::exception& e)
-	{
+	} catch (const std::exception &e) {
 		std::cerr << e.what() << '\n';
 		throw std::runtime_error("Failed to load model");
 	}
-	
+
 	// net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
 	isLoaded = true;
 	obs_log(LOG_INFO, "Model loaded!!!!");

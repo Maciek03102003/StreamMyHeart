@@ -83,7 +83,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Apple
   )
 endif()
 
-if (UNIX)
+if(UNIX)
   include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
   link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
@@ -104,7 +104,7 @@ if (UNIX)
 elseif(WIN32)
   set(dlib_STATIC ON)
   set(dlib_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/install/lib/cmake/dlib)
-  
+
   find_package(dlib CONFIG REQUIRED)
   if(dlib_FOUND)
     message("dlib_FOUND:${dlib_FOUND}")

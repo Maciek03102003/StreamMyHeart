@@ -98,12 +98,11 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 	cv::Mat gray_faceROI;
 	cv::cvtColor(faceROI, gray_faceROI, cv::COLOR_BGR2GRAY);
 
-	cv::Mat lowerFaceROI = gray_faceROI(
-		cv::Rect(0, gray_faceROI.rows / 2, gray_faceROI.cols, faceROI.rows / 2)); // Lower half
-	cv::Mat leftFaceROI =
-		gray_faceROI(cv::Rect(0, 0, gray_faceROI.cols / 2, gray_faceROI.rows)); // Upper half
-	cv::Mat rightFaceROI = gray_faceROI(
-		cv::Rect(gray_faceROI.cols / 2, 0, gray_faceROI.cols / 2, gray_faceROI.rows));
+	cv::Mat lowerFaceROI =
+		gray_faceROI(cv::Rect(0, gray_faceROI.rows / 2, gray_faceROI.cols, faceROI.rows / 2)); // Lower half
+	cv::Mat leftFaceROI = gray_faceROI(cv::Rect(0, 0, gray_faceROI.cols / 2, gray_faceROI.rows));  // Upper half
+	cv::Mat rightFaceROI =
+		gray_faceROI(cv::Rect(gray_faceROI.cols / 2, 0, gray_faceROI.cols / 2, gray_faceROI.rows));
 
 	// Detect left eyes
 	std::vector<cv::Rect> left_eyes;
@@ -140,7 +139,7 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 		const auto &mouth = mouths[0];
 		// Calculate absolute coordinates for the mouth
 		absolute_mouth = cv::Rect(mouth.x + initial_face.x, mouth.y + initial_face.y + faceROI.rows / 2,
-					mouth.width, mouth.height);
+					  mouth.width, mouth.height);
 
 		// Push absolute mouth bounding box as normalized coordinates
 		face_coordinates.push_back(getNormalisedRect(absolute_mouth, width, height));

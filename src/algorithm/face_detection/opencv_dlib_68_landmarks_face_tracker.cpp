@@ -159,7 +159,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	cv::fillConvexPoly(maskMat, mouth, cv::Scalar(0));
 
 	cv::Scalar meanRGB = cv::mean(frameMat, maskMat);
-	std::vector<double_t> avgRGB = { meanRGB[0], meanRGB[1], meanRGB[2] };
+	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
 
 	obs_log(LOG_INFO, "Convert mask to 2D boolean vector!!!!");
 	// for (uint32_t y = 0; y < height; y++) {
