@@ -1,6 +1,8 @@
 [submodule "3rdparty/opencv-4.11.0"]
 	path = 3rdparty/opencv-4.11.0
 	url = https://github.com/opencv/opencv
+	branch = tags/4.11.0
 [submodule "3rdparty/dlib-19.24.6"]
 	path = 3rdparty/dlib-19.24.6
 	url = https://github.com/davisking/dlib
+	branch = tags/v19.24.6
