@@ -55,12 +55,12 @@ if(UNIX)
   message("Configuring OpenCV for MacOS and Linux")
   set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-macos/lib/cmake/opencv4)
 elseif(WIN32)
-  set(OpenCV_DIR "C:/tools/opencv/build")
-  set(OpenCV_INCLUDE_DIR "C:/tools/opencv/build/include")
-  set(OpenCV_LIBRARIES "C:/tools/opencv/build/x64/vc16/lib")
+  # set(OpenCV_DIR "C:/tools/opencv/build")
+  # set(OpenCV_INCLUDE_DIR "C:/tools/opencv/build/include")
+  # set(OpenCV_LIBRARIES "C:/tools/opencv/build/x64/vc16/lib")
   find_package(OpenCV REQUIRED)
-  # set(OpenCV_STATIC OFF)
-  # set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-windows)
+  set(OpenCV_STATIC ON)
+  set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-windows)
 endif()
 
 find_package(OpenCV CONFIG REQUIRED)
@@ -88,50 +88,50 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Apple
   )
 endif()
 
-if (UNIX)
-  include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
-  link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
-  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+# if (UNIX)
+#   include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+#   link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+#   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 
-  # Set paths for Dlib
-  set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
-  set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
+#   # Set paths for Dlib
+#   set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+#   set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
 
-  # Include Dlib headers
-  include_directories(${DLIB_INCLUDE_DIR})
+#   # Include Dlib headers
+#   include_directories(${DLIB_INCLUDE_DIR})
 
-  # Link against the static Dlib library
-  add_library(libdlib STATIC IMPORTED)
-  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+#   # Link against the static Dlib library
+#   add_library(libdlib STATIC IMPORTED)
+#   set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
 
-  # Link your OBS plugin with Dlib
-  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
-elseif(WIN32)
-  set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
-  set(CMAKE_POSITION_INDEPENDENT_CODE True)
-  set(DLIB_NO_GUI_SUPPORT ON)
-  set(DLIB_PNG_SUPPORT OFF)
-  set(DLIB_GIF_SUPPORT OFF)
-  set(DLIB_USE_FFMPEG OFF)
-  set(DLIB_JPEG_SUPPORT OFF)
-  set(DLIB_LINK_WITH_SQLITE3 OFF)
-  set(DLIB_WEBP_SUPPORT OFF)
-  set(DLIB_JXL_SUPPORT OFF)
-  set(DLIB_TEST_COMPILE_ALL_SOURCE_CPP OFF)
-  add_subdirectory(dlib)
-  # include_directories(${CMAKE_SOURCE_DIR}/dlib)
-  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
-endif()
+#   # Link your OBS plugin with Dlib
+#   target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+# elseif(WIN32)
+#   set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
+#   set(CMAKE_POSITION_INDEPENDENT_CODE True)
+#   set(DLIB_NO_GUI_SUPPORT ON)
+#   set(DLIB_PNG_SUPPORT OFF)
+#   set(DLIB_GIF_SUPPORT OFF)
+#   set(DLIB_USE_FFMPEG OFF)
+#   set(DLIB_JPEG_SUPPORT OFF)
+#   set(DLIB_LINK_WITH_SQLITE3 OFF)
+#   set(DLIB_WEBP_SUPPORT OFF)
+#   set(DLIB_JXL_SUPPORT OFF)
+#   set(DLIB_TEST_COMPILE_ALL_SOURCE_CPP OFF)
+#   add_subdirectory(dlib)
+#   # include_directories(${CMAKE_SOURCE_DIR}/dlib)
+#   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+# endif()
 
-if(WIN32)
-	# Enable Multicore Builds and disable FH4 (to not depend on VCRUNTIME140_1.DLL when building with VS2019)
-	if (MSVC)
-		add_definitions(/MP /d2FH4-)
-		add_definitions("-D_USE_MATH_DEFINES")
-		add_definitions("-D_CRT_SECURE_NO_WARNINGS") # to avoid a warning for `fopen`
-		add_definitions("-D_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR") # TODO: Remove once requiring OBS 30.2 or later.
-	endif()
-endif()
+# if(WIN32)
+# 	# Enable Multicore Builds and disable FH4 (to not depend on VCRUNTIME140_1.DLL when building with VS2019)
+# 	if (MSVC)
+# 		add_definitions(/MP /d2FH4-)
+# 		add_definitions("-D_USE_MATH_DEFINES")
+# 		add_definitions("-D_CRT_SECURE_NO_WARNINGS") # to avoid a warning for `fopen`
+# 		add_definitions("-D_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR") # TODO: Remove once requiring OBS 30.2 or later.
+# 	endif()
+# endif()
 
 if(ENABLE_FRONTEND_API)
   find_package(obs-frontend-api REQUIRED)
