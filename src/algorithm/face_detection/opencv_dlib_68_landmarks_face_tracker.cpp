@@ -74,6 +74,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
 
+  uint64_t convert_before = os_gettime_ns();
 	// Convert BGRA to OpenCV Mat
 	cv::Mat frameMat(frame->height, frame->width, CV_8UC4, frame->data, frame->linesize);
 
@@ -81,16 +82,18 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	cv::Mat frameGray;
 	cv::cvtColor(frameMat, frameGray, cv::COLOR_BGRA2GRAY);
 
-	obs_log(LOG_INFO, "Dlib initialization");
+	// obs_log(LOG_INFO, "Dlib initialization");
 
 	if (!isLoaded) {
 		loadFiles();
 	}
 
 	dlib::cv_image<unsigned char> dlibImg(frameGray);
+  uint64_t convert_after = os_gettime_ns();
+  obs_log(LOG_INFO, "Convert time: %lu ns", convert_after - convert_before);
 
 	if (!is_tracking) {
-		obs_log(LOG_INFO, "Detect faces!!!!");
+		// obs_log(LOG_INFO, "Detect faces!!!!");
 		// First frame: Detect face
 		uint64_t detector_before = os_gettime_ns();
 		std::vector<rectangle> faces = detector(dlibImg);
@@ -106,13 +109,13 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 			obs_log(LOG_INFO, "Start Tracker time: %lu ns", tracker_after - tracker_before);
 			is_tracking = true;
 		} else {
-			obs_log(LOG_INFO, "No face detected!!!!");
+			// obs_log(LOG_INFO, "No face detected!!!!");
 			// if not face detected, return empty mask
 			return std::vector<double_t>(3, 0.0);
 			// return std::vector<std::vector<bool>>(frame->height, std::vector<bool>(frame->width, false));
 		}
 	} else {
-		obs_log(LOG_INFO, "Update tracker!!!!");
+		// obs_log(LOG_INFO, "Update tracker!!!!");
 		// Track face in subsequent frames
 		uint64_t tracker_before = os_gettime_ns();
 		tracker.update(dlibImg);
@@ -127,12 +130,9 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	uint64_t landmark_after = os_gettime_ns();
 	obs_log(LOG_INFO, "Landmark time: %lu ns", landmark_after - landmark_before);
 
-	obs_log(LOG_INFO, "Initialize AOI mask!!!!");
+	// obs_log(LOG_INFO, "Initialize AOI mask!!!!");
 
-	// Initialize AOI mask (false for non-face pixels)
-	std::vector<std::vector<bool>> mask(frame->height, std::vector<bool>(frame->width, false));
-
-	obs_log(LOG_INFO, "Mark eye regions!!!!");
+	// obs_log(LOG_INFO, "Mark eye regions!!!!");
 	// Exclude eyes and mouth from the mask
 	uint64_t for_loop_before = os_gettime_ns();
 	std::vector<cv::Point> leftEyes, rightEyes, mouth, faceContour;
@@ -147,7 +147,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	uint64_t for_loop_after = os_gettime_ns();
 	obs_log(LOG_INFO, "Landmark loop time: %lu ns", for_loop_after - for_loop_before);
 
-	obs_log(LOG_INFO, "Get bounding boxes!!!!");
+	// obs_log(LOG_INFO, "Get bounding boxes!!!!");
 	face_coordinates.push_back(getBoundingBox(faceContour, width, height));
 	face_coordinates.push_back(getBoundingBox(leftEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(rightEyes, width, height));
@@ -162,25 +162,22 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 		},
 		width, height));
 
-	obs_log(LOG_INFO, "Fill eye and mouth regions!!!!");
+	// obs_log(LOG_INFO, "Fill eye and mouth regions!!!!");
+  uint64_t convex_before = os_gettime_ns();
 	cv::Mat maskMat = cv::Mat::zeros(frameMat.size(), CV_8UC1);
 	cv::fillConvexPoly(maskMat, faceContour, cv::Scalar(255));
 	cv::fillConvexPoly(maskMat, leftEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, rightEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, mouth, cv::Scalar(0));
+  uint64_t convex_after = os_gettime_ns();
+  obs_log(LOG_INFO, "Convex time: %lu ns", convex_after - convex_before);
 
 	cv::Scalar meanRGB = cv::mean(frameMat, maskMat);
 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
-
-	obs_log(LOG_INFO, "Convert mask to 2D boolean vector!!!!");
-	// for (uint32_t y = 0; y < height; y++) {
-	// 	for (uint32_t x = 0; x < width; x++) {
-	// 		mask[y][x] = (maskMat.at<uint8_t>(y, x) == 255);
-	// 	}
-	// }
+  
 
 	frame_count++;
-	obs_log(LOG_INFO, "Frame count: %d", frame_count);
+	// obs_log(LOG_INFO, "Frame count: %d", frame_count);
 
 	if (frame_count == 60) {
 		obs_log(LOG_INFO, "Reset tracker!!!!");

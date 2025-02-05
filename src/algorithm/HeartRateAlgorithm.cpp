@@ -1,4 +1,5 @@
 #include "face_detection/opencv_dlib_68_landmarks_face_tracker.h"
+#include "face_detection/opencv_haarcascade.h"
 #include <obs-module.h>
 #include "plugin-support.h"
 #include "HeartRateAlgorithm.h"
@@ -231,7 +232,13 @@ double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vec
 
 	FrameRGB frameRGB = extractRGB(BGRA_data);
 	// vector<vector<bool>> skinKey = detectFaceAOI(BGRA_data, face_coordinates);
-	vector<double_t> avg = detectFaceAOI(BGRA_data, face_coordinates);
+  vector<double_t> avg;
+  if (true) {
+    avg = detectFaceAOI(BGRA_data, face_coordinates);
+  } else {
+    avg = detectFacesAndCreateMask(BGRA_data, face_coordinates); 
+  }
+	// vector<double_t> avg = detectFaceAOI(BGRA_data, face_coordinates);
 	// vector<double_t> avg = averageRGB(frameRGB, skinKey);
 	updateWindows(avg);
 

@@ -162,7 +162,12 @@ obs_properties_t *heart_rate_source_properties(void *data)
 {
 	UNUSED_PARAMETER(data);
 	obs_properties_t *props = obs_properties_create();
+  obs_property_t *dropdown = obs_properties_add_list(
+        props, "face detection algorithm", "Please choose one of the face detection algorithm.",
+        OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 
+    obs_property_list_add_int(dropdown, "Haarcascade", 0);
+    obs_property_list_add_int(dropdown, "Machine learning", 1);
 	return props;
 }
 
@@ -320,7 +325,11 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
 				    std::vector<struct vec4> &face_coordinates)
 {
+  int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
+  obs_log(LOG_INFO, "Which algo: ", selected_algorithm);
+  // obs_data_release();
 
+  uint64_t rect_before = os_gettime_ns();
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
 
@@ -349,6 +358,8 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	gs_blend_state_pop();
 	gs_texrender_end(hrs->texrender);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
+  uint64_t rect_after = os_gettime_ns();
+  obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
 	return blurredTexture;
 }
 
