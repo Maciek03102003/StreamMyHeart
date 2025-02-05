@@ -93,14 +93,8 @@ if(ENABLE_QT)
   )
 endif()
 
-target_sources(
-  ${CMAKE_PROJECT_NAME}
-  PRIVATE
-    src/algorithm/FaceDetection.cpp
-    src/algorithm/HeartRateAlgorithm.cpp
-    src/plugin-main.cpp
-    src/heart_rate_source.cpp
-    src/heart_rate_source_info.c
-)
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/algorithm/FaceDetection.cpp src/algorithm/HeartRateAlgorithm.cpp
+                                            src/plugin-main.cpp src/heart_rate_source.cpp src/heart_rate_source_info.c
+                                            src/eval/run_evaluation.cpp)
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
