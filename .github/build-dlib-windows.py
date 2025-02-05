@@ -73,9 +73,10 @@ else:
         print("Command errors:")
         print(result.stderr.decode())
         
+    release_path = os.path.join(dlib_build_path, "dlib", "Release")
     # List all files under Release directory
     result_2 = subprocess.run(
-        ["cmd", "/c", "dir", "/s", "/b", "Release"],
+        ["cmd", "/c", "dir", "/s", "/b"],
         check=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
