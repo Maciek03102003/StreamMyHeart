@@ -58,6 +58,12 @@ else:
         check=True,
     )
     # print where the library is installed
-    subprocess.run(["dir", "/s", "/b", "dlib.lib"], check=True)
+    print(f"Current working directory: {os.getcwd()}")
+    subprocess.run(
+        ["cmd", "/c", "dir", "/s", "/b", "dlib19*.lib"],
+        check=True,
+        cwd=dlib_build_path,
+    )
+    # subprocess.run(["dir", "/s", "/b", "dlib.lib"], check=True)
     # "-A",
     # "x86_64",

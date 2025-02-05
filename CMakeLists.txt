@@ -115,10 +115,10 @@ elseif(WIN32)
 
   # Link against the static Dlib library
   add_library(libdlib STATIC IMPORTED)
-  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/Release/lib19.24.6_release_64bit_msvc1942.lib)
 
-  # Link your OBS plugin with Dlib
-  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+  # Link your OBS plugin with Dlib"
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/Release/lib19.24.6_release_64bit_msvc1942.lib)
 #   set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 #   set(CMAKE_POSITION_INDEPENDENT_CODE True)
 #   set(DLIB_NO_GUI_SUPPORT ON)
