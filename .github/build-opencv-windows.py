@@ -145,6 +145,10 @@ def cmake_build():
     subprocess.run(cmake_configure_cmd, check=True)
     build_cmd = ["cmake", "--build", ".", "--target", "install", "--config", "Release"]
     subprocess.run(build_cmd, check=True)
+    
+    # Verify MD using command line: dumpbin /headers opencv_core.lib | findstr "Runtime"
+    verify_cmd = ["dumpbin", "/headers", "opencv_core.lib", "|", "findstr", "Runtime"]
+    subprocess.run(verify_cmd, check=True)
 
 # Build OpenCV
 parent_dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
