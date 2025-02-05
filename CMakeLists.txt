@@ -7,6 +7,8 @@ project(${_name} VERSION ${_version})
 option(ENABLE_FRONTEND_API "Use obs-frontend-api for UI functionality" ON)
 option(ENABLE_QT "Use Qt functionality" OFF)
 
+option(BUILD_OBS_PLUGIN "Build as OBS plugin" OFF) # this should be ON eventually
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -37,7 +39,11 @@ include(compilerconfig)
 include(defaults)
 include(helpers)
 
-add_library(${CMAKE_PROJECT_NAME} MODULE)
+if(BUILD_OBS_PLUGIN)
+  add_library(${CMAKE_PROJECT_NAME} MODULE)
+else()
+  add_executable(${CMAKE_PROJECT_NAME})
+endif()
 
 find_package(libobs REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE OBS::libobs)
