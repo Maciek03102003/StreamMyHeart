@@ -171,6 +171,8 @@ target_sources(
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c
+    src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
+    src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
 )
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
