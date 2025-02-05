@@ -5,14 +5,19 @@ import csv
 df = pd.read_hdf("./UBFC2_holistic.h5")
 bpm_gt = df["bpmGT"]
 filenames = df["videoFilename"]
-MAE_mean = np.round(df['MAE'].mean()[0],2)
-RMSE_mean = np.round(df['RMSE'].mean()[0],2)
+print(df["RMSE"])
+print(df["method"])
 
-print(MAE_mean)
+rmse = []
+for i in range(4, df["RMSE"].shape[0], 5):
+    rmse.append(df["RMSE"][i])
+
+RMSE_mean = np.round(np.array(rmse).mean(),2)
+
 print(RMSE_mean)
 
 ground_truth = []
-for i in range(0, bpm_gt.shape[0], 5):
+for i in range(4, bpm_gt.shape[0], 5):
     ground_truth.append(["video_files/" + filenames[i].split("UBFC2/")[1]] + list(bpm_gt[i]))
     
 with open("ground_truth.csv", "w", newline="") as f:
