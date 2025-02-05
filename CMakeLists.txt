@@ -46,28 +46,75 @@ find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Eigen3::Eigen)
 
-if(WIN32)
-  set(OpenCV_DIR "C:/tools/opencv/build")
-  set(OpenCV_INCLUDE_DIR "C:/tools/opencv/build/include")
-  set(OpenCV_LIBRARIES "C:/tools/opencv/build/x64/vc16/lib")
-  find_package(OpenCV REQUIRED)
-endif()
-
 if(UNIX)
   message("Configuring OpenCV for MacOS and Linux")
   set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-macos/lib/cmake/opencv4)
-  find_package(OpenCV CONFIG REQUIRED)
-  if(OpenCV_FOUND)
-    message("OpenCV_FOUND:${OpenCV_FOUND}")
-    message("OpenCV_VERSION:${OpenCV_VERSION}")
-    message("OpenCV_INCLUDE_DIRS:${OpenCV_INCLUDE_DIRS}")
-    message("OpenCV_LIBRARIES:${OpenCV_LIBRARIES}")
-  endif()
+elseif(WIN32)
+  # set(OpenCV_DIR "C:/tools/opencv/build")
+  # set(OpenCV_INCLUDE_DIR "C:/tools/opencv/build/include")
+  # set(OpenCV_LIBRARIES "C:/tools/opencv/build/x64/vc16/lib")
+  # find_package(OpenCV REQUIRED)
+  set(OpenCV_STATIC ON)
+  set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-windows)
+endif()
+
+find_package(OpenCV CONFIG REQUIRED)
+if(OpenCV_FOUND)
+  message("OpenCV_FOUND:${OpenCV_FOUND}")
+  message("OpenCV_VERSION:${OpenCV_VERSION}")
+  message("OpenCV_INCLUDE_DIRS:${OpenCV_INCLUDE_DIRS}")
+  message("OpenCV_LIBRARIES:${OpenCV_LIBRARIES}")
 endif()
 
 include_directories(${OpenCV_INCLUDE_DIR})
 link_directories(${OpenCV_LIBRARIES})
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${OpenCV_LIBRARIES})
+
+# Apply compiler options to ignore Dlib-specific warnings
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+  target_compile_options(
+    ${CMAKE_PROJECT_NAME}
+    PRIVATE
+      -Wno-newline-eof # Ignore missing newline at end of file
+      -Wno-unused-but-set-variable # Ignore unused variables
+      -Wno-pessimizing-move # Ignore pessimizing move warnings
+      -Wno-comma # Ignore comma operator warnings
+      -Wno-error # Do not treat warnings as errors
+  )
+endif()
+
+if(UNIX)
+  include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+  link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+
+  # Set paths for Dlib
+  set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+  set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
+
+  # Include Dlib headers
+  include_directories(${DLIB_INCLUDE_DIR})
+
+  # Link against the static Dlib library
+  add_library(libdlib STATIC IMPORTED)
+  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+
+  # Link your OBS plugin with Dlib
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+elseif(WIN32)
+  set(dlib_STATIC ON)
+  set(dlib_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/install/lib/cmake/dlib)
+
+  find_package(dlib CONFIG REQUIRED)
+  if(dlib_FOUND)
+    message("dlib_FOUND:${dlib_FOUND}")
+    message("dlib_VERSION:${dlib_VERSION}")
+    message("dlib_INCLUDE_DIRS:${dlib_INCLUDE_DIRS}")
+    message("dlib_LIBRARIES:${dlib_LIBRARIES}")
+  endif()
+
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib::dlib)
+endif()
 
 if(ENABLE_FRONTEND_API)
   find_package(obs-frontend-api REQUIRED)
@@ -90,8 +137,11 @@ endif()
 target_sources(
   ${CMAKE_PROJECT_NAME}
   PRIVATE
-    src/algorithm/FaceDetection.cpp
     src/algorithm/HeartRateAlgorithm.cpp
+    src/algorithm/face_detection/opencv_haarcascade.cpp
+    # src/algorithm/face_detection/opencv_dlib_dnn.cpp
+    src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
+    src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c

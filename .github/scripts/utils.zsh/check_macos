@@ -24,3 +24,7 @@ log_group
 log_group 'Installing and building opencv...'
   python3 .github/build-opencv-macos.py
 log_group
+
+log_group "Installing and building dlib..."
+  python3 .github/build-dlib-macos.py
+log_group

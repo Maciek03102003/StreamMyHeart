@@ -3,12 +3,14 @@
 uniform float4x4 ViewProj;
 uniform texture2d image;
 
-uniform float4 color = {0.5, 1.0, 0.5, 1.0};  // Rectangle outline color
+uniform float4 faceColour = {0.5, 1.0, 0.5, 1.0};  // Rectangle outline color
+uniform float4 detectColour = {1.0, 0.5, 0.5, 1.0};
 
-uniform float4 face;
-uniform float4 eye_1;
-uniform float4 eye_2;
-uniform float4 mouth;
+uniform float4 face = {0.0, 0.0, 0.0, 0.0};
+uniform float4 eye_1 = {0.0, 0.0, 0.0, 0.0};
+uniform float4 eye_2 = {0.0, 0.0, 0.0, 0.0};
+uniform float4 mouth = {0.0, 0.0, 0.0, 0.0};
+uniform float4 detected = {0.0, 0.0, 0.0, 0.0}; 
 
 uniform float4 rects[MAX_RECTS];             // Array to store up to 100 rectangles
 uniform int rectCount = 0;                   // Number of valid rectangles
@@ -48,9 +50,14 @@ float4 PShader(VertexInOut fragment_in) : TARGET
     bool isInMouth = (abs(fragment_in.uv.x - mouth[0]) < borderThickness || abs(fragment_in.uv.x - mouth[1]) < borderThickness) && fragment_in.uv.y >= mouth[2] && fragment_in.uv.y <= mouth[3] ||
                      (abs(fragment_in.uv.y - mouth[2]) < borderThickness || abs(fragment_in.uv.y - mouth[3]) < borderThickness) && fragment_in.uv.x >= mouth[0] && fragment_in.uv.x <= mouth[1];
 
+    bool isDetect = (abs(fragment_in.uv.x - detected[0]) < borderThickness || abs(fragment_in.uv.x - detected[1]) < borderThickness) && fragment_in.uv.y >= detected[2] && fragment_in.uv.y <= detected[3] ||
+                     (abs(fragment_in.uv.y - detected[2]) < borderThickness || abs(fragment_in.uv.y - detected[3]) < borderThickness) && fragment_in.uv.x >= detected[0] && fragment_in.uv.x <= detected[1];
+
     if (isInFace || isInEye1 || isInEye2 || isInMouth) {
         // If inside any of the rectangles, return the color
-        return color;
+        return faceColour;
+    } else if (isDetect) {
+        return detectColour;
     } else {
         // Otherwise, return the texture color
         return image.Sample(texSampler, fragment_in.uv);
