@@ -102,23 +102,38 @@ if (UNIX)
   # Link your OBS plugin with Dlib
   target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
 elseif(WIN32)
-  include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
-  link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
-  # target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+  set(dlib_STATIC ON)
+  set(dlib_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib/config)
+  
+  find_package(dlib CONFIG REQUIRED)
+  if(dlib_FOUND)
+    message("dlib_FOUND:${dlib_FOUND}")
+    message("dlib_VERSION:${dlib_VERSION}")
+    message("dlib_INCLUDE_DIRS:${dlib_INCLUDE_DIRS}")
+    message("dlib_LIBRARIES:${dlib_LIBRARIES}")
+  endif()
 
-  # Set paths for Dlib
-  set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
-  set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib/Release)
+  include_directories(${dlib_INCLUDE_DIR})
+  link_directories(${dlib_LIBRARIES})
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${dlib_LIBRARIES})
 
-  # Include Dlib headers
-  include_directories(${DLIB_INCLUDE_DIR})
+  # include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+  # link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+  # # target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 
-  # Link against the static Dlib library
-  add_library(libdlib STATIC IMPORTED)
-  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/dlib19.24.6_release_64bit_msvc1942.lib)
+  # # Set paths for Dlib
+  # set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+  # set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib/Release)
 
-  # Link your OBS plugin with Dlib"
-  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/dlib19.24.6_release_64bit_msvc1942.lib)
+  # # Include Dlib headers
+  # include_directories(${DLIB_INCLUDE_DIR})
+
+  # # Link against the static Dlib library
+  # add_library(libdlib STATIC IMPORTED)
+  # set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/dlib19.24.6_release_64bit_msvc1942.lib)
+
+  # # Link your OBS plugin with Dlib"
+  # target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/dlib19.24.6_release_64bit_msvc1942.lib)
 #   set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 #   set(CMAKE_POSITION_INDEPENDENT_CODE True)
 #   set(DLIB_NO_GUI_SUPPORT ON)

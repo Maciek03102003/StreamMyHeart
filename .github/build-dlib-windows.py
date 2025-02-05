@@ -41,11 +41,11 @@ else:
             # "-DDLIB_ENABLE_ASSERTS=OFF",
             "-DBUILD_SHARED_LIBS=OFF",
             "-DDLIB_FORCE_MSVC_STATIC_RUNTIME=OFF",
-            # "-DCMAKE_CXX_FLAGS=/MT",
-            # "-DCMAKE_CXX_FLAGS_DEBUG=/MTd",
-            # "-DCMAKE_CXX_FLAGS_RELEASE=/MT",
-            # "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=/MT",
-            # "-DCMAKE_CXX_FLAGS_MINSIZEREL=/MT",
+            "-DCMAKE_CXX_FLAGS=/MD",
+            "-DCMAKE_CXX_FLAGS_DEBUG=/MDd",
+            "-DCMAKE_CXX_FLAGS_RELEASE=/MD",
+            "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=/MD",
+            "-DCMAKE_CXX_FLAGS_MINSIZEREL=/MD",
             # "-DDLIB_USE_STATIC_LIBS=ON",
             # "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<IF:$<CONFIG:Debug>,Debug,>",
             # "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded",
@@ -87,6 +87,8 @@ else:
     if result_2.stderr:
         print("Command errors:")
         print(result_2.stderr.decode())
+    
+    # verify runtime using command 
         
     # subprocess.run(["dir", "/s", "/b", "dlib.lib"], check=True)
     # "-A",
