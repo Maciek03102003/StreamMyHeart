@@ -34,6 +34,7 @@ def cmake_build():
         "-T", "host=x64",
         # f"-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
         "-DCMAKE_CXX_FLAGS=/MD",
+        "-DCMAKE_C_FLAGS=/MD",
         # "-DCMAKE_CXX_FLAGS_DEBUG=/MDd",
         # "-DCMAKE_CXX_FLAGS_RELEASE=/MD",
         # "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=/MD",
