@@ -38,6 +38,7 @@ else:
             "-T", "host=x64",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DDLIB_USE_CUDA=OFF",
+            "-DCMAKE_INSTALL_PREFIX=../install",
             # "-DDLIB_ENABLE_ASSERTS=OFF",
             "-DBUILD_SHARED_LIBS=OFF",
             "-DDLIB_FORCE_MSVC_STATIC_RUNTIME=OFF",

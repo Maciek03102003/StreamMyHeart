@@ -113,8 +113,8 @@ elseif(WIN32)
     message("dlib_LIBRARIES:${dlib_LIBRARIES}")
   endif()
 
-  include_directories(${dlib_INCLUDE_DIR})
-  link_directories(${dlib_LIBRARIES})
+  # include_directories(${dlib_INCLUDE_DIR})
+  # link_directories(${dlib_LIBRARIES})
   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib::dlib)
 
   # include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
