@@ -107,9 +107,9 @@ function Build {
 
     Log-Group
 
-    Log-Information "Preparing for Dlib installation..."
-    vcpkg install openblas
-    Log-Group
+    # Log-Information "Preparing for Dlib installation..."
+    # vcpkg install openblas
+    # Log-Group
 
     Log-Group "Configuring ${ProductName}..."
     Invoke-External cmake @CmakeArgs
