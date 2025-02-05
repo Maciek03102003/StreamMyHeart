@@ -129,7 +129,7 @@ build() {
 
   local -a build_args=(
     ONLY_ACTIVE_ARCH=NO
-    # -arch arm64
+    -arch arm64
     -arch x86_64
     -project ${product_name}.xcodeproj
     -target ${product_name}
