@@ -139,7 +139,7 @@ target_sources(
   PRIVATE
     src/algorithm/HeartRateAlgorithm.cpp
     src/algorithm/face_detection/opencv_haarcascade.cpp
-    src/algorithm/face_detection/opencv_dlib_dnn.cpp
+    # src/algorithm/face_detection/opencv_dlib_dnn.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
     src/plugin-main.cpp

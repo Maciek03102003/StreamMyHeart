@@ -14,7 +14,7 @@ def cmake_build():
     cmake_configure_cmd = [
         "cmake",
         "-G", "Unix Makefiles",
-        f"-DCMAKE_OSX_ARCHITECTURES='x86_64'",
+        f"-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
         f"-DCMAKE_BUILD_TYPE=Release",
         f"-DCMAKE_INSTALL_PREFIX={opencv_out_dir_path}",
         f"-DBUILD_CUDA_STUBS=OFF",
@@ -39,7 +39,7 @@ def cmake_build():
         f"-DBUILD_WEBP=OFF",
         f"-DBUILD_ZLIB=OFF",
         f"-DBUILD_opencv_apps=OFF",
-        f"-DBUILD_opencv_dnn=ON",
+        f"-DBUILD_opencv_dnn=OFF",
         f"-DBUILD_opencv_java_bindings_generator=OFF",
         f"-DBUILD_opencv_js_bindings_generator=OFF",
         f"-DBUILD_opencv_objc_bindings_generator=OFF",
