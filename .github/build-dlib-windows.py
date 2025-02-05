@@ -40,7 +40,7 @@ else:
             "-DDLIB_USE_CUDA=OFF",
             # "-DDLIB_ENABLE_ASSERTS=OFF",
             "-DBUILD_SHARED_LIBS=OFF",
-            "-DDLIB_FORCE_MSVC_STATIC_RUNTIME=ON",
+            "-DDLIB_FORCE_MSVC_STATIC_RUNTIME=OFF",
             # "-DCMAKE_CXX_FLAGS=/MT",
             # "-DCMAKE_CXX_FLAGS_DEBUG=/MTd",
             # "-DCMAKE_CXX_FLAGS_RELEASE=/MT",
@@ -59,11 +59,34 @@ else:
     )
     # print where the library is installed
     print(f"Current working directory: {os.getcwd()}")
-    subprocess.run(
+    result = subprocess.run(
         ["cmd", "/c", "dir", "/s", "/b", "dlib19*.lib"],
         check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         cwd=dlib_build_path,
     )
+    
+    print("Command output:")
+    print(result.stdout.decode())
+    if result.stderr:
+        print("Command errors:")
+        print(result.stderr.decode())
+        
+    # List all files under Release directory
+    subprocess.run(
+        ["cmd", "/c", "dir", "/s", "/b", "Release"],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        cwd=dlib_build_path,
+    )
+    print("Command output:")
+    print(result.stdout.decode())
+    if result.stderr:
+        print("Command errors:")
+        print(result.stderr.decode())
+        
     # subprocess.run(["dir", "/s", "/b", "dlib.lib"], check=True)
     # "-A",
     # "x86_64",
