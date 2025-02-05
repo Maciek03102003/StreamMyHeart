@@ -148,7 +148,8 @@ if os.path.exists(opencv_out_dir_path):
     print(f"Output directory {opencv_out_dir_path} already contains files. Keep it.")
 else:
     os.makedirs(opencv_out_dir_path)
-    download_and_extract_tarball(REPO_URL, TARBALL_NAME, EXTRACTED_DIR_NAME, opencv_src_dir_path)
+    if not os.path.exists(opencv_src_dir_path):
+        download_and_extract_tarball(REPO_URL, TARBALL_NAME, EXTRACTED_DIR_NAME, opencv_src_dir_path)
 
     # Have a temporary directory for building OpenCV
     if os.path.exists(opencv_tmp_dir_path):
