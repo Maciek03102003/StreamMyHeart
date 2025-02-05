@@ -1,1 +1,0 @@
-src/eval/video_files/*.avi filter=lfs diff=lfs merge=lfs -text
