@@ -107,9 +107,10 @@ function Build {
 
     Log-Group
 
-    # Log-Information "Preparing for Dlib installation..."
+    Log-Information "Preparing for Dlib installation..."
     # vcpkg install openblas
-    # Log-Group
+    python3 .github/build-dlib-windows.py
+    Log-Group
 
     Log-Group "Configuring ${ProductName}..."
     Invoke-External cmake @CmakeArgs

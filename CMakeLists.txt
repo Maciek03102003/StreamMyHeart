@@ -10,11 +10,6 @@ option(ENABLE_QT "Use Qt functionality" OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# if(MSVC)
-#   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-#   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-# endif()
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
@@ -88,25 +83,42 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Apple
   )
 endif()
 
-# if (UNIX)
-#   include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
-#   link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
-#   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+if (UNIX)
+  include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+  link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 
-#   # Set paths for Dlib
-#   set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
-#   set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
+  # Set paths for Dlib
+  set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+  set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
 
-#   # Include Dlib headers
-#   include_directories(${DLIB_INCLUDE_DIR})
+  # Include Dlib headers
+  include_directories(${DLIB_INCLUDE_DIR})
 
-#   # Link against the static Dlib library
-#   add_library(libdlib STATIC IMPORTED)
-#   set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+  # Link against the static Dlib library
+  add_library(libdlib STATIC IMPORTED)
+  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
 
-#   # Link your OBS plugin with Dlib
-#   target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
-# elseif(WIN32)
+  # Link your OBS plugin with Dlib
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+elseif(WIN32)
+  include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+  link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+
+  # Set paths for Dlib
+  set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+  set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
+
+  # Include Dlib headers
+  include_directories(${DLIB_INCLUDE_DIR})
+
+  # Link against the static Dlib library
+  add_library(libdlib STATIC IMPORTED)
+  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+
+  # Link your OBS plugin with Dlib
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
 #   set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
 #   set(CMAKE_POSITION_INDEPENDENT_CODE True)
 #   set(DLIB_NO_GUI_SUPPORT ON)
@@ -121,7 +133,7 @@ endif()
 #   add_subdirectory(dlib)
 #   # include_directories(${CMAKE_SOURCE_DIR}/dlib)
 #   target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
-# endif()
+endif()
 
 # if(WIN32)
 # 	# Enable Multicore Builds and disable FH4 (to not depend on VCRUNTIME140_1.DLL when building with VS2019)
