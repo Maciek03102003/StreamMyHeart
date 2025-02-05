@@ -53,7 +53,7 @@ def cmake_build():
         f"-DBUILD_PERF_TESTS=OFF",
         f"-DBUILD_PNG=OFF",
         f"-DBUILD_PROTOBUF=OFF",
-        f"-DBUILD_SHARED_LIBS=ON",
+        f"-DBUILD_SHARED_LIBS=OFF",
         f"-DBUILD_TBB=OFF",
         f"-DBUILD_IPP_IW=OFF",
         f"-DWITH_IPP=OFF",
