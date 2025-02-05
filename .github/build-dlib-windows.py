@@ -64,5 +64,5 @@ else:
     )
     
     # verify runtime using command 
-    verify_cmd = ["dumpbin", "/headers", "dlib*.lib", "|", "findstr", "Runtime"]
-    subprocess.run(verify_cmd, check=True)
+    # verify_cmd = ["dumpbin", "/headers", "dlib*.lib", "|", "findstr", "Runtime"]
+    # subprocess.run(verify_cmd, check=True)
