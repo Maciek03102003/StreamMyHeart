@@ -154,10 +154,11 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	face_coordinates.push_back(getBoundingBox(mouth, width, height));
 	face_coordinates.push_back(getBoundingBox(
 		{
-			{detected_face.left(), detected_face.top()},     // Top-left
-			{detected_face.right(), detected_face.top()},    // Top-right
-			{detected_face.right(), detected_face.bottom()}, // Bottom-right
-			{detected_face.left(), detected_face.bottom()}   // Bottom-left
+			{static_cast<int>(detected_face.left()), static_cast<int>(detected_face.top())},  // Top-left
+			{static_cast<int>(detected_face.right()), static_cast<int>(detected_face.top())}, // Top-right
+			{static_cast<int>(detected_face.right()),
+			 static_cast<int>(detected_face.bottom())}, // Bottom-right
+			{static_cast<int>(detected_face.left()), static_cast<int>(detected_face.bottom())} // Bottom-left
 		},
 		width, height));
 
