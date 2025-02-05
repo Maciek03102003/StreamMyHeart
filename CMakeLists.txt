@@ -115,7 +115,7 @@ elseif(WIN32)
 
   include_directories(${dlib_INCLUDE_DIR})
   link_directories(${dlib_LIBRARIES})
-  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${dlib_LIBRARIES})
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib::dlib)
 
   # include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
   # link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
