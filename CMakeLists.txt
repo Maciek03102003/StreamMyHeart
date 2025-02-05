@@ -103,7 +103,7 @@ if (UNIX)
   target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
 elseif(WIN32)
   set(dlib_STATIC ON)
-  set(dlib_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib/config)
+  set(dlib_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/install/lib/cmake/dlib)
   
   find_package(dlib CONFIG REQUIRED)
   if(dlib_FOUND)
