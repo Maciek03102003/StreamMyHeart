@@ -62,6 +62,7 @@ def cmake_build():
         f"-DBUILD_TIFF=OFF",
         f"-DBUILD_WEBP=OFF",
         f"-DBUILD_ZLIB=OFF",
+        "-DBUILD_WITH_STATIC_CRT=OFF",
         f"-DBUILD_opencv_apps=OFF",
         f"-DBUILD_opencv_dnn=OFF",
         f"-DBUILD_opencv_java_bindings_generator=OFF",
