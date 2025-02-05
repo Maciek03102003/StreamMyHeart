@@ -7,8 +7,8 @@ def download_and_extract_tarball(repo_url, tarball_name, extracted_dir_name, tar
     os.makedirs(os.path.dirname(target_dir), exist_ok=True)
 
     print(f"Downloading repository tarball from {repo_url}...")
-    download_cmd = ["wget", "-O", f"./{tarball_name}", repo_url]
-    subprocess.run(download_cmd, check=True)
+    download_opencv_cmd = ["curl", "-L", "-o", f"./{tarball_name}", repo_url]
+    subprocess.run(download_opencv_cmd, check=True)
 
     print(f"Extracting {tarball_name}...")
     with tarfile.open(tarball_name, "r:gz") as tar:
