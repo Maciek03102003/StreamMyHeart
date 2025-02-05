@@ -28,6 +28,7 @@ static frontal_face_detector detector;
 static char *face_landmark_path;
 static bool isLoaded = false;
 static int frame_count = 0;
+static rectangle detected_face;
 
 static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint32_t width, uint32_t height)
 {
@@ -98,6 +99,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 
 		if (!faces.empty()) {
 			initial_face = faces[0]; // Assume first detected face is the target
+			detected_face = faces[0];
 			uint64_t tracker_before = os_gettime_ns();
 			tracker.start_track(dlibImg, initial_face);
 			uint64_t tracker_after = os_gettime_ns();
@@ -150,6 +152,14 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	face_coordinates.push_back(getBoundingBox(leftEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(rightEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(mouth, width, height));
+	face_coordinates.push_back(getBoundingBox(
+		{
+			{detected_face.left(), detected_face.top()},     // Top-left
+			{detected_face.right(), detected_face.top()},    // Top-right
+			{detected_face.right(), detected_face.bottom()}, // Bottom-right
+			{detected_face.left(), detected_face.bottom()}   // Bottom-left
+		},
+		width, height));
 
 	obs_log(LOG_INFO, "Fill eye and mouth regions!!!!");
 	cv::Mat maskMat = cv::Mat::zeros(frameMat.size(), CV_8UC1);
