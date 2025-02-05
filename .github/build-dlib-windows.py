@@ -74,7 +74,7 @@ else:
         print(result.stderr.decode())
         
     # List all files under Release directory
-    subprocess.run(
+    result_2 = subprocess.run(
         ["cmd", "/c", "dir", "/s", "/b", "Release"],
         check=True,
         stdout=subprocess.PIPE,
@@ -82,10 +82,10 @@ else:
         cwd=dlib_build_path,
     )
     print("Command output:")
-    print(result.stdout.decode())
-    if result.stderr:
+    print(result_2.stdout.decode())
+    if result_2.stderr:
         print("Command errors:")
-        print(result.stderr.decode())
+        print(result_2.stderr.decode())
         
     # subprocess.run(["dir", "/s", "/b", "dlib.lib"], check=True)
     # "-A",
