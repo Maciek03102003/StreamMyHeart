@@ -9,6 +9,8 @@
 struct VideoData {
     std::string videoPath;
     std::vector<double> groundTruthHeartRate;
+    double otherAlgorithmRMSE;
+    double otherAlgorithmMAE;
 };
 
 std::vector<VideoData> readCSV(const std::string &csvFilePath) {
@@ -22,15 +24,23 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath) {
         std::vector<double> groundTruthHeartRates;
         std::string token;
 
-        // Read the video path
+          // Read the video path
         std::getline(ss, videoPath, ',');
 
         // Read the ground truth heart rates
+        std::getline(ss, token, ','); // Skip the initial '['
         while (std::getline(ss, token, ',')) {
+            if (token == "]") break;
             groundTruthHeartRates.push_back(std::stod(token));
         }
 
-        videoDataList.push_back({videoPath, groundTruthHeartRates});
+        // Read the other algorithm's RMSE and MAE
+        double otherAlgorithmRMSE, otherAlgorithmMAE;
+        ss >> otherAlgorithmRMSE;
+        ss.ignore(1); // Ignore the comma
+        ss >> otherAlgorithmMAE;
+
+        videoDataList.push_back({videoPath, groundTruthHeartRates, otherAlgorithmRMSE, otherAlgorithmMAE});
     }
     return videoDataList;
 }
@@ -91,7 +101,6 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // 
         double heartRate = avg.calculateHeartRate(&bgraData, faceCoordinates, 0, 1, 0, fps, 1, false);
         if (heartRate != 0) {
             predicted.push_back(heartRate);
-            std::cout << seconds << std::endl;
             seconds++;
         }
 
@@ -104,19 +113,49 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // 
     return predicted;
 }
 
+// Function to center-align text within a field of a given width
+std::string centerAlign(const std::string &text, int width) {
+    int padding = width - static_cast<int>(text.size()); // Explicitly cast text.size() to int
+    if (padding <= 0) return text;
+    int padLeft = padding / 2;
+    int padRight = padding - padLeft;
+    return std::string(padLeft, ' ') + text + std::string(padRight, ' ');
+}
+
 void evaluateHeartRate(const std::string &csvFilePath) {
     std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
+    // Print the table header
+    std::cout << "| Test Subject | Our Algorithm MAE | Other Algorithm MAE | Our Algorithm RMSE | Other Algorithm RMSE |\n";
+    std::cout << "|--------------|-------------------|---------------------|--------------------|----------------------|\n";
+
     for (const auto &videoData : videoDataList) {
         std::vector<double> predicted = calculateHeartRateForVideo(videoData);
-        std::cout << "Predicted values: " << predicted.size() << std::endl;
-        std::cout << "RMSE: " << calculateRMSE(videoData.groundTruthHeartRate, predicted) << std::endl;
-        std::cout << "MAE: " << calculateMAE(videoData.groundTruthHeartRate, predicted) << std::endl;
+        double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
+        double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
+        
+        // Extract the subject name from the video path
+        std::string subjectName = videoData.videoPath.substr(videoData.videoPath.find_last_of("/") + 1);
+        subjectName = subjectName.substr(0, subjectName.find("."));
+        
+        // Convert numbers to strings with fixed precision
+        std::string ourAlgorithmMAEStr = std::to_string(ourAlgorithmMAE);
+        std::string otherAlgorithmMAEStr = std::to_string(videoData.otherAlgorithmMAE);
+        std::string ourAlgorithmRMSEStr = std::to_string(ourAlgorithmRMSE);
+        std::string otherAlgorithmRMSEStr = std::to_string(videoData.otherAlgorithmRMSE);
+
+        // Center-align the text and numbers
+        std::cout << "| " << std::setw(12) << std::left << centerAlign(subjectName, 12)
+                  << " | " << std::setw(17) << std::left << centerAlign(ourAlgorithmMAEStr, 17)
+                  << " | " << std::setw(19) << std::left << centerAlign(otherAlgorithmMAEStr, 19)
+                  << " | " << std::setw(18) << std::left << centerAlign(ourAlgorithmRMSEStr, 18)
+                  << " | " << std::setw(20) << std::left << centerAlign(otherAlgorithmRMSEStr, 20)
+                  << " |\n";
     }
 }
 
 int main() {
-    std::string csvFilePath = "../../src/eval/ground_truth.csv";
+    std::string csvFilePath = "../../../../../src/eval/ground_truth.csv";
 
     evaluateHeartRate(csvFilePath);
 

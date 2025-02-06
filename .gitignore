@@ -24,3 +24,6 @@
 
 # Exclude CMake build number cache
 /cmake/.CMakeBuildNumber
+
+# Exclude video files used for evaluation
+/src/eval/video_files
