@@ -7,7 +7,7 @@ project(${_name} VERSION ${_version})
 option(ENABLE_FRONTEND_API "Use obs-frontend-api for UI functionality" ON)
 option(ENABLE_QT "Use Qt functionality" OFF)
 
-option(BUILD_OBS_PLUGIN "Build as OBS plugin" OFF) # this should be ON eventually
+option(BUILD_OBS_PLUGIN "Build as OBS plugin" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
