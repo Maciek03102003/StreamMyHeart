@@ -84,23 +84,34 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Apple
 endif()
 
 if(UNIX)
-  include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
-  link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
-  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
+  # include_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib)
+  # link_directories(${CMAKE_SOURCE_DIR}/3rdparty/dlib/build)
+  # target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dlib)
 
-  # Set paths for Dlib
-  set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
-  set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
+  # # Set paths for Dlib
+  # set(DLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6)
+  # set(DLIB_LIB_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/build/dlib)
 
-  # Include Dlib headers
-  include_directories(${DLIB_INCLUDE_DIR})
+  # # Include Dlib headers
+  # include_directories(${DLIB_INCLUDE_DIR})
 
-  # Link against the static Dlib library
-  add_library(libdlib STATIC IMPORTED)
-  set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
+  # # Link against the static Dlib library
+  # add_library(libdlib STATIC IMPORTED)
+  # set_target_properties(libdlib PROPERTIES IMPORTED_LOCATION ${DLIB_LIB_DIR}/libdlib.a)
 
-  # Link your OBS plugin with Dlib
-  target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+  # # Link your OBS plugin with Dlib
+  # target_link_libraries(${PROJECT_NAME} PRIVATE ${DLIB_LIB_DIR}/libdlib.a)
+  set(dlib_STATIC ON)
+  set(dlib_DIR ${CMAKE_SOURCE_DIR}/binary/dlib-19.24.6-macos/lib/cmake/dlib)
+  find_package(dlib CONFIG REQUIRED)
+  if(dlib_FOUND)
+    message("dlib_FOUND:${dlib_FOUND}")
+    message("dlib_VERSION:${dlib_VERSION}")
+    message("dlib_INCLUDE_DIRS:${dlib_INCLUDE_DIRS}")
+    message("dlib_LIBRARIES:${dlib_LIBRARIES}")
+  endif()
+
+  target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE dlib::dlib)
 elseif(WIN32)
   set(dlib_STATIC ON)
   set(dlib_DIR ${CMAKE_SOURCE_DIR}/3rdparty/dlib-19.24.6/install/lib/cmake/dlib)
@@ -140,7 +151,7 @@ target_sources(
     src/algorithm/HeartRateAlgorithm.cpp
     src/algorithm/face_detection/opencv_haarcascade.cpp
     # src/algorithm/face_detection/opencv_dlib_dnn.cpp
-    src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
+    # src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp

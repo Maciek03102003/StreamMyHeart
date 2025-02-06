@@ -19,7 +19,13 @@ print(f"dlib source directory path is {dlib_src_dir_path}")
 dlib_build_path = os.path.join(dlib_src_dir_path, "build")
 print(f"dlib build directory path is {dlib_build_path}")
 
-if os.path.exists(dlib_build_path):
+binary_dir_path = os.path.join(parent_dir_path, "binary")
+print(f"Binary directory path is {binary_dir_path}")
+
+dlib_out_dir_path = os.path.join(binary_dir_path, "dlib-19.24.6-macos")
+print(f"dlib output directory path is {dlib_out_dir_path}")
+
+if os.path.exists(dlib_out_dir_path):
     print(f"Output directory {dlib_build_path} already contains files. Keep it.")
 else:
     if not os.path.exists(dlib_src_dir_path):
@@ -30,9 +36,11 @@ else:
     
     cmake_configure_cmd = [
         "cmake", 
+        "-G", "Unix Makefiles",
         "-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DBUILD_SHARED_LIBS=OFF", 
+        f"-DCMAKE_INSTALL_PREFIX={dlib_out_dir_path}",
         "-DLIB_USE_MKL_FFT=ON",
         "-DLIB_USE_MKL_SEQUENTIAL=OFF",
         "-DLIB_USE_MKL_WITH_TBB=ON",
@@ -50,4 +58,4 @@ else:
     
     # Used to disable errors: -DCMAKE_CXX_FLAGS="-Wno-newline-eof -Wno-comma -Wno-error"
     subprocess.run(cmake_configure_cmd, check=True)
-    subprocess.run(["cmake", "--build", ".", "--config", "Release"], check=True)    
+    subprocess.run(["cmake", "--build", ".", "--target", "install", "--config", "Release"], check=True)    
