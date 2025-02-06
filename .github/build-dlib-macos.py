@@ -25,7 +25,7 @@ print(f"Binary directory path is {binary_dir_path}")
 dlib_out_dir_path = os.path.join(binary_dir_path, "dlib-19.24.6-macos")
 print(f"dlib output directory path is {dlib_out_dir_path}")
 
-if os.path.exists(dlib_out_dir_path):
+if os.path.exists(dlib_build_path):
     print(f"Output directory {dlib_build_path} already contains files. Keep it.")
 else:
     if not os.path.exists(dlib_src_dir_path):
