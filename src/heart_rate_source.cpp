@@ -122,11 +122,6 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 
 	hrs->source = source;
 
-	// Set default face detection algorithm
-	if (!obs_data_has_user_value(settings, "face detection algorithm")) {
-		obs_data_set_int(settings, "algorithm", 1);
-	}
-
 	char *effect_file;
 	obs_enter_graphics();
 	effect_file = obs_module_file("test.effect");
@@ -165,16 +160,30 @@ void heart_rate_source_destroy(void *data)
 	}
 }
 
-static bool update_properties(obs_properties_t *props, obs_data_t *settings)
+void heart_rate_source_defaults(obs_data_t *settings)
 {
-    int algorithm = obs_data_get_int(settings, "face detection algorithm");
+	obs_data_set_default_int(settings, "face detection algorithm", 1);
+	obs_data_set_default_bool(settings, "enable face tracking", true);
+	obs_data_set_default_int(settings, "frame update interval", 60);
+}
 
-    // Get the properties we want to show/hide
-    obs_property_t *dlib_type = obs_properties_get(props, "dlib_type");
+static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
+{
+	UNUSED_PARAMETER(property);
+	bool is_dlib_selected = obs_data_get_int(settings, "face detection algorithm") == 1;
+	bool is_tracker_enabled = obs_data_get_bool(settings, "enable face tracking");
 
-		obs_property_set_visible(dlib_type, algorithm == 1);
+	obs_property_t *enable_tracker = obs_properties_get(props, "enable face tracking");
+	obs_property_t *face_tracking_explain = obs_properties_get(props, "face tracking explain");
+	obs_property_t *frame_update_interval = obs_properties_get(props, "frame update interval");
+	obs_property_t *frame_update_interval_explain = obs_properties_get(props, "frame update interval explain");
 
-    return true;  // Forces the UI to refresh
+	obs_property_set_visible(enable_tracker, is_dlib_selected);
+	obs_property_set_visible(face_tracking_explain, is_dlib_selected);
+	obs_property_set_visible(frame_update_interval, is_dlib_selected && is_tracker_enabled);
+	obs_property_set_visible(frame_update_interval_explain, is_dlib_selected && is_tracker_enabled);
+
+	return true; // Forces the UI to refresh
 }
 
 obs_properties_t *heart_rate_source_properties(void *data)
@@ -183,24 +192,33 @@ obs_properties_t *heart_rate_source_properties(void *data)
 
 	obs_properties_t *props = obs_properties_create();
 
+	// Allow user to disable face detection boxes drawing
+	obs_properties_add_bool(props, "face detection debug boxes",
+				obs_module_text("See face detection/tracking result"));
+
+	// Set the face detection algorithm
 	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
-                 obs_module_text("Please choose one of the face detection algorithm."),
+							   obs_module_text("Face Detection Algorithm:"),
 							   OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(dropdown, "OpenCV Haarcascade Face Detection", 0);
-	obs_property_list_add_int(dropdown, "Dlib Face Detection with Face Tracking", 1);
-	obs_property_list_add_int(dropdown, "Dlib Face Detection", 2);
+	obs_property_list_add_int(dropdown, "Dlib Face Detection", 1);
 
-	// obs_property_t *dlib_type = obs_properties_add_list(props, "dlib_type", "idk ahhhhhhhhhhh",
-  //                           OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	// obs_property_list_add_int(dlib_type, "Without face tracking", 0);
-	// obs_property_list_add_int(dlib_type, "With face tracking", 1);
+	// Set if enable face tracking
+	obs_property_t *enable_tracker =
+		obs_properties_add_bool(props, "enable face tracking", obs_module_text("Enable Face Tracker"));
+	obs_properties_add_text(props, "face tracking explain",
+				obs_module_text("Enabling face tracking speeds up video processing."), OBS_TEXT_INFO);
 
-  // obs_properties_add_bool(props, "dlib_type", obs_module_text("idk ahhhhhh"));
+	obs_properties_add_int(props, "frame update interval", obs_module_text("Frame Update Interval"), 1, 120, 1);
+	obs_properties_add_text(props, "frame update interval explain",
+				obs_module_text("Set how often the face detector updates the face position in frames."),
+				OBS_TEXT_INFO);
 
-	// obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
+	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 	// int default_algorithm = obs_data_get_int(settings, "face detection algorithm");
-	// obs_property_set_modified_callback(dropdown, update_properties);
-	// update_properties(props, dropdown, settings);  // Apply default visibility
+	obs_property_set_modified_callback(dropdown, update_properties);
+	obs_property_set_modified_callback(enable_tracker, update_properties);
+	update_properties(props, dropdown, settings); // Apply default visibility
 
 	return props;
 }
@@ -420,44 +438,26 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		obs_source_skip_video_filter(hrs->source);
 		return;
 	}
-	std::vector<struct vec4> face_coordinates;
 
+	std::vector<struct vec4> face_coordinates;
 	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
 	obs_log(LOG_INFO, "Which algo: %d", selected_algorithm);
-	// obs_data_release();
-
+	bool enable_debug_boxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
 	std::vector<double_t> avg;
 	if (selected_algorithm == 0) {
 		// Haarcascade face detection with OpenCV
-		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates);
+		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates, enable_debug_boxes);
 	} else if (selected_algorithm == 1) {
-		// Face tracking with Dlib
-		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, 60);
-	} else {
-    avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, 0);
-  }
+		// Dlib face detection with 68 landmarks, with/without tracking
+		bool enable_tracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
+		int64_t frame_update_interval =
+			obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
+		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
+				    enable_debug_boxes);
+	}
 
 	double heart_rate = movingAvg.calculateHeartRate(avg);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
-
-	gs_texture_t *testingTexture =
-		draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
-
-	if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
-		obs_source_skip_video_filter(hrs->source);
-		gs_texture_destroy(testingTexture);
-		return;
-	}
-
-	gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
-
-	gs_blend_state_push();
-	gs_reset_blend_state();
-
-	obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width, hrs->BGRA_data->height,
-					   "Draw");
-
-	gs_blend_state_pop();
 
 	if (heart_rate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
@@ -468,5 +468,28 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		obs_source_release(source);
 	}
 
-	gs_texture_destroy(testingTexture);
+	if (enable_debug_boxes) {
+		gs_texture_t *testingTexture =
+			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
+
+		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
+			obs_source_skip_video_filter(hrs->source);
+			gs_texture_destroy(testingTexture);
+			return;
+		}
+
+		gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
+
+		gs_blend_state_push();
+		gs_reset_blend_state();
+
+		obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
+						   hrs->BGRA_data->height, "Draw");
+
+		gs_blend_state_pop();
+
+		gs_texture_destroy(testingTexture);
+	} else {
+		obs_source_skip_video_filter(hrs->source);
+	}
 }
