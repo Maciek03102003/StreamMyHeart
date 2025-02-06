@@ -1,3 +1,5 @@
+#include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
+#include "algorithm/face_detection/opencv_haarcascade.h"
 #include "algorithm/HeartRateAlgorithm.h"
 
 #include <obs-module.h>
@@ -13,7 +15,7 @@
 #include "plugin-support.h"
 #include "heart_rate_source.h"
 
-MovingAvg avg;
+MovingAvg movingAvg;
 
 const char *get_heart_rate_source_name(void *)
 {
@@ -120,6 +122,11 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 
 	hrs->source = source;
 
+	// Set default face detection algorithm
+	if (!obs_data_has_user_value(settings, "face detection algorithm")) {
+		obs_data_set_int(settings, "algorithm", 1);
+	}
+
 	char *effect_file;
 	obs_enter_graphics();
 	effect_file = obs_module_file("test.effect");
@@ -158,16 +165,41 @@ void heart_rate_source_destroy(void *data)
 	}
 }
 
+static bool update_properties(obs_properties_t *props, obs_data_t *settings)
+{
+    int algorithm = obs_data_get_int(settings, "face detection algorithm");
+
+    // Get the properties we want to show/hide
+    obs_property_t *dlib_type = obs_properties_get(props, "dlib_type");
+
+		obs_property_set_visible(dlib_type, algorithm == 1);
+
+    return true;  // Forces the UI to refresh
+}
+
 obs_properties_t *heart_rate_source_properties(void *data)
 {
 	UNUSED_PARAMETER(data);
-	obs_properties_t *props = obs_properties_create();
-  obs_property_t *dropdown = obs_properties_add_list(
-        props, "face detection algorithm", "Please choose one of the face detection algorithm.",
-        OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 
-    obs_property_list_add_int(dropdown, "Haarcascade", 0);
-    obs_property_list_add_int(dropdown, "Machine learning", 1);
+	obs_properties_t *props = obs_properties_create();
+
+	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
+							   "Please choose one of the face detection algorithm.",
+							   OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(dropdown, "OpenCV Haarcascade Face Detection", 0);
+	obs_property_list_add_int(dropdown, "Dlib Face Detection with Face Tracking", 1);
+	obs_property_list_add_int(dropdown, "Dlib Face Detection", 2);
+
+	obs_property_t *dlib_type = obs_properties_add_list(props, "dlib_type", "idk ahhhhhhhhhhh",
+                            OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(dlib_type, "Without face tracking", 0);
+	obs_property_list_add_int(dlib_type, "With face tracking", 1);
+
+	obs_data_t *settings = obs_source_get_settings(data);
+	int default_algorithm = obs_data_get_int(settings, "face detection algorithm");
+	obs_property_set_modified_callback(dropdown, update_properties);
+	update_properties(props, dropdown, settings);  // Apply default visibility
+
 	return props;
 }
 
@@ -325,11 +357,7 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
 				    std::vector<struct vec4> &face_coordinates)
 {
-  int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
-  obs_log(LOG_INFO, "Which algo: ", selected_algorithm);
-  // obs_data_release();
-
-  uint64_t rect_before = os_gettime_ns();
+	uint64_t rect_before = os_gettime_ns();
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
 
@@ -358,8 +386,8 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	gs_blend_state_pop();
 	gs_texrender_end(hrs->texrender);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
-  uint64_t rect_after = os_gettime_ns();
-  obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
+	uint64_t rect_after = os_gettime_ns();
+	obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
 	return blurredTexture;
 }
 
@@ -391,7 +419,21 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 	std::vector<struct vec4> face_coordinates;
-	double heart_rate = avg.calculateHeartRate(hrs->BGRA_data, face_coordinates);
+
+	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
+	obs_log(LOG_INFO, "Which algo: ", selected_algorithm);
+	// obs_data_release();
+
+	std::vector<double_t> avg;
+	if (selected_algorithm == 0) {
+		// Haarcascade face detection with OpenCV
+		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates);
+	} else if (selected_algorithm == 1) {
+		// Face tracking with Dlib
+		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates);
+	}
+
+	double heart_rate = movingAvg.calculateHeartRate(avg);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	gs_texture_t *testingTexture =

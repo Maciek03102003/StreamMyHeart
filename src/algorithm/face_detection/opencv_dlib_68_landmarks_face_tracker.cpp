@@ -74,7 +74,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
 
-  uint64_t convert_before = os_gettime_ns();
+	uint64_t convert_before = os_gettime_ns();
 	// Convert BGRA to OpenCV Mat
 	cv::Mat frameMat(frame->height, frame->width, CV_8UC4, frame->data, frame->linesize);
 
@@ -89,8 +89,8 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	}
 
 	dlib::cv_image<unsigned char> dlibImg(frameGray);
-  uint64_t convert_after = os_gettime_ns();
-  obs_log(LOG_INFO, "Convert time: %lu ns", convert_after - convert_before);
+	uint64_t convert_after = os_gettime_ns();
+	obs_log(LOG_INFO, "Convert time: %lu ns", convert_after - convert_before);
 
 	if (!is_tracking) {
 		// obs_log(LOG_INFO, "Detect faces!!!!");
@@ -163,18 +163,17 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 		width, height));
 
 	// obs_log(LOG_INFO, "Fill eye and mouth regions!!!!");
-  uint64_t convex_before = os_gettime_ns();
+	uint64_t convex_before = os_gettime_ns();
 	cv::Mat maskMat = cv::Mat::zeros(frameMat.size(), CV_8UC1);
 	cv::fillConvexPoly(maskMat, faceContour, cv::Scalar(255));
 	cv::fillConvexPoly(maskMat, leftEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, rightEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, mouth, cv::Scalar(0));
-  uint64_t convex_after = os_gettime_ns();
-  obs_log(LOG_INFO, "Convex time: %lu ns", convex_after - convex_before);
+	uint64_t convex_after = os_gettime_ns();
+	obs_log(LOG_INFO, "Convex time: %lu ns", convex_after - convex_before);
 
 	cv::Scalar meanRGB = cv::mean(frameMat, maskMat);
 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
-  
 
 	frame_count++;
 	// obs_log(LOG_INFO, "Frame count: %d", frame_count);
