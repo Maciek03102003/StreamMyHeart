@@ -40,7 +40,7 @@ else:
         "-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DBUILD_SHARED_LIBS=OFF", 
-        f"-DCMAKE_INSTALL_PREFIX={dlib_out_dir_path}",
+        # f"-DCMAKE_INSTALL_PREFIX={dlib_out_dir_path}",
         "-DLIB_USE_MKL_FFT=ON",
         "-DLIB_USE_MKL_SEQUENTIAL=OFF",
         "-DLIB_USE_MKL_WITH_TBB=ON",
@@ -58,4 +58,5 @@ else:
     
     # Used to disable errors: -DCMAKE_CXX_FLAGS="-Wno-newline-eof -Wno-comma -Wno-error"
     subprocess.run(cmake_configure_cmd, check=True)
-    subprocess.run(["cmake", "--build", ".", "--target", "install", "--config", "Release"], check=True)    
+    subprocess.run(["cmake", "--build", ".", "--config", "Release"], check=True)    
+    # subprocess.run(["cmake", "--build", ".", "--target", "install", "--config", "Release"], check=True)    
