@@ -58,7 +58,7 @@ input_BGRA_data extractBGRAData(const cv::Mat &frame) {
 
 double calculateMAE(const std::vector<double>& actual, const std::vector<double>& predicted) {
     double mae = 0.0;
-    for (size_t i = 0; i < static_cast<int>(actual.size()); ++i) {
+    for (size_t i = 0; i < actual.size(); ++i) {
         mae += std::fabs(actual[i] - predicted[i]); // Absolute error
     }
     return mae / actual.size();
@@ -66,7 +66,7 @@ double calculateMAE(const std::vector<double>& actual, const std::vector<double>
 
 double calculateRMSE(const std::vector<double>& actual, const std::vector<double>& predicted) {
     double rmse = 0.0;
-    for (size_t i = 0; i < static_cast<int>(actual.size()); ++i) {
+    for (size_t i = 0; i < actual.size(); ++i) {
         rmse += std::pow(actual[i] - predicted[i], 2); // Squared error
     }
     return std::sqrt(rmse / actual.size());
@@ -83,7 +83,6 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // 
     cv::Mat frame;
     std::vector<struct vec4> faceCoordinates;
 
-    int seconds = 1;
     int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
 
     std::vector<double> predicted;
@@ -101,7 +100,6 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData) { // 
         double heartRate = avg.calculateHeartRate(&bgraData, faceCoordinates, 0, 1, 0, fps, 1, false);
         if (heartRate != 0) {
             predicted.push_back(heartRate);
-            seconds++;
         }
 
         // Clean up
