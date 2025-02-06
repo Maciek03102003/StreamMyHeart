@@ -68,7 +68,7 @@ static void loadFiles()
 }
 
 // Function to detect face on the first frame and track in subsequent frames
-std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
+std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates, int reset_tracker_count)
 {
 	uint64_t start_ns = os_gettime_ns();
 	uint32_t width = frame->width;
@@ -97,23 +97,25 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 		// First frame: Detect face
 		uint64_t detector_before = os_gettime_ns();
 		std::vector<rectangle> faces = detector(dlibImg);
+    initial_face = faces[0]; // Assume first detected face is the target
 		uint64_t detector_after = os_gettime_ns();
 		obs_log(LOG_INFO, "Detector time: %lu ns", detector_after - detector_before);
 
-		if (!faces.empty()) {
-			initial_face = faces[0]; // Assume first detected face is the target
-			detected_face = faces[0];
-			uint64_t tracker_before = os_gettime_ns();
-			tracker.start_track(dlibImg, initial_face);
-			uint64_t tracker_after = os_gettime_ns();
-			obs_log(LOG_INFO, "Start Tracker time: %lu ns", tracker_after - tracker_before);
-			is_tracking = true;
-		} else {
-			// obs_log(LOG_INFO, "No face detected!!!!");
-			// if not face detected, return empty mask
-			return std::vector<double_t>(3, 0.0);
-			// return std::vector<std::vector<bool>>(frame->height, std::vector<bool>(frame->width, false));
-		}
+		if (reset_tracker_count != 0) {
+      if (!faces.empty()) {
+        detected_face = faces[0];
+        uint64_t tracker_before = os_gettime_ns();
+        tracker.start_track(dlibImg, initial_face);
+        uint64_t tracker_after = os_gettime_ns();
+        obs_log(LOG_INFO, "Start Tracker time: %lu ns", tracker_after - tracker_before);
+        is_tracking = true;
+      } else {
+        // obs_log(LOG_INFO, "No face detected!!!!");
+        // if not face detected, return empty mask
+        return std::vector<double_t>(3, 0.0);
+        // return std::vector<std::vector<bool>>(frame->height, std::vector<bool>(frame->width, false));
+      }
+		} 
 	} else {
 		// obs_log(LOG_INFO, "Update tracker!!!!");
 		// Track face in subsequent frames
@@ -152,15 +154,17 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	face_coordinates.push_back(getBoundingBox(leftEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(rightEyes, width, height));
 	face_coordinates.push_back(getBoundingBox(mouth, width, height));
-	face_coordinates.push_back(getBoundingBox(
-		{
-			{static_cast<int>(detected_face.left()), static_cast<int>(detected_face.top())},  // Top-left
-			{static_cast<int>(detected_face.right()), static_cast<int>(detected_face.top())}, // Top-right
-			{static_cast<int>(detected_face.right()),
-			 static_cast<int>(detected_face.bottom())}, // Bottom-right
-			{static_cast<int>(detected_face.left()), static_cast<int>(detected_face.bottom())} // Bottom-left
-		},
-		width, height));
+  if (reset_tracker_count != 0) {
+    face_coordinates.push_back(getBoundingBox(
+      {
+        {static_cast<int>(detected_face.left()), static_cast<int>(detected_face.top())},  // Top-left
+        {static_cast<int>(detected_face.right()), static_cast<int>(detected_face.top())}, // Top-right
+        {static_cast<int>(detected_face.right()),
+        static_cast<int>(detected_face.bottom())}, // Bottom-right
+        {static_cast<int>(detected_face.left()), static_cast<int>(detected_face.bottom())} // Bottom-left
+      },
+      width, height));
+  }
 
 	// obs_log(LOG_INFO, "Fill eye and mouth regions!!!!");
 	uint64_t convex_before = os_gettime_ns();
@@ -178,7 +182,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	frame_count++;
 	// obs_log(LOG_INFO, "Frame count: %d", frame_count);
 
-	if (frame_count == 60) {
+	if (frame_count == reset_tracker_count) {
 		obs_log(LOG_INFO, "Reset tracker!!!!");
 		is_tracking = false;
 		frame_count = 0;
