@@ -50,7 +50,7 @@ static struct vec4 getNormalisedRect(const cv::Rect &region, uint32_t width, uin
 
 // Function to detect faces and create a mask
 std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
-					       std::vector<struct vec4> &face_coordinates)
+					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes)
 {
 	if (!frame || !frame->data) {
 		throw std::runtime_error("Invalid BGRA frame data!");
@@ -91,7 +91,11 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 		// If no face detected, return empty mask
 		return std::vector<double_t>(3, 0.0);
 	}
-	face_coordinates.push_back(getNormalisedRect(initial_face, width, height));
+
+	if (enable_debug_boxes) {
+		// Push absolute face bounding box as normalized coordinates
+		face_coordinates.push_back(getNormalisedRect(initial_face, width, height));
+	}
 
 	// Define region of interest (ROI) for eyes and mouth
 	cv::Mat faceROI = bgr_frame(initial_face);
@@ -113,8 +117,10 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 		// Calculate absolute coordinates for the eye
 		absolute_left_eye = cv::Rect(eye.x + initial_face.x, eye.y + initial_face.y, eye.width, eye.height);
 
-		// Push absolute eye bounding box as normalized coordinates
-		face_coordinates.push_back(getNormalisedRect(absolute_left_eye, width, height));
+		if (enable_debug_boxes) {
+			// Push absolute eye bounding box as normalized coordinates
+			face_coordinates.push_back(getNormalisedRect(absolute_left_eye, width, height));
+		}
 	}
 
 	// Detect right eyes
@@ -127,8 +133,10 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 		absolute_right_eye = cv::Rect(eye.x + initial_face.x + initial_face.width / 2, eye.y + initial_face.y,
 					      eye.width, eye.height);
 
-		// Push absolute eye bounding box as normalized coordinates
-		face_coordinates.push_back(getNormalisedRect(absolute_right_eye, width, height));
+		if (enable_debug_boxes) {
+			// Push absolute eye bounding box as normalized coordinates
+			face_coordinates.push_back(getNormalisedRect(absolute_right_eye, width, height));
+		}
 	}
 
 	// Detect mouth in the lower half of the face ROI
@@ -141,8 +149,10 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 		absolute_mouth = cv::Rect(mouth.x + initial_face.x, mouth.y + initial_face.y + faceROI.rows / 2,
 					  mouth.width, mouth.height);
 
-		// Push absolute mouth bounding box as normalized coordinates
-		face_coordinates.push_back(getNormalisedRect(absolute_mouth, width, height));
+		if (enable_debug_boxes) {
+			// Push absolute mouth bounding box as normalized coordinates
+			face_coordinates.push_back(getNormalisedRect(absolute_mouth, width, height));
+		}
 	}
 
 	// Instead of returning a 2D boolean mask, create an OpenCV mask image

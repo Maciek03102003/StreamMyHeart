@@ -41,6 +41,7 @@ struct heart_rate_source {
 const char *get_heart_rate_source_name(void *);
 void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source);
 void heart_rate_source_destroy(void *data);
+void heart_rate_source_defaults(obs_data_t *settings);
 obs_properties_t *heart_rate_source_properties(void *data);
 void heart_rate_source_activate(void *data);
 void heart_rate_source_deactivate(void *data);

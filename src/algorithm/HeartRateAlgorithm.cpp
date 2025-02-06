@@ -1,4 +1,3 @@
-#include "face_detection/opencv_dlib_68_landmarks_face_tracker.h"
 #include <obs-module.h>
 #include "plugin-support.h"
 #include "HeartRateAlgorithm.h"
@@ -223,16 +222,11 @@ Window concatWindows(Windows windows)
 	return concatenatedWindow;
 }
 
-double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
-				     int preFilter, int ppg, int postFilter)
+double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter)
 { // Assume frame in YUV format: struct obs_source_frame *source
 	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);
 
-	FrameRGB frameRGB = extractRGB(BGRA_data);
-	// vector<vector<bool>> skinKey = detectFaceAOI(BGRA_data, face_coordinates);
-	vector<double_t> avg = detectFaceAOI(BGRA_data, face_coordinates);
-	// vector<double_t> avg = averageRGB(frameRGB, skinKey);
 	updateWindows(avg);
 
 	vector<double_t> ppgSignal;
