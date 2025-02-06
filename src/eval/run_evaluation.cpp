@@ -129,6 +129,10 @@ void evaluateHeartRate(const std::string &csvFilePath) {
     std::cout << "| Test Subject | Our Algorithm MAE | Other Algorithm MAE | Our Algorithm RMSE | Other Algorithm RMSE |\n";
     std::cout << "|--------------|-------------------|---------------------|--------------------|----------------------|\n";
 
+    // Open the CSV file for writing
+    std::ofstream outFile("evaluation_results.csv");
+    outFile << "Test Subject,Our Algorithm MAE,Other Algorithm MAE,Our Algorithm RMSE,Other Algorithm RMSE\n";
+
     for (const auto &videoData : videoDataList) {
         std::vector<double> predicted = calculateHeartRateForVideo(videoData);
         double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
@@ -151,7 +155,13 @@ void evaluateHeartRate(const std::string &csvFilePath) {
                   << " | " << std::setw(18) << std::left << centerAlign(ourAlgorithmRMSEStr, 18)
                   << " | " << std::setw(20) << std::left << centerAlign(otherAlgorithmRMSEStr, 20)
                   << " |\n";
+
+        // Write the results to the CSV file
+        outFile << subjectName << "," << ourAlgorithmMAEStr << "," << otherAlgorithmMAEStr << "," << ourAlgorithmRMSEStr << "," << otherAlgorithmRMSEStr << "\n";
     }
+
+    // Close the CSV file
+    outFile.close();
 }
 
 int main() {
