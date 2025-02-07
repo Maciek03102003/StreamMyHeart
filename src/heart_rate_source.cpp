@@ -511,9 +511,9 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		gs_reset_blend_state();
 
 		obs_log(LOG_INFO, "Filter tech end");
-		if (hrs->source){
+		if (hrs->source) {
 			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
-				hrs->BGRA_data->height, "Draw");
+							   hrs->BGRA_data->height, "Draw");
 		}
 
 		gs_blend_state_pop();
