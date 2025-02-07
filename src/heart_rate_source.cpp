@@ -22,6 +22,21 @@ const char *get_heart_rate_source_name(void *)
 	return "Heart Rate Monitor";
 }
 
+static void skip_video_filter_if_safe(obs_source_t *source)
+{
+	if (!source) {
+		return;
+	}
+
+	obs_source_t *parent = obs_filter_get_parent(source);
+	if (parent) {
+		obs_log(LOG_INFO, "Source is skipped");
+		obs_source_skip_video_filter(source);
+	} else {
+		obs_log(LOG_INFO, "No valid parent, skipping filter safely");
+	}
+}
+
 // Callback function to find the matching scene item
 static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
 {
@@ -432,25 +447,19 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 
 	if (hrs->isDisabled) {
-		if (hrs->source) {
-			obs_source_skip_video_filter(hrs->source);
-		}
+		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
 	if (!getBGRAFromStageSurface(hrs)) {
-		if (hrs->source) {
-			obs_source_skip_video_filter(hrs->source);
-		}
+		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
 	if (!hrs->testing) {
 		obs_log(LOG_INFO, "Effect not loaded");
 		// Effect failed to load, skip rendering
-		if (hrs->source) {
-			obs_source_skip_video_filter(hrs->source);
-		}
+		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
@@ -470,7 +479,6 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
 				    enable_debug_boxes);
 	}
-	obs_log(LOG_INFO, "FINISH FACE DETECTING");
 
 	double heart_rate = movingAvg.calculateHeartRate(avg);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
@@ -488,43 +496,30 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	obs_log(LOG_INFO, "Heart rate: %f", heart_rate);
 
 	if (enable_debug_boxes) {
-		obs_log(LOG_INFO, "Draw rectangles");
 		gs_texture_t *testingTexture =
 			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
 
 		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
-			obs_log(LOG_INFO, "Could not begin processing filter");
-			if (hrs->source && obs_source_enabled(hrs->source)) {
-				obs_log(LOG_INFO, "Source is skipped");
-				obs_source_skip_video_filter(hrs->source);
-			}
-
-			obs_log(LOG_INFO, "Destroy texture");
+			skip_video_filter_if_safe(hrs->source);
 			gs_texture_destroy(testingTexture);
 			return;
 		}
-		obs_log(LOG_INFO, "Filter tech begin");
 		gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
 
-		obs_log(LOG_INFO, "Draw rectangles2");
 		gs_blend_state_push();
 		gs_reset_blend_state();
 
-		obs_log(LOG_INFO, "Filter tech end");
 		if (hrs->source) {
 			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
 							   hrs->BGRA_data->height, "Draw");
 		}
 
 		gs_blend_state_pop();
-		obs_log(LOG_INFO, "Destroy texture");
 
 		gs_texture_destroy(testingTexture);
+		
 	} else {
-		obs_log(LOG_INFO, "No rectangles");
-		if (hrs->source) {
-			obs_source_skip_video_filter(hrs->source);
-		}
+		skip_video_filter_if_safe(hrs->source);
 	}
 	obs_log(LOG_INFO, "FINISH RENDERING");
 }
