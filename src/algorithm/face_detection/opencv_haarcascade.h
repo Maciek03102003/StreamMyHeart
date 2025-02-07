@@ -14,6 +14,6 @@
 #include "heart_rate_source.h"
 
 std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
-					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes);
+					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes, bool evaluation=false);
 
 #endif
