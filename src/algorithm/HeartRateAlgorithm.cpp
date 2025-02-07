@@ -266,8 +266,13 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 { // Assume frame in YUV format: struct obs_source_frame *source
 	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);
+	std::cout << "IN CALCULATE" << std::endl;
+
 
 	updateWindows(avg);
+
+	std::cout << "UPDATED WINDOWS" << std::endl;
+
 
 	vector<double_t> ppgSignal;
 
@@ -278,6 +283,7 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 			ppgSignal = green(currentWindow);
 			break;
 		case 1:
+			std::cout << "PCA" << std::endl;
 			ppgSignal = pca(currentWindow);
 			break;
 		case 2:

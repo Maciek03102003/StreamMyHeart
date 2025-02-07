@@ -24,14 +24,22 @@ static void loadCascade(cv::CascadeClassifier &cascade, const char *module_name,
 }
 
 // Ensure the face cascade is loaded once
-static void initializeFaceCascade()
+static void initializeFaceCascade(bool evaluation)
 {
 	if (!cascade_loaded) {
-		loadCascade(face_cascade, "pulse-obs", "haarcascade_frontalface_default.xml");
-		loadCascade(mouth_cascade, "pulse-obs", "haarcascade_mcs_mouth.xml");
-		loadCascade(left_eye_cascade, "pulse-obs", "haarcascade_lefteye_2splits.xml");
-		loadCascade(right_eye_cascade, "pulse-obs", "haarcascade_righteye_2splits.xml");
-		cascade_loaded = true;
+		if (evaluation) {
+			face_cascade.load("./haarcascade_frontalface_default.xml");
+			mouth_cascade.load("./haarcascade_mcs_mouth.xml");
+			left_eye_cascade.load("./haarcascade_lefteye_2splits.xml");
+			right_eye_cascade.load("./haarcascade_righteye_2splits.xml");
+			cascade_loaded = true;
+		} else {
+			loadCascade(face_cascade, "pulse-obs", "haarcascade_frontalface_default.xml");
+			loadCascade(mouth_cascade, "pulse-obs", "haarcascade_mcs_mouth.xml");
+			loadCascade(left_eye_cascade, "pulse-obs", "haarcascade_lefteye_2splits.xml");
+			loadCascade(right_eye_cascade, "pulse-obs", "haarcascade_righteye_2splits.xml");
+			cascade_loaded = true;
+		}
 	}
 }
 
@@ -50,21 +58,21 @@ static struct vec4 getNormalisedRect(const cv::Rect &region, uint32_t width, uin
 
 // Function to detect faces and create a mask
 std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
-					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes)
+					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes, bool evaluation)
 {
 	if (!frame || !frame->data) {
 		throw std::runtime_error("Invalid BGRA frame data!");
 	}
 
 	// Initialize the face cascade
-	initializeFaceCascade();
+	initializeFaceCascade(evaluation);
 
 	// Extract frame parameters
 	uint8_t *data = frame->data;
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
 	uint32_t linesize = frame->linesize;
-
+	
 	// Initialize a 2D boolean mask
 	std::vector<std::vector<bool>> face_mask(height, std::vector<bool>(width, false));
 

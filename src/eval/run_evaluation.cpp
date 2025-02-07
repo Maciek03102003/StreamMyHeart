@@ -1,10 +1,12 @@
+#include "algorithm/face_detection/opencv_haarcascade.h"
+#include "../algorithm/HeartRateAlgorithm.h" 
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
 #include <opencv2/opencv.hpp>
-#include "../algorithm/HeartRateAlgorithm.h" // Include your heart rate algorithm header
 
 struct VideoData {
 	std::string videoPath;
@@ -85,7 +87,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		return {};
 	}
 
-	MovingAvg avg;
+	MovingAvg movingAvg;
 	cv::Mat frame;
 	std::vector<struct vec4> faceCoordinates;
 
@@ -101,9 +103,13 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		// Extract BGRA data
 		input_BGRA_data bgraData = extractBGRAData(bgraFrame);
 
+		// Perform face detection
+		std::vector<double_t> avg = detectFacesAndCreateMask(&bgraData, faceCoordinates, false, true);
+
 		// Calculate heart rate using your algorithm
-		double heartRate = avg.calculateHeartRate(&bgraData, faceCoordinates, 0, 1, 0, fps, 1, false);
+		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0);
 		if (heartRate != 0) {
+			std::cout << "Got to here" << std::endl;
 			predicted.push_back(heartRate);
 		}
 
@@ -142,9 +148,15 @@ void evaluateHeartRate(const std::string &csvFilePath)
 	outFile << "Test Subject,Our Algorithm MAE,Other Algorithm MAE,Our Algorithm RMSE,Other Algorithm RMSE\n";
 
 	for (const auto &videoData : videoDataList) {
+		std::cout << "Got to here" << std::endl;
 		std::vector<double> predicted = calculateHeartRateForVideo(videoData);
+		std::cout << "Got to here" << std::endl;
 		double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
+		std::cout << "Got to here" << std::endl;
+
 		double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
+		std::cout << "Got to here" << std::endl;
+
 
 		// Extract the subject name from the video path
 		std::string subjectName = videoData.videoPath.substr(videoData.videoPath.find_last_of("/") + 1);
@@ -178,8 +190,8 @@ int main()
 
 	evaluateHeartRate(csvFilePath);
 
-	while (true) {
-	}
+	std::cout << "Press Enter to exit..." << std::endl;
+  std::cin.get(); // Wait for user input before closing
 
 	return 0;
 }
