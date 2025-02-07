@@ -517,7 +517,7 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		gs_blend_state_pop();
 
 		gs_texture_destroy(testingTexture);
-		
+
 	} else {
 		skip_video_filter_if_safe(hrs->source);
 	}
