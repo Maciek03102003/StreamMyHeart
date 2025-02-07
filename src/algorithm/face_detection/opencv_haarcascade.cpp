@@ -58,7 +58,8 @@ static struct vec4 getNormalisedRect(const cv::Rect &region, uint32_t width, uin
 
 // Function to detect faces and create a mask
 std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
-					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes, bool evaluation)
+					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes,
+					       bool evaluation)
 {
 	if (!frame || !frame->data) {
 		throw std::runtime_error("Invalid BGRA frame data!");
@@ -72,7 +73,7 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
 	uint32_t linesize = frame->linesize;
-	
+
 	// Initialize a 2D boolean mask
 	std::vector<std::vector<bool>> face_mask(height, std::vector<bool>(width, false));
 
