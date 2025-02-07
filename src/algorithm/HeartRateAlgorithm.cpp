@@ -262,7 +262,8 @@ Window concatWindows(Windows windows)
 	return concatenatedWindow;
 }
 
-double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps, int sampleRate)
+double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps,
+				     int sampleRate)
 { // Assume frame in YUV format: struct obs_source_frame *source
 	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);

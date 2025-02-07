@@ -1,5 +1,5 @@
 #include "algorithm/face_detection/opencv_haarcascade.h"
-#include "../algorithm/HeartRateAlgorithm.h" 
+#include "../algorithm/HeartRateAlgorithm.h"
 
 #include <iostream>
 #include <fstream>
@@ -185,7 +185,7 @@ int main()
 	evaluateHeartRate(csvFilePath);
 
 	std::cout << "Press Enter to exit..." << std::endl;
-  std::cin.get(); // Wait for user input before closing
+	std::cin.get(); // Wait for user input before closing
 
 	return 0;
 }

@@ -35,7 +35,8 @@ private:
 	double welch(std::vector<double_t> ppgSignal);
 
 public:
-	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 0, int ppg = 0, int postFilter = 0, int Fps = 30, int sampleRate = 1);
+	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 0, int ppg = 0, int postFilter = 0,
+				  int Fps = 30, int sampleRate = 1);
 };
 
 #endif
