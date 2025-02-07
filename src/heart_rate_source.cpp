@@ -221,6 +221,7 @@ obs_properties_t *heart_rate_source_properties(void *data)
 		OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(ppg_dropdown, "Green Channel", 0);
 	obs_property_list_add_int(ppg_dropdown, "PCA", 1);
+	obs_property_list_add_int(ppg_dropdown, "Chrom", 2);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 	obs_property_set_modified_callback(dropdown, update_properties);
