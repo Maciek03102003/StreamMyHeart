@@ -46,7 +46,7 @@ static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint3
 
 static void loadFiles()
 {
-	face_landmark_path = obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+	face_landmark_path = obs_module_file("shape_predictor_68_face_landmarks.dat");
 
 	if (!face_landmark_path) {
 		obs_log(LOG_ERROR, "Failed to find face landmark file");
@@ -63,26 +63,30 @@ static void loadFiles()
 	obs_module_t *module = obs_get_module("pulse-obs");
 	if (!module) {
 		obs_log(LOG_ERROR, "Failed to get OBS module: pulse-obs");
+		bfree(face_landmark_path);
 		return;
 	}
 
-	modelConfiguration = obs_find_module_file(module, "deploy.prototxt");
+	modelConfiguration = obs_module_file("deploy.prototxt");
 	if (!modelConfiguration) {
 		obs_log(LOG_ERROR, "Failed to find deploy.prototxt");
+		bfree(face_landmark_path);
 		return;
 	}
 
 	obs_log(LOG_INFO, "Loading prototxt failed!!!!");
 
-	modelWeights = obs_find_module_file(module, "res10_300x300_ssd_iter_140000_fp16.caffemodel");
+	modelWeights = obs_module_file("res10_300x300_ssd_iter_140000_fp16.caffemodel");
 	if (!modelConfiguration) {
 		obs_log(LOG_ERROR, "Failed to find deploy.prototxt");
+		bfree(face_landmark_path);
 		return;
 	}
 
 	// Check if files exist
 	if (!modelConfiguration || !modelWeights) {
 		obs_log(LOG_ERROR, "Error: Could not find model files!");
+		bfree(face_landmark_path);
 		return;
 	}
 
@@ -97,6 +101,7 @@ static void loadFiles()
 	// Ensure strings are not empty
 	if (modelConfiguration_str.empty() || modelWeights_str.empty()) {
 		obs_log(LOG_ERROR, "Error: Model file paths are empty!");
+		bfree(face_landmark_path);
 		return;
 	}
 
@@ -105,12 +110,15 @@ static void loadFiles()
 		net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
 	} catch (const std::exception &e) {
 		std::cerr << e.what() << '\n';
+		bfree(face_landmark_path);
 		throw std::runtime_error("Failed to load model");
 	}
 
 	// net = cv::dnn::readNetFromCaffe(modelConfiguration_str, modelWeights_str);
 	isLoaded = true;
 	obs_log(LOG_INFO, "Model loaded!!!!");
+
+	bfree(face_landmark_path);
 }
 
 std::vector<std::vector<bool>> faceMaskDNN(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)

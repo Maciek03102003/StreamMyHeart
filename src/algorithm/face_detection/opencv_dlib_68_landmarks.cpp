@@ -43,7 +43,7 @@ static bool isLoaded = false;
 
 static void loadFiles()
 {
-	face_landmark_path = obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+	face_landmark_path = obs_module_file("shape_predictor_68_face_landmarks.dat");
 
 	if (!face_landmark_path) {
 		obs_log(LOG_ERROR, "Failed to find face landmark file");
@@ -58,6 +58,8 @@ static void loadFiles()
 
 	isLoaded = true;
 	obs_log(LOG_INFO, "Model loaded!!!!");
+
+	bfree(face_landmark_path);
 }
 
 std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
