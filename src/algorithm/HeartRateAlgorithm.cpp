@@ -1,4 +1,3 @@
-#include "FaceDetection.h"
 #include <obs-module.h>
 #include "plugin-support.h"
 #include "HeartRateAlgorithm.h"
@@ -242,30 +241,12 @@ Window concatWindows(Windows windows)
 	return concatenatedWindow;
 }
 
-double MovingAvg::calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
-				     int preFilter, int ppg, int postFilter, int Fps, int sampleRate, bool plugin)
+double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter)
 { // Assume frame in YUV format: struct obs_source_frame *source
 	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);
 
-	fps = Fps;
-	windowSize = sampleRate * fps;
-
-	FrameRGB frameRGB = extractRGB(BGRA_data);
-	if (windows.empty() || windows.back().size() % 10 == 0 || !detectFace) {
-		vector<vector<bool>> skinKey = detectFacesAndCreateMask(BGRA_data, face_coordinates, plugin);
-		vector<double_t> avg = averageRGB(frameRGB, skinKey);
-		if (avg[0] == 0 && avg[1] == 0 && avg[2] == 0) {
-			detectFace = false;
-		} else {
-			detectFace = true;
-			latestSkinKey = skinKey;
-			updateWindows(avg);
-		}
-	} else {
-		vector<double_t> avg = averageRGB(frameRGB, latestSkinKey);
-		updateWindows(avg);
-	}
+	updateWindows(avg);
 
 	vector<double_t> ppgSignal;
 

@@ -35,9 +35,7 @@ private:
 	double welch(std::vector<double_t> ppgSignal);
 
 public:
-	double calculateHeartRate(struct input_BGRA_data *BGRA_data, std::vector<struct vec4> &face_coordinates,
-				  int preFilter = 0, int ppg = 0, int postFilter = 0, int Fps = 30, int sampleRate = 2,
-				  bool plugin = true);
+	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 0, int ppg = 0, int postFilter = 0);
 };
 
 #endif
