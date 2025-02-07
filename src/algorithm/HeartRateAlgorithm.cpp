@@ -79,6 +79,28 @@ vector<double_t> pca(Window windowsRGB)
 	return result;
 }
 
+vector<double_t> chrom(Window windowsRGB) {
+	int numSamples = static_cast<int>(windowsRGB.size());
+	int numFeatures = 3;
+
+	MatrixXd X(numSamples, numFeatures);
+	for (int i = 0; i < numSamples; ++i) {
+		for (int j = 0; j < numFeatures; ++j) {
+			X(i, j) = windowsRGB[i][j];
+		}
+	}
+
+	VectorXd Xc = 3 * X.col(0) - 2 * X.col(1);
+	VectorXd Yc = 1.5 * X.col(0) + X.col(1) - 1.5 * X.col(2);
+
+	double sX = sqrt((Xc.array() - Xc.mean()).square().sum() / (Xc.size() - 1));
+	double sY = sqrt((Yc.array() - Yc.mean()).square().sum() / (Yc.size() - 1));
+
+	VectorXd bvp = Xc - ((sX / sY) * Yc);
+
+	return vector<double_t>(bvp.data(), bvp.data() + bvp.size());
+}
+
 void MovingAvg::updateWindows(vector<double_t> frame_avg)
 {
 	if (windows.empty()) {
@@ -239,6 +261,9 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 			break;
 		case 1:
 			ppgSignal = pca(currentWindow);
+			break;
+		case 2:
+			ppgSignal = chrom(currentWindow);
 			break;
 		default:
 			break;
