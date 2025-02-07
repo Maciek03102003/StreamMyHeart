@@ -108,7 +108,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		std::vector<double_t> avg = detectFacesAndCreateMask(&bgraData, faceCoordinates, false, true);
 
 		// Calculate heart rate using your algorithm
-		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0);
+		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0, fps);
 		if (heartRate != 0) {
 			predicted.push_back(heartRate);
 		}
