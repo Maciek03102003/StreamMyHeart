@@ -165,6 +165,7 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
+	obs_data_set_default_int(settings, "ppg algorithm", 0);
 }
 
 static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -214,10 +215,17 @@ obs_properties_t *heart_rate_source_properties(void *data)
 				obs_module_text("Set how often the face detector updates the face position in frames."),
 				OBS_TEXT_INFO);
 
+	// Add dropdown for selecting PPG algorithm
+	obs_property_t *ppg_dropdown = obs_properties_add_list(props, "ppg algorithm",
+		obs_module_text("PPG Algorithm:"),
+		OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(ppg_dropdown, "Green Channel", 0);
+	obs_property_list_add_int(ppg_dropdown, "PCA", 1);
+
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
-	// int default_algorithm = obs_data_get_int(settings, "face detection algorithm");
 	obs_property_set_modified_callback(dropdown, update_properties);
 	obs_property_set_modified_callback(enable_tracker, update_properties);
+	obs_property_set_modified_callback(ppg_dropdown, update_properties);
 	update_properties(props, dropdown, settings); // Apply default visibility
 
 	return props;
@@ -456,7 +464,10 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 				    enable_debug_boxes);
 	}
 
-	double heart_rate = movingAvg.calculateHeartRate(avg);
+	// Get the selected PPG algorithm
+	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
+
+	double heart_rate = movingAvg.calculateHeartRate(avg, 0, selected_ppg_algorithm, 0);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	if (heart_rate != 0.0) {
