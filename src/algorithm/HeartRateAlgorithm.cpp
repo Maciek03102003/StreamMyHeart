@@ -137,8 +137,6 @@ double MovingAvg::welch(vector<double_t> bvps)
 	double frequency_resolution = (fps * 60.0) / num_frames;
 	int nyquist_limit = segment_size / 2;
 
-	
-
 	// Convert signal to Eigen array
 	ArrayXd signal = Eigen::Map<const ArrayXd>(bvps.data(), bvps.size());
 
@@ -174,7 +172,7 @@ double MovingAvg::welch(vector<double_t> bvps)
 
 		++num_segments;
 	} else {
-		
+
 		ArrayXd hann_window(segment_size);
 		for (int i = 0; i < segment_size; ++i) {
 			hann_window[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (segment_size - 1)));
