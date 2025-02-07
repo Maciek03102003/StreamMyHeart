@@ -22,18 +22,35 @@ const char *get_heart_rate_source_name(void *)
 	return "Heart Rate Monitor";
 }
 
+static void skip_video_filter_if_safe(obs_source_t *source)
+{
+	if (!source) {
+		return;
+	}
+
+	obs_source_t *parent = obs_filter_get_parent(source);
+	if (parent) {
+		obs_log(LOG_INFO, "Source is skipped");
+		obs_source_skip_video_filter(source);
+	} else {
+		obs_log(LOG_INFO, "No valid parent, skipping filter safely");
+	}
+}
+
 // Callback function to find the matching scene item
 static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
 {
 	UNUSED_PARAMETER(scene);
+	obs_source_t *target_source = (obs_source_t *)((void **)param)[0];      // First element is target source
+	obs_sceneitem_t **found_item = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
 
-	obs_source_t *target_source = (obs_source_t *)param;
 	obs_source_t *item_source = obs_sceneitem_get_source(item);
 
 	if (item_source == target_source) {
 		// Add a reference to the scene item to ensure it doesn't get released
 		obs_sceneitem_addref(item);
-		return false; // Stop enumeration since we found the item
+		*found_item = item; // Store the found scene item
+		return false;       // Stop enumeration since we found the item
 	}
 
 	return true; // Continue enumeration
@@ -42,9 +59,10 @@ static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, 
 static obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source)
 {
 	obs_sceneitem_t *found_item = NULL;
+	void *params[2] = {source, &found_item}; // Pass source and output pointer
 
 	// Enumerate scene items and find the one matching the source
-	obs_scene_enum_items(scene, find_scene_item_callback, source);
+	obs_scene_enum_items(scene, find_scene_item_callback, params);
 
 	return found_item;
 }
@@ -144,6 +162,7 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 // Destroy function
 void heart_rate_source_destroy(void *data)
 {
+	obs_log(LOG_INFO, "Heart rate monitor destroyed");
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
 	if (hrs) {
@@ -165,6 +184,7 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
+	obs_data_set_default_int(settings, "ppg algorithm", 0);
 }
 
 static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -214,10 +234,17 @@ obs_properties_t *heart_rate_source_properties(void *data)
 				obs_module_text("Set how often the face detector updates the face position in frames."),
 				OBS_TEXT_INFO);
 
+	// Add dropdown for selecting PPG algorithm
+	obs_property_t *ppg_dropdown = obs_properties_add_list(
+		props, "ppg algorithm", obs_module_text("PPG Algorithm:"), OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(ppg_dropdown, "Green Channel", 0);
+	obs_property_list_add_int(ppg_dropdown, "PCA", 1);
+	obs_property_list_add_int(ppg_dropdown, "Chrom", 2);
+
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
-	// int default_algorithm = obs_data_get_int(settings, "face detection algorithm");
 	obs_property_set_modified_callback(dropdown, update_properties);
 	obs_property_set_modified_callback(enable_tracker, update_properties);
+	obs_property_set_modified_callback(ppg_dropdown, update_properties);
 	update_properties(props, dropdown, settings); // Apply default visibility
 
 	return props;
@@ -264,7 +291,12 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 	}
 
 	// Retrieve the target source of the filter
-	obs_source_t *target = obs_filter_get_target(hrs->source);
+	obs_source_t *target;
+	if (hrs->source) {
+		target = obs_filter_get_target(hrs->source);
+	} else {
+		return false;
+	}
 	if (!target) {
 		return false;
 	}
@@ -423,19 +455,19 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 
 	if (hrs->isDisabled) {
-		obs_source_skip_video_filter(hrs->source);
+		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
 	if (!getBGRAFromStageSurface(hrs)) {
-		obs_source_skip_video_filter(hrs->source);
+		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
 	if (!hrs->testing) {
 		obs_log(LOG_INFO, "Effect not loaded");
 		// Effect failed to load, skip rendering
-		obs_source_skip_video_filter(hrs->source);
+		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
@@ -456,40 +488,49 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 				    enable_debug_boxes);
 	}
 
-	double heart_rate = movingAvg.calculateHeartRate(avg);
+	// Get the selected PPG algorithm
+	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
+
+	double heart_rate = movingAvg.calculateHeartRate(avg, 0, selected_ppg_algorithm, 0);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	if (heart_rate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
-		obs_data_t *source_settings = obs_source_get_settings(source);
-		obs_data_set_string(source_settings, "text", result.c_str());
-		obs_source_update(source, source_settings);
-		obs_data_release(source_settings);
-		obs_source_release(source);
+		if (source) {
+			obs_data_t *source_settings = obs_source_get_settings(source);
+			obs_data_set_string(source_settings, "text", result.c_str());
+			obs_source_update(source, source_settings);
+			obs_data_release(source_settings);
+			obs_source_release(source);
+		}
 	}
+	obs_log(LOG_INFO, "Heart rate: %f", heart_rate);
 
 	if (enable_debug_boxes) {
 		gs_texture_t *testingTexture =
 			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
 
 		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
-			obs_source_skip_video_filter(hrs->source);
+			skip_video_filter_if_safe(hrs->source);
 			gs_texture_destroy(testingTexture);
 			return;
 		}
-
 		gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
 
 		gs_blend_state_push();
 		gs_reset_blend_state();
 
-		obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
-						   hrs->BGRA_data->height, "Draw");
+		if (hrs->source) {
+			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
+							   hrs->BGRA_data->height, "Draw");
+		}
 
 		gs_blend_state_pop();
 
 		gs_texture_destroy(testingTexture);
+
 	} else {
-		obs_source_skip_video_filter(hrs->source);
+		skip_video_filter_if_safe(hrs->source);
 	}
+	obs_log(LOG_INFO, "FINISH RENDERING");
 }

@@ -9,7 +9,7 @@ static bool cascade_loaded = false;
 
 static void loadCascade(cv::CascadeClassifier &cascade, const char *module_name, const char *file_name)
 {
-	char *cascade_path = obs_find_module_file(obs_get_module(module_name), file_name);
+	char *cascade_path = obs_module_file(file_name);
 	if (!cascade_path) {
 		obs_log(LOG_INFO, "Error finding %s file!", file_name);
 		throw std::runtime_error("Error finding cascade file!");

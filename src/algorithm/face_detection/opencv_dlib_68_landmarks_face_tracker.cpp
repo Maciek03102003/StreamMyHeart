@@ -19,16 +19,18 @@ static inline uint64_t os_gettime_ns()
 	return duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count();
 }
 
-// Global tracker and flag to indicate if the face was detected
-static correlation_tracker tracker;
-// static bool is_tracking = false;
-static rectangle initial_face;
-static shape_predictor sp;
-static frontal_face_detector detector;
 static char *face_landmark_path;
 static bool isLoaded = false;
+
+// Global tracker and flag to indicate if the face was detected
+static correlation_tracker tracker;
+static frontal_face_detector detector;
+static shape_predictor sp;
 static int frame_count = 0;
+// static bool is_tracking = false;
+
 static rectangle detected_face;
+static rectangle initial_face;
 
 static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint32_t width, uint32_t height)
 {
@@ -50,7 +52,7 @@ static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint3
 
 static void loadFiles()
 {
-	face_landmark_path = obs_find_module_file(obs_get_module("pulse-obs"), "shape_predictor_68_face_landmarks.dat");
+	face_landmark_path = obs_module_file("shape_predictor_68_face_landmarks.dat");
 
 	if (!face_landmark_path) {
 		obs_log(LOG_ERROR, "Failed to find face landmark file");
@@ -65,6 +67,8 @@ static void loadFiles()
 
 	isLoaded = true;
 	obs_log(LOG_INFO, "Model loaded!!!!");
+
+	bfree(face_landmark_path);
 }
 
 // Function to detect face on the first frame and track in subsequent frames
