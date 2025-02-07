@@ -89,13 +89,14 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 
 	MovingAvg movingAvg;
 	cv::Mat frame;
-	std::vector<struct vec4> faceCoordinates;
 
 	int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
 
 	std::vector<double> predicted;
 
 	while (cap.read(frame)) {
+		std::vector<struct vec4> faceCoordinates;
+
 		// Convert the frame to BGRA format
 		cv::Mat bgraFrame;
 		cv::cvtColor(frame, bgraFrame, cv::COLOR_BGR2BGRA);
@@ -109,7 +110,6 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0);
 		if (heartRate != 0) {
-			std::cout << "Got to here" << std::endl;
 			predicted.push_back(heartRate);
 		}
 
@@ -148,15 +148,9 @@ void evaluateHeartRate(const std::string &csvFilePath)
 	outFile << "Test Subject,Our Algorithm MAE,Other Algorithm MAE,Our Algorithm RMSE,Other Algorithm RMSE\n";
 
 	for (const auto &videoData : videoDataList) {
-		std::cout << "Got to here" << std::endl;
 		std::vector<double> predicted = calculateHeartRateForVideo(videoData);
-		std::cout << "Got to here" << std::endl;
 		double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
-		std::cout << "Got to here" << std::endl;
-
 		double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
-		std::cout << "Got to here" << std::endl;
-
 
 		// Extract the subject name from the video path
 		std::string subjectName = videoData.videoPath.substr(videoData.videoPath.find_last_of("/") + 1);
