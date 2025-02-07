@@ -13,12 +13,6 @@
 using namespace std;
 using namespace dlib;
 
-static inline uint64_t os_gettime_ns()
-{
-	using namespace std::chrono;
-	return duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count();
-}
-
 static char *face_landmark_path;
 static bool isLoaded = false;
 
@@ -72,11 +66,9 @@ static void loadFiles()
 std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates,
 				    int reset_tracker_count, bool enable_tracking, bool enable_debug_boxes)
 {
-	uint64_t start_ns = os_gettime_ns();
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
 
-	uint64_t convert_before = os_gettime_ns();
 	// Convert BGRA to OpenCV Mat
 	cv::Mat frameMat(frame->height, frame->width, CV_8UC4, frame->data, frame->linesize);
 
@@ -89,43 +81,33 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	}
 
 	dlib::cv_image<unsigned char> dlibImg(frameGray);
-	uint64_t convert_after = os_gettime_ns();
 
 	bool reset_face_detection = frame_count % reset_tracker_count == 0;
 	bool run_face_detection = !enable_tracking || (enable_tracking && reset_face_detection);
 
 	if (run_face_detection) {
-		uint64_t detector_before = os_gettime_ns();
 		std::vector<rectangle> faces = detector(dlibImg);
-		uint64_t detector_after = os_gettime_ns();
 
 		if (!faces.empty()) {
 			detected_face = faces[0];
 			initial_face = faces[0];
 
 			if (enable_tracking) {
-				uint64_t tracker_before = os_gettime_ns();
 				tracker.start_track(dlibImg, initial_face);
-				uint64_t tracker_after = os_gettime_ns();
 				// is_tracking = true;
 			}
 		} else {
 			return std::vector<double_t>(3, 0.0); // No face detected
 		}
 	} else if (enable_tracking) {
-		uint64_t tracker_before = os_gettime_ns();
 		tracker.update(dlibImg);
-		uint64_t tracker_after = os_gettime_ns();
 		initial_face = tracker.get_position();
 	}
 
 	// Perform landmark detection
-	uint64_t landmark_before = os_gettime_ns();
 	full_object_detection shape = sp(dlibImg, initial_face);
-	uint64_t landmark_after = os_gettime_ns();
 
 	// Exclude eyes and mouth from the mask
-	uint64_t for_loop_before = os_gettime_ns();
 	std::vector<cv::Point> leftEyes, rightEyes, mouth, faceContour;
 	for (int i = 1; i <= 17; i++)
 		faceContour.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
@@ -135,7 +117,6 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 		rightEyes.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
 	for (int i = 48; i <= 60; i++)
 		mouth.push_back(cv::Point(shape.part(i).x(), shape.part(i).y()));
-	uint64_t for_loop_after = os_gettime_ns();
 
 	if (enable_debug_boxes) {
 		face_coordinates.push_back(getBoundingBox(faceContour, width, height));
@@ -158,13 +139,11 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 		}
 	}
 
-	uint64_t convex_before = os_gettime_ns();
 	cv::Mat maskMat = cv::Mat::zeros(frameMat.size(), CV_8UC1);
 	cv::fillConvexPoly(maskMat, faceContour, cv::Scalar(255));
 	cv::fillConvexPoly(maskMat, leftEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, rightEyes, cv::Scalar(0));
 	cv::fillConvexPoly(maskMat, mouth, cv::Scalar(0));
-	uint64_t convex_after = os_gettime_ns();
 
 	cv::Scalar meanRGB = cv::mean(frameMat, maskMat);
 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
@@ -179,8 +158,6 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 		frame_count = 0;
 	}
 	frame_count++;
-
-	uint64_t end_ns = os_gettime_ns();
 
 	return avgRGB;
 }

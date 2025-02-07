@@ -181,7 +181,7 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
-	obs_data_set_default_int(settings, "ppg algorithm", 0);
+	obs_data_set_default_int(settings, "ppg algorithm", 1);
 }
 
 static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -404,7 +404,6 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
 				    std::vector<struct vec4> &face_coordinates)
 {
-	uint64_t rect_before = os_gettime_ns();
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
 
@@ -433,7 +432,6 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	gs_blend_state_pop();
 	gs_texrender_end(hrs->texrender);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
-	uint64_t rect_after = os_gettime_ns();
 	return blurredTexture;
 }
 
