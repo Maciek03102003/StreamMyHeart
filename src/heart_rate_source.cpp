@@ -26,14 +26,16 @@ const char *get_heart_rate_source_name(void *)
 static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
 {
 	UNUSED_PARAMETER(scene);
+	obs_source_t *target_source = (obs_source_t *)((void **)param)[0];      // First element is target source
+	obs_sceneitem_t **found_item = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
 
-	obs_source_t *target_source = (obs_source_t *)param;
 	obs_source_t *item_source = obs_sceneitem_get_source(item);
 
 	if (item_source == target_source) {
 		// Add a reference to the scene item to ensure it doesn't get released
 		obs_sceneitem_addref(item);
-		return false; // Stop enumeration since we found the item
+		*found_item = item; // Store the found scene item
+		return false;       // Stop enumeration since we found the item
 	}
 
 	return true; // Continue enumeration
@@ -42,9 +44,10 @@ static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, 
 static obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source)
 {
 	obs_sceneitem_t *found_item = NULL;
+	void *params[2] = {source, &found_item}; // Pass source and output pointer
 
 	// Enumerate scene items and find the one matching the source
-	obs_scene_enum_items(scene, find_scene_item_callback, source);
+	obs_scene_enum_items(scene, find_scene_item_callback, params);
 
 	return found_item;
 }
@@ -144,6 +147,7 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 // Destroy function
 void heart_rate_source_destroy(void *data)
 {
+	obs_log(LOG_INFO, "Heart rate monitor destroyed");
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
 	if (hrs) {
@@ -264,7 +268,12 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 	}
 
 	// Retrieve the target source of the filter
-	obs_source_t *target = obs_filter_get_target(hrs->source);
+	obs_source_t *target;
+	if (hrs->source) {
+		target = obs_filter_get_target(hrs->source);
+	} else {
+		return false;
+	}
 	if (!target) {
 		return false;
 	}
@@ -423,19 +432,25 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 
 	if (hrs->isDisabled) {
-		obs_source_skip_video_filter(hrs->source);
+		if (hrs->source) {
+			obs_source_skip_video_filter(hrs->source);
+		}
 		return;
 	}
 
 	if (!getBGRAFromStageSurface(hrs)) {
-		obs_source_skip_video_filter(hrs->source);
+		if (hrs->source) {
+			obs_source_skip_video_filter(hrs->source);
+		}
 		return;
 	}
 
 	if (!hrs->testing) {
 		obs_log(LOG_INFO, "Effect not loaded");
 		// Effect failed to load, skip rendering
-		obs_source_skip_video_filter(hrs->source);
+		if (hrs->source) {
+			obs_source_skip_video_filter(hrs->source);
+		}
 		return;
 	}
 
@@ -455,41 +470,61 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
 				    enable_debug_boxes);
 	}
+	obs_log(LOG_INFO, "FINISH FACE DETECTING");
 
 	double heart_rate = movingAvg.calculateHeartRate(avg);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	if (heart_rate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
-		obs_data_t *source_settings = obs_source_get_settings(source);
-		obs_data_set_string(source_settings, "text", result.c_str());
-		obs_source_update(source, source_settings);
-		obs_data_release(source_settings);
-		obs_source_release(source);
+		if (source) {
+			obs_data_t *source_settings = obs_source_get_settings(source);
+			obs_data_set_string(source_settings, "text", result.c_str());
+			obs_source_update(source, source_settings);
+			obs_data_release(source_settings);
+			obs_source_release(source);
+		}
 	}
+	obs_log(LOG_INFO, "Heart rate: %f", heart_rate);
 
 	if (enable_debug_boxes) {
+		obs_log(LOG_INFO, "Draw rectangles");
 		gs_texture_t *testingTexture =
 			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
 
 		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
-			obs_source_skip_video_filter(hrs->source);
+			obs_log(LOG_INFO, "Could not begin processing filter");
+			if (hrs->source && obs_source_enabled(hrs->source)) {
+				obs_log(LOG_INFO, "Source is skipped");
+				obs_source_skip_video_filter(hrs->source);
+			}
+
+			obs_log(LOG_INFO, "Destroy texture");
 			gs_texture_destroy(testingTexture);
 			return;
 		}
-
+		obs_log(LOG_INFO, "Filter tech begin");
 		gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
 
+		obs_log(LOG_INFO, "Draw rectangles2");
 		gs_blend_state_push();
 		gs_reset_blend_state();
 
-		obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
-						   hrs->BGRA_data->height, "Draw");
+		obs_log(LOG_INFO, "Filter tech end");
+		if (hrs->source){
+			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
+				hrs->BGRA_data->height, "Draw");
+		}
 
 		gs_blend_state_pop();
+		obs_log(LOG_INFO, "Destroy texture");
 
 		gs_texture_destroy(testingTexture);
 	} else {
-		obs_source_skip_video_filter(hrs->source);
+		obs_log(LOG_INFO, "No rectangles");
+		if (hrs->source) {
+			obs_source_skip_video_filter(hrs->source);
+		}
 	}
+	obs_log(LOG_INFO, "FINISH RENDERING");
 }
