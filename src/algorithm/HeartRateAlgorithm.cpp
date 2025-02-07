@@ -79,7 +79,8 @@ vector<double_t> pca(Window windowsRGB)
 	return result;
 }
 
-vector<double_t> chrom(Window windowsRGB) {
+vector<double_t> chrom(Window windowsRGB)
+{
 	int numSamples = static_cast<int>(windowsRGB.size());
 	int numFeatures = 3;
 
