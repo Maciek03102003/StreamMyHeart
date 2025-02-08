@@ -30,8 +30,5 @@
 # Exclude video files used for evaluation
 /eval/video_files
 
-# Exclude pyVHR evaluation results
-/eval/UBFC2_holistic.h5
-
 # Exclude pycache
 /.github/__pycache__
