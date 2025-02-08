@@ -118,14 +118,13 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 	}
 
 	cap.release();
-	// Return the final calculated heart rate (this is a placeholder)
 	return predicted;
 }
 
 // Function to center-align text within a field of a given width
 std::string centerAlign(const std::string &text, int width)
 {
-	int padding = width - static_cast<int>(text.size()); // Explicitly cast text.size() to int
+	int padding = width - static_cast<int>(text.size());
 	if (padding <= 0)
 		return text;
 	int padLeft = padding / 2;
