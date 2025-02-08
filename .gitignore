@@ -31,4 +31,4 @@
 /eval/video_files
 
 # Exclude pycache
-/.github/__pycache__
+/.github/scripts/__pycache__
