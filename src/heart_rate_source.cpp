@@ -1,6 +1,8 @@
 #include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
 #include "algorithm/face_detection/opencv_haarcascade.h"
-#include "algorithm/HeartRateAlgorithm.h"
+#include "algorithm/heart_rate_algorithm.h"
+#include "heart_rate_source.h"
+#include "plugin-support.h"
 
 #include <obs-module.h>
 #include <obs.h>
@@ -12,8 +14,6 @@
 #include <util/platform.h>
 #include <vector>
 #include <sstream>
-#include "plugin-support.h"
-#include "heart_rate_source.h"
 
 MovingAvg movingAvg;
 

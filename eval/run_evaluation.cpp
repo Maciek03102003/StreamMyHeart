@@ -1,5 +1,5 @@
 #include "algorithm/face_detection/opencv_haarcascade.h"
-#include "../algorithm/HeartRateAlgorithm.h"
+#include "../src/algorithm/heart_rate_algorithm.h"
 
 #include <iostream>
 #include <fstream>
@@ -180,7 +180,7 @@ void evaluateHeartRate(const std::string &csvFilePath)
 
 int main()
 {
-	std::string csvFilePath = "../../../../../src/eval/ground_truth.csv";
+	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
 
 	evaluateHeartRate(csvFilePath);
 

@@ -1,6 +1,8 @@
 #ifndef HEART_RATE_ALGO_H
 #define HEART_RATE_ALGO_H
 
+#include "heart_rate_source.h"
+
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -13,7 +15,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include "heart_rate_source.h"
 
 class MovingAvg {
 private:

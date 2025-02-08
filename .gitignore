@@ -7,6 +7,7 @@
 !/cmake
 !/data
 !/src
+!/eval
 !.clang-format
 !.gersemirc
 !.gitignore
@@ -27,4 +28,10 @@
 /cmake/.CMakeBuildNumber
 
 # Exclude video files used for evaluation
-/src/eval/video_files
+/eval/video_files
+
+# Exclude pyVHR evaluation results
+/eval/UBFC2_holistic.h5
+
+# Exclude pycache
+/.github/__pycache__
