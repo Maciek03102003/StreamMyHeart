@@ -265,7 +265,6 @@ Window concatWindows(Windows windows)
 double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps,
 				     int sampleRate)
 { // Assume frame in YUV format: struct obs_source_frame *source
-	UNUSED_PARAMETER(preFilter);
 	UNUSED_PARAMETER(postFilter);
 
 	fps = Fps;
@@ -277,18 +276,21 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 
 	if (!windows.empty() && static_cast<int>(windows.back().size()) == windowSize) {
 		Window currentWindow = concatWindows(windows);
+
+		Window filteredWindow = applyPreFilter(currentWindow, preFilter, fps);
+
 		switch (ppg) {
 		case 0:
 			obs_log(LOG_INFO, "Current PPG Algorithm: Green channel");
-			ppgSignal = green(currentWindow);
+			ppgSignal = green(filteredWindow);
 			break;
 		case 1:
 			obs_log(LOG_INFO, "Current PPG Algorithm: PCA");
-			ppgSignal = pca(currentWindow);
+			ppgSignal = pca(filteredWindow);
 			break;
 		case 2:
 			obs_log(LOG_INFO, "Current PPG Algorithm: Chrom");
-			ppgSignal = chrom(currentWindow);
+			ppgSignal = chrom(filteredWindow);
 			break;
 		default:
 			break;

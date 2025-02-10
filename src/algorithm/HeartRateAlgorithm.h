@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "heart_rate_source.h"
+#include "filtering/PreFilters.h"
 
 class MovingAvg {
 private:
