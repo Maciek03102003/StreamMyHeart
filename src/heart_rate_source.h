@@ -3,8 +3,10 @@
 
 #include <obs-module.h>
 
+
 #ifdef __cplusplus
 #include <mutex>
+#include <vector>
 #else
 #include <stdbool.h>
 #endif
@@ -15,6 +17,17 @@ extern "C" {
 
 #define TEXT_SOURCE_NAME "Heart Rate Display"
 #define IMAGE_SOURCE_NAME "Heart Rate Icon"
+#define GRAPH_SOURCE_NAME "Heart Rate Graph"
+
+struct graph_source {
+	obs_source_t *source;
+    gs_vertbuffer_t *vertex_buffer;
+	gs_effect_t *effect;
+	uint32_t color;
+#ifdef __cplusplus
+	std::vector<int> buffer;
+#endif
+};
 
 struct input_BGRA_data {
 	uint8_t *data;
@@ -31,6 +44,7 @@ struct heart_rate_source {
 #ifdef __cplusplus
 	input_BGRA_data *BGRA_data;
 	std::mutex BGRA_data_mutex;
+	graph_source *graphrender;
 #else
 	struct input_BGRA_data *BGRA_data;
 	void *BGRA_data_mutex; // Placeholder for C compatibility

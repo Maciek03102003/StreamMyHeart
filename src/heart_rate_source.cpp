@@ -17,7 +17,6 @@
 #include "heart_rate_source.h"
 
 MovingAvg movingAvg;
-std::vector<int> heartRateBuffer;
 
 const char *get_heart_rate_source_name(void *)
 {
@@ -120,6 +119,86 @@ static void create_text_source(obs_scene_t *scene)
 	}
 }
 
+static void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scene) {
+	// Add the graph to the OBS scene
+    obs_scene_add(scene, graph_obs_source);
+
+    // Set transform properties
+    obs_transform_info transform_info;
+    transform_info.pos.x = 300.0f;
+    transform_info.pos.y = 600.0f;
+    transform_info.bounds.x = 400.0f;
+    transform_info.bounds.y = 200.0f;
+    transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
+    transform_info.bounds_alignment = OBS_ALIGN_CENTER;
+    transform_info.alignment = OBS_ALIGN_CENTER;
+    transform_info.scale.x = 30.0f;
+    transform_info.scale.y = 30.0f;
+    transform_info.rot = 0.0f;
+
+    obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, graph_obs_source);
+    if (scene_item != NULL) {
+        obs_sceneitem_set_info2(scene_item, &transform_info);
+        obs_sceneitem_release(scene_item);
+    }
+
+    obs_source_release(graph_obs_source);
+}
+static struct graph_source *create_graph_source()
+{
+	obs_log(LOG_INFO, "create graph source");
+    // Allocate graph_source and attach it to heart_rate_source
+    struct graph_source *graphrender = (struct graph_source *)bzalloc(sizeof(struct graph_source));
+    if (!graphrender) {
+        obs_log(LOG_ERROR, "Failed to allocate graph_source.");
+        return nullptr;
+    }
+
+    // Create OBS source for the graph
+    obs_data_t *graph_settings = obs_data_create();
+    obs_source_t *graph_obs_source = obs_source_create("user_drawn_graph", "Heart Rate Graph", graph_settings, nullptr);
+    obs_data_release(graph_settings);
+
+    if (!graph_obs_source) {
+        obs_log(LOG_ERROR, "Failed to create graph source.");
+        bfree(graphrender);
+        graphrender = nullptr;
+        return nullptr;
+    }
+
+    graphrender->source = graph_obs_source;
+    graphrender->vertex_buffer = gs_vertexbuffer_create(nullptr, GS_DYNAMIC); // Create a dynamic vertex buffer
+	graphrender->color = 0xFF0000FF;
+	graphrender->effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+
+	return graphrender;
+
+    // // Add the graph to the OBS scene
+    // obs_scene_add(scene, graph_obs_source);
+
+    // // Set transform properties
+    // obs_transform_info transform_info;
+    // transform_info.pos.x = 300.0f;
+    // transform_info.pos.y = 600.0f;
+    // transform_info.bounds.x = 400.0f;
+    // transform_info.bounds.y = 200.0f;
+    // transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
+    // transform_info.bounds_alignment = OBS_ALIGN_CENTER;
+    // transform_info.alignment = OBS_ALIGN_CENTER;
+    // transform_info.scale.x = 30.0f;
+    // transform_info.scale.y = 30.0f;
+    // transform_info.rot = 0.0f;
+
+    // obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, graph_obs_source);
+    // if (scene_item != NULL) {
+    //     obs_sceneitem_set_info2(scene_item, &transform_info);
+    //     obs_sceneitem_release(scene_item);
+    // }
+
+    // obs_source_release(graph_obs_source);
+}
+
+
 static void create_image_source(obs_scene_t *scene)
 {
 	// Create the heart rate image source (assuming a file path)
@@ -175,6 +254,14 @@ static void create_obs_heart_display_source_if_needed()
 	} else {
 		create_image_source(scene);
 	}
+	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	add_graph_source_to_scene(graph_source, scene);
+	// if(graph_source) {
+	// 	obs_source_release(graph_source);
+	// 	obs_source_release(scene_as_source);
+	// } else {
+	// 	create_graph_source(scene);
+	// }
 
 	obs_source_release(scene_as_source);
 }
@@ -203,6 +290,7 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 	obs_leave_graphics();
 
 	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
+	hrs->graphrender = create_graph_source();
 	create_obs_heart_display_source_if_needed();
 
 	return hrs;
@@ -517,34 +605,36 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	return blurredTexture;
 }
 
-static void draw_graph(struct heart_rate_source *hrs, int curHeartRate) {
-    if (!hrs) return;  // Null check to avoid crashes
-	// heartRateBuffer.push_back(60);
+static void draw_graph(struct graph_source *graphrender, int curHeartRate) {
+	obs_log(LOG_INFO, "checking for null graph source");
+    if (!graphrender) return;  // Null check to avoid crashes
+	graphrender->buffer.push_back(60);
 
     // Maintain a buffer size of 10
-    while (heartRateBuffer.size() >= 10) {
-        heartRateBuffer.erase(heartRateBuffer.begin());
+    while (graphrender->buffer.size() >= 10) {
+        graphrender->buffer.erase(graphrender->buffer.begin());
     }
-    heartRateBuffer.push_back(curHeartRate);
+    graphrender->buffer.push_back(curHeartRate);
 
     obs_log(LOG_INFO, "Updating heart rate buffer...");
 
     // Start rendering
-    gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
-    if (!effect) {
+    // gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+    if (!graphrender->effect) {
         obs_log(LOG_ERROR, "Failed to get solid effect for rendering");
         return;
     }
 
-	while(gs_effect_loop(effect, "Solid")) {
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF0000FF);
+	while(gs_effect_loop(graphrender->effect, "Solid")) {
+		gs_effect_set_color(gs_effect_get_param_by_name(graphrender->effect, "color"),
+			graphrender->color);
 
 		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
 
 		obs_log(LOG_INFO, "Drawing heart rate graph...");
 		
-		for (size_t i = 0; i < heartRateBuffer.size(); i++) {
-				gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(heartRateBuffer[i]));
+		for (size_t i = 0; i < graphrender->buffer.size(); i++) {
+				gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(graphrender->buffer[i]));
 		}
 
 		gs_render_stop(GS_LINESTRIP);
@@ -632,7 +722,9 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 	obs_log(LOG_INFO, "Heart rate: %lf", heart_rate);
 
-	draw_graph(hrs, heart_rate);
+	
+	draw_graph(hrs->graphrender, heart_rate);
+	obs_log(LOG_INFO, "After draw graph!");
 
 	// if (enable_debug_boxes) {
 	// 	gs_texture_t *testingTexture =
