@@ -17,6 +17,7 @@
 #include "heart_rate_source.h"
 
 MovingAvg movingAvg;
+std::vector<int> heartRateBuffer;
 
 const char *get_heart_rate_source_name(void *)
 {
@@ -516,6 +517,56 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	return blurredTexture;
 }
 
+static void draw_graph(struct heart_rate_source *hrs, int curHeartRate) {
+    if (!hrs) return;  // Null check to avoid crashes
+	// heartRateBuffer.push_back(60);
+
+    // Maintain a buffer size of 10
+    while (heartRateBuffer.size() >= 10) {
+        heartRateBuffer.erase(heartRateBuffer.begin());
+    }
+    heartRateBuffer.push_back(curHeartRate);
+
+    obs_log(LOG_INFO, "Updating heart rate buffer...");
+
+    // Start rendering
+    gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+    if (!effect) {
+        obs_log(LOG_ERROR, "Failed to get solid effect for rendering");
+        return;
+    }
+
+	while(gs_effect_loop(effect, "Solid")) {
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF0000FF);
+
+		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
+
+		obs_log(LOG_INFO, "Drawing heart rate graph...");
+		
+		for (size_t i = 0; i < heartRateBuffer.size(); i++) {
+				gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(heartRateBuffer[i]));
+		}
+
+		gs_render_stop(GS_LINESTRIP);
+	}
+
+    // if (!gs_effect_loop(effect, "Solid")) {
+    //     obs_log(LOG_ERROR, "gs_effect_loop failed");
+    //     return;
+    // }
+
+    // gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
+
+    // obs_log(LOG_INFO, "Drawing heart rate graph...");
+    
+    // for (size_t i = 0; i < heartRateBuffer.size(); i++) {
+    //     gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(heartRateBuffer[i]));
+    // }
+
+    // gs_render_stop(GS_LINESTRIP);
+}
+
+
 // Render function
 void heart_rate_source_render(void *data, gs_effect_t *effect)
 {
@@ -581,31 +632,33 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 	obs_log(LOG_INFO, "Heart rate: %lf", heart_rate);
 
-	if (enable_debug_boxes) {
-		gs_texture_t *testingTexture =
-			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
+	draw_graph(hrs, heart_rate);
 
-		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
-			skip_video_filter_if_safe(hrs->source);
-			gs_texture_destroy(testingTexture);
-			return;
-		}
-		gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
+	// if (enable_debug_boxes) {
+	// 	gs_texture_t *testingTexture =
+	// 		draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
 
-		gs_blend_state_push();
-		gs_reset_blend_state();
+	// 	if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
+	// 		skip_video_filter_if_safe(hrs->source);
+	// 		gs_texture_destroy(testingTexture);
+	// 		return;
+	// 	}
+	// 	gs_effect_set_texture(gs_effect_get_param_by_name(hrs->testing, "image"), testingTexture);
 
-		if (hrs->source) {
-			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
-							   hrs->BGRA_data->height, "Draw");
-		}
+	// 	gs_blend_state_push();
+	// 	gs_reset_blend_state();
 
-		gs_blend_state_pop();
+	// 	if (hrs->source) {
+	// 		obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
+	// 						   hrs->BGRA_data->height, "Draw");
+	// 	}
 
-		gs_texture_destroy(testingTexture);
+	// 	gs_blend_state_pop();
 
-	} else {
-		skip_video_filter_if_safe(hrs->source);
-	}
+	// 	gs_texture_destroy(testingTexture);
+
+	// } else {
+	// 	skip_video_filter_if_safe(hrs->source);
+	// }
 	// obs_log(LOG_INFO, "FINISH RENDERING");
 }
