@@ -14,6 +14,7 @@ extern "C" {
 #endif
 
 #define TEXT_SOURCE_NAME "Heart Rate Display"
+#define IMAGE_SOURCE_NAME "Heart Rate Icon"
 
 struct input_BGRA_data {
 	uint8_t *data;

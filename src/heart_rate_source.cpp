@@ -9,6 +9,7 @@
 #include <obs-data.h>
 #include <graphics/graphics.h>
 #include <graphics/matrix4.h>
+#include <graphics/image-file.h>
 #include <util/platform.h>
 #include <vector>
 #include <sstream>
@@ -30,7 +31,7 @@ static void skip_video_filter_if_safe(obs_source_t *source)
 
 	obs_source_t *parent = obs_filter_get_parent(source);
 	if (parent) {
-		obs_log(LOG_INFO, "Source is skipped");
+		// obs_log(LOG_INFO, "Source is skipped");
 		obs_source_skip_video_filter(source);
 	} else {
 		obs_log(LOG_INFO, "No valid parent, skipping filter safely");
@@ -67,20 +68,9 @@ static obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_sourc
 	return found_item;
 }
 
-static void create_obs_heart_display_source_if_needed()
+static void create_text_source(obs_scene_t *scene)
 {
-	// check if a source called TEXT_SOURCE_NAME exists
-	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
-	if (source) {
-		// source already exists, release it
-		obs_source_release(source);
-		return;
-	}
-
-	// create a new OBS text source called TEXT_SOURCE_NAME
-	obs_source_t *scene_as_source = obs_frontend_get_current_scene();
-	obs_scene_t *scene = obs_scene_from_source(scene_as_source);
-	source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
+	obs_source_t *source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
 
 	if (source) {
 		// add source to the current scene
@@ -127,6 +117,64 @@ static void create_obs_heart_display_source_if_needed()
 
 		obs_source_release(source);
 	}
+}
+
+static void create_image_source(obs_scene_t *scene)
+{
+	// Create the heart rate image source (assuming a file path)
+	obs_data_t *image_settings = obs_data_create();
+	obs_data_set_string(image_settings, "file", "C:/Users/Elizabeth Chan/Pictures/202403__/DSCN1533.JPG");
+	obs_source_t *image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
+	obs_data_release(image_settings);
+
+	// Add image to the group
+	obs_sceneitem_t *image_sceneitem = obs_scene_add(scene, image_source);
+
+	// set transform settings
+	obs_transform_info transform_info;
+	transform_info.pos.x = 260.0;
+	transform_info.pos.y = 700.0;
+	transform_info.bounds.x = 300.0;
+	transform_info.bounds.y = 400.0;
+	transform_info.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
+	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
+	transform_info.alignment = OBS_ALIGN_CENTER;
+	transform_info.scale.x = 1.0;
+	transform_info.scale.y = 1.0;
+	transform_info.rot = 0.0;
+	obs_sceneitem_t *source_sceneitem = get_scene_item_from_source(scene, image_source);
+	if (source_sceneitem != NULL) {
+		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
+		obs_sceneitem_release(source_sceneitem);
+	}
+
+	obs_source_release(image_source);
+}
+
+static void create_obs_heart_display_source_if_needed()
+{
+	obs_source_t *scene_as_source = obs_frontend_get_current_scene();
+	obs_scene_t *scene = obs_scene_from_source(scene_as_source);
+
+	// check if a source called TEXT_SOURCE_NAME exists
+	obs_source_t *text_source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+	if (text_source) { // source already exists, release it
+		obs_source_release(text_source);
+		obs_source_release(scene_as_source);
+		return;
+	} else {
+		create_text_source(scene);
+	}
+
+	obs_source_t *image_source = obs_get_source_by_name(IMAGE_SOURCE_NAME);
+	if (image_source) {
+		obs_source_release(image_source);
+		obs_source_release(scene_as_source);
+		return;
+	} else {
+		create_image_source(scene);
+	}
+
 	obs_source_release(scene_as_source);
 }
 
@@ -159,6 +207,22 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 	return hrs;
 }
 
+static void remove_source(const char *source_name)
+{
+	obs_source_t *source = obs_get_source_by_name(source_name);
+	if (source) {
+		obs_scene_t *scene = obs_scene_from_source(obs_frontend_get_current_scene());
+		if (scene) {
+			obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, source);
+			if (scene_item) {
+				obs_sceneitem_remove(scene_item);  // Remove from scene
+				obs_sceneitem_release(scene_item); // Release scene item reference
+			}
+		}
+		obs_source_release(source); // Release the source reference
+	}
+}
+
 // Destroy function
 void heart_rate_source_destroy(void *data)
 {
@@ -167,6 +231,10 @@ void heart_rate_source_destroy(void *data)
 
 	if (hrs) {
 		hrs->isDisabled = true;
+
+		remove_source(TEXT_SOURCE_NAME);
+		remove_source(IMAGE_SOURCE_NAME);
+
 		obs_enter_graphics();
 		gs_texrender_destroy(hrs->texrender);
 		if (hrs->stagesurface) {
@@ -246,6 +314,7 @@ obs_properties_t *heart_rate_source_properties(void *data)
 	obs_property_set_modified_callback(enable_tracker, update_properties);
 	obs_property_set_modified_callback(ppg_dropdown, update_properties);
 	update_properties(props, dropdown, settings); // Apply default visibility
+	obs_data_release(settings);
 
 	return props;
 }
@@ -398,6 +467,10 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 		BGRA_data->height = height;
 		BGRA_data->linesize = linesize;
 		BGRA_data->data = video_data;
+		if (hrs->BGRA_data) {
+			bfree(hrs->BGRA_data->data);
+			bfree(hrs->BGRA_data);
+		}
 		hrs->BGRA_data = BGRA_data;
 	}
 
@@ -439,7 +512,7 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	gs_texrender_end(hrs->texrender);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
 	uint64_t rect_after = os_gettime_ns();
-	obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
+	// obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
 	return blurredTexture;
 }
 
@@ -471,22 +544,23 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
 	std::vector<struct vec4> face_coordinates;
-	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
-	obs_log(LOG_INFO, "Which algo: %d", selected_algorithm);
-	bool enable_debug_boxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
+	int64_t selected_algorithm = obs_data_get_int(settings, "face detection algorithm");
+	// obs_log(LOG_INFO, "Which algo: %d", selected_algorithm);
+	bool enable_debug_boxes = obs_data_get_bool(settings, "face detection debug boxes");
 	std::vector<double_t> avg;
 	if (selected_algorithm == 0) {
 		// Haarcascade face detection with OpenCV
 		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates, enable_debug_boxes);
 	} else if (selected_algorithm == 1) {
 		// Dlib face detection with 68 landmarks, with/without tracking
-		bool enable_tracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
-		int64_t frame_update_interval =
-			obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
+		bool enable_tracker = obs_data_get_bool(settings, "enable face tracking");
+		int64_t frame_update_interval = obs_data_get_int(settings, "frame update interval");
 		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
 				    enable_debug_boxes);
 	}
+	obs_data_release(settings);
 
 	// Get the selected PPG algorithm
 	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
@@ -497,6 +571,7 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	if (heart_rate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
+			obs_log(LOG_INFO, "Updating text source");
 			obs_data_t *source_settings = obs_source_get_settings(source);
 			obs_data_set_string(source_settings, "text", result.c_str());
 			obs_source_update(source, source_settings);
@@ -504,7 +579,7 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 			obs_source_release(source);
 		}
 	}
-	obs_log(LOG_INFO, "Heart rate: %f", heart_rate);
+	obs_log(LOG_INFO, "Heart rate: %lf", heart_rate);
 
 	if (enable_debug_boxes) {
 		gs_texture_t *testingTexture =
@@ -532,5 +607,5 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	} else {
 		skip_video_filter_if_safe(hrs->source);
 	}
-	obs_log(LOG_INFO, "FINISH RENDERING");
+	// obs_log(LOG_INFO, "FINISH RENDERING");
 }
