@@ -123,12 +123,12 @@ static void create_image_source(obs_scene_t *scene)
 {
 	// Create the heart rate image source (assuming a file path)
 	obs_data_t *image_settings = obs_data_create();
-	obs_data_set_string(image_settings, "file", "C:/Users/Elizabeth Chan/Pictures/202403__/DSCN1533.JPG");
+	obs_data_set_string(image_settings, "file", obs_module_file("heart_rate.gif"));
 	obs_source_t *image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
 	obs_data_release(image_settings);
 
 	// Add image to the group
-	obs_sceneitem_t *image_sceneitem = obs_scene_add(scene, image_source);
+	obs_scene_add(scene, image_source);
 
 	// set transform settings
 	obs_transform_info transform_info;
@@ -139,8 +139,8 @@ static void create_image_source(obs_scene_t *scene)
 	transform_info.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
 	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
 	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 1.0;
-	transform_info.scale.y = 1.0;
+	transform_info.scale.x = 0.1;
+	transform_info.scale.y = 0.1;
 	transform_info.rot = 0.0;
 	obs_sceneitem_t *source_sceneitem = get_scene_item_from_source(scene, image_source);
 	if (source_sceneitem != NULL) {
