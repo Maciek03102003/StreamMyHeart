@@ -176,14 +176,30 @@ static void create_obs_heart_display_source_if_needed()
 	} else {
 		create_image_source(scene);
 	}
+
+	// Check if the graph source already exists before creating one
 	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
-	add_graph_source_to_scene(graph_source, scene);
+	if (graph_source) {
+		obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, graph_source);
+		if (!scene_item) {
+			blog(LOG_INFO, "[pulse-obs] Graph source exists but is not in the scene, adding it...");
+			add_graph_source_to_scene(graph_source, scene);
+		} else {
+			blog(LOG_INFO, "[pulse-obs] Graph source already exists in the scene, skipping addition.");
+		}
+		obs_source_release(graph_source);
+	} else {
+		blog(LOG_INFO, "[pulse-obs] Graph source does not exist, creating a new one...");
+		//graph_source = reinterpret_cast<obs_source_t *>(create_graph_source(NULL, NULL));
+		add_graph_source_to_scene(graph_source, scene);
+	}
 	// if(graph_source) {
 	// 	obs_source_release(graph_source);
 	// 	obs_source_release(scene_as_source);
 	// } else {
 	// 	create_graph_source(scene);
 	// }
+	
 
 	obs_source_release(scene_as_source);
 }
@@ -212,8 +228,8 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 	obs_leave_graphics();
 
 	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
-	hrs->graphrender = reinterpret_cast<struct graph_source *>(create_graph_source(settings, hrs->source));
 	create_obs_heart_display_source_if_needed();
+
 
 	return hrs;
 }
@@ -253,6 +269,13 @@ void heart_rate_source_destroy(void *data)
 			gs_stagesurface_destroy(hrs->stagesurface);
 		}
 		gs_effect_destroy(hrs->testing);
+		// Destroy graph renderer
+		if (hrs->graphrender) {
+			obs_log(LOG_INFO, "Destroying graph renderer...");
+			destroy_graph_source(hrs->graphrender);  // Call graph-specific destroy function
+			hrs->graphrender = nullptr;
+		}
+		
 		obs_leave_graphics();
 		hrs->~heart_rate_source();
 		bfree(hrs);

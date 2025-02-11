@@ -40,6 +40,12 @@ void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scen
 	obs_source_release(graph_obs_source);
 }
 
+const char *get_graph_source_name(void *)
+{
+    return "user_drawn_graph";
+}
+
+
 void *create_graph_source(obs_data_t *settings, obs_source_t *source)
 {
 	UNUSED_PARAMETER(settings);
@@ -114,11 +120,34 @@ void destroy_graph_source(void *data)
 
 void graph_source_render(void *data, gs_effect_t *effect) {
     UNUSED_PARAMETER(effect);
-	struct graph_source *graphSource = reinterpret_cast<struct graph_source *>(data);
-    obs_source_t *source = obs_get_source_by_name("Heart Rate Monitor");
 
+    struct graph_source *graphSource = reinterpret_cast<struct graph_source *>(data);
+    if (!graphSource || !graphSource->source) {
+        return;  // Ensure graphSource is valid
+    }
 
+    obs_log(LOG_INFO, "Rendering graph source...");
+
+    // Retrieve OBS settings for the heart rate monitor source
+    obs_source_t *heart_rate_source = obs_get_source_by_name("Heart Rate Monitor");
+    if (!heart_rate_source) {
+        obs_log(LOG_ERROR, "Heart Rate Monitor source not found");
+        return;
+    }
+
+    obs_data_t *settings = obs_source_get_settings(heart_rate_source);
+    int curHeartRate = static_cast<int>(obs_data_get_int(settings, "heart rate"));  // Retrieve heart rate
+    obs_data_release(settings);
+    obs_source_release(heart_rate_source);
+
+    obs_log(LOG_INFO, "Current heart rate: %d", curHeartRate);
+
+    // Draw the graph using the retrieved heart rate
+    draw_graph(graphSource, curHeartRate);
+
+    obs_log(LOG_INFO, "Graph rendering completed!");
 }
+
 
 void draw_graph(struct graph_source *graphrender, int curHeartRate)
 {

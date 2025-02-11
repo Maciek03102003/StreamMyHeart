@@ -19,6 +19,7 @@ struct obs_source_info graph_source_info = {
 	.id = "user_drawn_graph",
 	.type = OBS_SOURCE_TYPE_FILTER,
 	.output_flags = OBS_SOURCE_VIDEO,
+	.get_name = get_graph_source_name,
 	.create = create_graph_source,
 	.destroy = destroy_graph_source,
 	.video_render = graph_source_render,

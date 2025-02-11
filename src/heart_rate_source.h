@@ -67,6 +67,7 @@ void draw_graph(struct graph_source *graphrender, int curHeartRate);
 void graph_source_render(void *data, gs_effect_t *effect);
 obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source);
 void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scene);
+const char *get_graph_source_name(void *);
 
 #ifdef __cplusplus
 }
