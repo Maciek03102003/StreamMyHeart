@@ -159,6 +159,7 @@ target_sources(
     # src/algorithm/face_detection/opencv_dlib_dnn.cpp
     # src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
+    src/algorithm/filtering/PreFilters.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c

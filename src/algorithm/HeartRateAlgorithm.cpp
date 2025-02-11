@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
+#include "filtering/PreFilters.h"
 
 using namespace std;
 using namespace Eigen;

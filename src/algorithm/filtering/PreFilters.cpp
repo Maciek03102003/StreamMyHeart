@@ -1,4 +1,5 @@
 #include "PreFilters.h"
+#include "plugin-support.h"
 
 using namespace std;
 using namespace Eigen;
@@ -63,10 +64,10 @@ vector<vector<double_t>> BP_filter(vector<vector<double_t>> signal, int fps) {
     size_t cols = signal[0].size();
     MatrixXd sig((int)rows, (int)cols);
 
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            sig(i, j) = signal[i][j];
-        }
+    for (int i = 0; i < static_cast<int>(rows); ++i) {
+	    for (int j = 0; j < static_cast<int>(cols); ++j) {
+		    sig(i, j) = signal[i][j];
+	    }
     }
 
     sig.transposeInPlace();
@@ -82,8 +83,8 @@ vector<vector<double_t>> BP_filter(vector<vector<double_t>> signal, int fps) {
     y.transposeInPlace();
 
     vector<vector<double_t>> result(rows, vector<double>(cols));
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
+    for (int i = 0; i < static_cast<int>(rows); ++i) {
+        for (int j = 0; j < static_cast<int>(cols); ++j) {
             result[i][j] = y(i, j);
         }
     }
