@@ -3,7 +3,6 @@
 
 #include <obs-module.h>
 
-
 #ifdef __cplusplus
 #include <mutex>
 #include <vector>
@@ -21,7 +20,7 @@ extern "C" {
 
 struct graph_source {
 	obs_source_t *source;
-    gs_vertbuffer_t *vertex_buffer;
+	gs_vertbuffer_t *vertex_buffer;
 	gs_effect_t *effect;
 	uint32_t color;
 #ifdef __cplusplus
