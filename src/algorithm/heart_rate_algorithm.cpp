@@ -1,6 +1,7 @@
-#include <obs-module.h>
+#include "heart_rate_algorithm.h"
 #include "plugin-support.h"
-#include "HeartRateAlgorithm.h"
+
+#include <obs-module.h>
 #include <fstream>
 #include <string>
 #include <cstdlib>

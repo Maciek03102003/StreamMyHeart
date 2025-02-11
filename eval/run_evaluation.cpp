@@ -1,5 +1,5 @@
 #include "algorithm/face_detection/opencv_haarcascade.h"
-#include "../algorithm/HeartRateAlgorithm.h"
+#include "../src/algorithm/heart_rate_algorithm.h"
 
 #include <iostream>
 #include <fstream>
@@ -118,14 +118,13 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 	}
 
 	cap.release();
-	// Return the final calculated heart rate (this is a placeholder)
 	return predicted;
 }
 
 // Function to center-align text within a field of a given width
 std::string centerAlign(const std::string &text, int width)
 {
-	int padding = width - static_cast<int>(text.size()); // Explicitly cast text.size() to int
+	int padding = width - static_cast<int>(text.size());
 	if (padding <= 0)
 		return text;
 	int padLeft = padding / 2;
@@ -180,7 +179,7 @@ void evaluateHeartRate(const std::string &csvFilePath)
 
 int main()
 {
-	std::string csvFilePath = "../../../../../src/eval/ground_truth.csv";
+	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
 
 	evaluateHeartRate(csvFilePath);
 

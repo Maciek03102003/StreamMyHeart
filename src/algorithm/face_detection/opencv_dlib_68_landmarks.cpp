@@ -46,7 +46,6 @@ static void loadFiles()
 	face_landmark_path = obs_module_file("shape_predictor_68_face_landmarks.dat");
 
 	if (!face_landmark_path) {
-		obs_log(LOG_ERROR, "Failed to find face landmark file");
 		throw std::runtime_error("Failed to find face landmark file");
 	}
 
@@ -54,17 +53,14 @@ static void loadFiles()
 	detector = get_frontal_face_detector();
 
 	deserialize(face_landmark_path) >> sp;
-	obs_log(LOG_INFO, "Dlib deserialize!!!!");
 
 	isLoaded = true;
-	obs_log(LOG_INFO, "Model loaded!!!!");
 
 	bfree(face_landmark_path);
 }
 
 std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates)
 {
-	obs_log(LOG_INFO, "Start face mask!!!!");
 	// Extract frame parameters
 	uint8_t *data = frame->data;
 	uint32_t width = frame->width;
@@ -78,32 +74,25 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 	cv::Mat frameBGR;
 	cv::cvtColor(frameMat, frameBGR, cv::COLOR_BGRA2BGR);
 
-	obs_log(LOG_INFO, "Dlib initialzation");
-
 	if (!isLoaded) {
 		obs_log(LOG_INFO, "Load files!!!!");
 		loadFiles();
 	}
 
 	uint64_t start_ns = os_gettime_ns();
-
-	obs_log(LOG_INFO, "Detect faces!!!!");
 	// Detect faces
 	uint64_t detector_before = os_gettime_ns();
 	std::vector<rectangle> faces = detector(cv_image<bgr_pixel>(frameBGR));
 	uint64_t detector_after = os_gettime_ns();
-	obs_log(LOG_INFO, "Detector time: %lu ns", detector_after - detector_before);
 
 	// Create a binary mask (black background, white face)
 	cv::Mat mask = cv::Mat::zeros(frameBGR.size(), CV_8UC1);
 
 	uint64_t for_loop_before = os_gettime_ns();
 	for (auto &face : faces) {
-		obs_log(LOG_INFO, "Detect faces!!!!");
 		uint64_t landmark_before = os_gettime_ns();
 		full_object_detection shape = sp(cv_image<bgr_pixel>(frameBGR), face);
 		uint64_t landmark_after = os_gettime_ns();
-		obs_log(LOG_INFO, "Landmark time: %lu ns", landmark_after - landmark_before);
 
 		// Store face contour
 		std::vector<cv::Point> faceContour;
@@ -137,7 +126,6 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 		cv::fillConvexPoly(mask, mouth, cv::Scalar(0)); // Black out mouth
 	}
 	uint64_t for_loop_after = os_gettime_ns();
-	obs_log(LOG_INFO, "Finish processing faces!!!!");
 
 	// Convert mask to a 2D boolean vector
 	std::vector<std::vector<bool>> binaryMask(height, std::vector<bool>(width, false));
@@ -147,11 +135,7 @@ std::vector<std::vector<bool>> faceMask(struct input_BGRA_data *frame, std::vect
 		}
 	}
 
-	obs_log(LOG_INFO, "For loop time: %lu ns", for_loop_after - for_loop_before);
-
 	uint64_t end_ns = os_gettime_ns();
-
-	obs_log(LOG_INFO, "Whole function time: %lu ns", end_ns - start_ns);
 
 	return binaryMask;
 }

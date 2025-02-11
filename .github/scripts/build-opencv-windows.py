@@ -154,7 +154,7 @@ def cmake_build():
     subprocess.run(verify_cmd, check=True)
 
 # Build OpenCV
-parent_dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+parent_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"Parent directory path is {parent_dir_path}")
 
 third_party_dir_path = os.path.join(parent_dir_path, "3rdparty")

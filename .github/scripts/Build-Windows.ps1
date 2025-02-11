@@ -99,7 +99,7 @@ function Build {
     if (-not (choco list opencv --exact --limit-output)) {
         Log-Information "OpenCV not found. Installing OpenCV..."
         # choco install opencv -y
-        python3 .github/build-opencv-windows.py
+        python3 .github/scripts/build-opencv-windows.py
         Log-Status "OpenCV installed."
     } else {
         Log-Status "OpenCV found."
@@ -108,7 +108,7 @@ function Build {
     Log-Group
 
     Log-Information "Preparing for Dlib installation..."
-    python3 .github/build-dlib-windows.py
+    python3 .github/scripts/build-dlib-windows.py
     Log-Group
 
     Log-Group "Configuring ${ProductName}..."

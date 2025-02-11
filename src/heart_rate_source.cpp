@@ -1,6 +1,8 @@
 #include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
 #include "algorithm/face_detection/opencv_haarcascade.h"
-#include "algorithm/HeartRateAlgorithm.h"
+#include "algorithm/heart_rate_algorithm.h"
+#include "heart_rate_source.h"
+#include "plugin-support.h"
 
 #include <obs-module.h>
 #include <obs.h>
@@ -12,8 +14,6 @@
 #include <util/platform.h>
 #include <vector>
 #include <sstream>
-#include "plugin-support.h"
-#include "heart_rate_source.h"
 
 MovingAvg movingAvg;
 
@@ -30,10 +30,8 @@ static void skip_video_filter_if_safe(obs_source_t *source)
 
 	obs_source_t *parent = obs_filter_get_parent(source);
 	if (parent) {
-		obs_log(LOG_INFO, "Source is skipped");
 		obs_source_skip_video_filter(source);
 	} else {
-		obs_log(LOG_INFO, "No valid parent, skipping filter safely");
 	}
 }
 
@@ -162,7 +160,6 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 // Destroy function
 void heart_rate_source_destroy(void *data)
 {
-	obs_log(LOG_INFO, "Heart rate monitor destroyed");
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
 	if (hrs) {
@@ -184,7 +181,7 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
-	obs_data_set_default_int(settings, "ppg algorithm", 0);
+	obs_data_set_default_int(settings, "ppg algorithm", 1);
 }
 
 static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -252,14 +249,12 @@ obs_properties_t *heart_rate_source_properties(void *data)
 
 void heart_rate_source_activate(void *data)
 {
-	obs_log(LOG_INFO, "Heart rate monitor activated");
 	struct heart_rate_source *hrs = reinterpret_cast<heart_rate_source *>(data);
 	hrs->isDisabled = false;
 }
 
 void heart_rate_source_deactivate(void *data)
 {
-	obs_log(LOG_INFO, "Heart rate monitor deactivated");
 	struct heart_rate_source *hrs = reinterpret_cast<heart_rate_source *>(data);
 	hrs->isDisabled = true;
 }
@@ -409,7 +404,6 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
 				    std::vector<struct vec4> &face_coordinates)
 {
-	uint64_t rect_before = os_gettime_ns();
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
 
@@ -438,8 +432,6 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	gs_blend_state_pop();
 	gs_texrender_end(hrs->texrender);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
-	uint64_t rect_after = os_gettime_ns();
-	obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
 	return blurredTexture;
 }
 
@@ -473,7 +465,6 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 
 	std::vector<struct vec4> face_coordinates;
 	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
-	obs_log(LOG_INFO, "Which algo: %d", selected_algorithm);
 	bool enable_debug_boxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
 	std::vector<double_t> avg;
 	if (selected_algorithm == 0) {
@@ -504,7 +495,6 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 			obs_source_release(source);
 		}
 	}
-	obs_log(LOG_INFO, "Heart rate: %f", heart_rate);
 
 	if (enable_debug_boxes) {
 		gs_texture_t *testingTexture =
@@ -532,5 +522,4 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	} else {
 		skip_video_filter_if_safe(hrs->source);
 	}
-	obs_log(LOG_INFO, "FINISH RENDERING");
 }

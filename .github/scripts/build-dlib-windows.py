@@ -7,7 +7,7 @@ REPO_URL = "https://github.com/davisking/dlib/archive/refs/tags/v19.24.6.tar.gz"
 TARBALL_NAME = "dlib-19.24.6.tar.gz"
 EXTRACTED_DIR_NAME = "dlib-19.24.6"
 
-parent_dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+parent_dir_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 print(f"Parent directory path is {parent_dir_path}")
 
 third_party_dir_path = os.path.join(parent_dir_path, "3rdparty")
