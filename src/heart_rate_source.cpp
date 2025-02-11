@@ -482,7 +482,7 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	// Get the selected PPG algorithm
 	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
 
-	double heart_rate = movingAvg.calculateHeartRate(avg, 0, selected_ppg_algorithm, 0);
+	double heart_rate = movingAvg.calculateHeartRate(avg, 1, selected_ppg_algorithm, 0);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	if (heart_rate != 0.0) {

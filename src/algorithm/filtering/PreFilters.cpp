@@ -1,64 +1,113 @@
 #include "PreFilters.h"
+
 #include "plugin-support.h"
+#include <obs-module.h>
 
 using namespace std;
 using namespace Eigen;
 
-void butterworth_bandpass(int order, double minHz, double maxHz, double fps, VectorXd &a, VectorXd &b) {
-    int n = order / 2;
-    double nyquist = fps / 2.0;
-    double low = minHz / nyquist;
-    double high = maxHz / nyquist;
+void butterworthBandpass(int order, double minHz, double maxHz, double fps, VectorXd &a, VectorXd &b) {
+	double nyquist = fps / 2.0;
+	double low = minHz / nyquist;
+	double high = maxHz / nyquist;
 
-    b = VectorXd::Zero(n + 1);
-    a = VectorXd::Zero(n + 1);
+	// Convert to pre-warped analog frequencies
+	double omega1 = tan(M_PI * low);
+	double omega2 = tan(M_PI * high);
 
-    for (int i = 0; i <= n; ++i) {
-        b(i) = (low + high) / 2.0;
-        a(i) = 1.0;
-    }
+	// Get the center frequency and bandwidth
+	double omega0 = sqrt(omega1 * omega2);
+	double bandwidth = omega2 - omega1;
+
+	// Initialize coefficient vectors
+	a = VectorXd(order + 1);
+	b = VectorXd(order + 1);
+
+	// Compute coefficients (Butterworth poles in s-domain)
+	vector<double> A(order + 1, 0);
+	vector<double> B(order + 1, 0);
+
+	for (int i = 0; i <= order; ++i) {
+		double theta = M_PI * (2 * i + 1) / (2.0 * order);
+		double sigma = -omega0 * sin(theta);
+		double omega = omega0 * cos(theta);
+		double denominator = sigma * sigma + omega * omega + bandwidth * sigma;
+
+		B[i] = bandwidth / denominator;
+		A[i] = 1.0 - (2 * sigma / denominator);
+	}
+
+	// Convert to Eigen vectors
+	for (int i = 0; i <= order; ++i) {
+		b(i) = B[i];
+		a(i) = A[i];
+	}
 }
 
-MatrixXd forward_back_filter(const VectorXd &b, const VectorXd &a, const MatrixXd &x) {
-    int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
-    MatrixXd y = x;
-    
-    // Apply filtering in forward direction
-    cout << rows << cols << endl;
-    for (int j = 0; j < cols; ++j) {
-        VectorXd column = x.col(j);
-        VectorXd filtered = column;
-        for (int i = 1; i < b.size(); ++i) {
-            if (j - i >= 0) {
-                //cout << j << "," << i << endl;
-                filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
+VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x) {
+    int n = x.size();
+    VectorXd y(n);
+    y.setZero();
+
+    for (int i = 0; i < n; ++i) {
+        y(i) = b(0) * x(i);
+        for (int j = 1; j < b.size(); ++j) {
+            if (i - j >= 0) {
+                y(i) += b(j) * x(i - j) - a(j) * y(i - j);
             }
         }
-        y.col(j) = filtered;
     }
-    
-    // Apply filtering in backward direction
+
+    return y;
+}
+
+MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x) {
+    obs_log(LOG_INFO, "Forward-backward filtering");
+    int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
+    obs_log(LOG_INFO, "Rows: %d, Cols: %d", rows, cols);
+    // MatrixXd y = x;
+    MatrixXd y(rows, cols);
+
+    // Apply filtering in forward direction
+    obs_log(LOG_INFO, "Forward direction");
     for (int j = 0; j < cols; ++j) {
-        VectorXd column = y.col(j);
-        VectorXd filtered = column;
-        for (int i = 1; i < b.size(); ++i) {
-            if (j - i >= 0) {
-                filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
-            }
-        }
-        y.col(j) = filtered;
+	    // VectorXd column = x.col(j);
+	    // VectorXd filtered = column;
+        // obs_log(LOG_INFO, "Column size: %d", column.size());
+	    // for (int i = 1; i < b.size(); ++i) {
+        //     obs_log(LOG_INFO, "iiiiiii");
+		//     if (j - i >= 0) {
+		// 	    filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
+		//     }
+	    // }
+	    // y.col(j) = filtered;
+        y.col(j) = applyIIRFilter(b, a, x.col(j));
+    }
+
+    // Apply filtering in backward direction
+    obs_log(LOG_INFO, "Backward direction");
+    for (int j = 0; j < cols; ++j) {
+        // VectorXd column = y.col(j);
+        // VectorXd filtered = column;
+        // for (int i = 1; i < b.size(); ++i) {
+        //     if (j - i >= 0) {
+        //         filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
+        //     }
+        // }
+        // y.col(j) = filtered;
+        VectorXd reversed = y.col(j).reverse();
+        reversed = applyIIRFilter(b, a, reversed);
+        y.col(j) = reversed.reverse();
     }
     
     return y;
 }
 
-vector<vector<double_t>> BP_filter(vector<vector<double_t>> signal, int fps) {
+vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps) {
 
     int order = 6;
     double minHz = 0.65;
     double maxHz = 4.0;
-
-    cout << "Band Pass filter" << endl;
 
     size_t rows = signal.size();
     size_t cols = signal[0].size();
@@ -72,14 +121,10 @@ vector<vector<double_t>> BP_filter(vector<vector<double_t>> signal, int fps) {
 
     sig.transposeInPlace();
 
-    cout << "Create and transpose" << endl;
-
     VectorXd b, a;
-    butterworth_bandpass(order, minHz, maxHz, fps, a, b);
+    butterworthBandpass(order, minHz, maxHz, fps, a, b);
 
-    cout << "Create bandpass" << endl;
-
-    MatrixXd y = forward_back_filter(a, b, sig);
+    MatrixXd y = forwardBackFilter(a, b, sig);
     y.transposeInPlace();
 
     vector<vector<double_t>> result(rows, vector<double>(cols));
@@ -97,7 +142,7 @@ vector<vector<double_t>> applyPreFilter(vector<vector<double_t>> signal, int fil
 	if (filter == 0) {
 		return signal;
 	} else if (filter == 1) { // Band pass
-		return BP_filter(signal, fps);
+		return bpFilter(signal, fps);
 	}
 
 	return {};
