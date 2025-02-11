@@ -6,7 +6,8 @@
 using namespace std;
 using namespace Eigen;
 
-void butterworthBandpass(int order, double minHz, double maxHz, double fps, VectorXd &a, VectorXd &b) {
+void butterworthBandpass(int order, double minHz, double maxHz, double fps, VectorXd &a, VectorXd &b)
+{
 	double nyquist = fps / 2.0;
 	double low = minHz / nyquist;
 	double high = maxHz / nyquist;
@@ -44,97 +45,100 @@ void butterworthBandpass(int order, double minHz, double maxHz, double fps, Vect
 	}
 }
 
-VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x) {
-    int n = x.size();
-    VectorXd y(n);
-    y.setZero();
+VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
+{
+	int n = x.size();
+	VectorXd y(n);
+	y.setZero();
 
-    for (int i = 0; i < n; ++i) {
-        y(i) = b(0) * x(i);
-        for (int j = 1; j < b.size(); ++j) {
-            if (i - j >= 0) {
-                y(i) += b(j) * x(i - j) - a(j) * y(i - j);
-            }
-        }
-    }
+	for (int i = 0; i < n; ++i) {
+		y(i) = b(0) * x(i);
+		for (int j = 1; j < b.size(); ++j) {
+			if (i - j >= 0) {
+				y(i) += b(j) * x(i - j) - a(j) * y(i - j);
+			}
+		}
+	}
 
-    return y;
+	return y;
 }
 
-MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x) {
-    obs_log(LOG_INFO, "Forward-backward filtering");
-    int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
-    obs_log(LOG_INFO, "Rows: %d, Cols: %d", rows, cols);
-    // MatrixXd y = x;
-    MatrixXd y(rows, cols);
+MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x)
+{
+	obs_log(LOG_INFO, "Forward-backward filtering");
+	int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
+	obs_log(LOG_INFO, "Rows: %d, Cols: %d", rows, cols);
+	// MatrixXd y = x;
+	MatrixXd y(rows, cols);
 
-    // Apply filtering in forward direction
-    obs_log(LOG_INFO, "Forward direction");
-    for (int j = 0; j < cols; ++j) {
-	    // VectorXd column = x.col(j);
-	    // VectorXd filtered = column;
-        // obs_log(LOG_INFO, "Column size: %d", column.size());
-	    // for (int i = 1; i < b.size(); ++i) {
-        //     obs_log(LOG_INFO, "iiiiiii");
+	// Apply filtering in forward direction
+	obs_log(LOG_INFO, "Forward direction");
+	for (int j = 0; j < cols; ++j) {
+		// VectorXd column = x.col(j);
+		// VectorXd filtered = column;
+		// obs_log(LOG_INFO, "Column size: %d", column.size());
+		// for (int i = 1; i < b.size(); ++i) {
+		//     obs_log(LOG_INFO, "iiiiiii");
 		//     if (j - i >= 0) {
 		// 	    filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
 		//     }
-	    // }
-	    // y.col(j) = filtered;
-        y.col(j) = applyIIRFilter(b, a, x.col(j));
-    }
+		// }
+		// y.col(j) = filtered;
+		y.col(j) = applyIIRFilter(b, a, x.col(j));
+	}
 
-    // Apply filtering in backward direction
-    obs_log(LOG_INFO, "Backward direction");
-    for (int j = 0; j < cols; ++j) {
-        // VectorXd column = y.col(j);
-        // VectorXd filtered = column;
-        // for (int i = 1; i < b.size(); ++i) {
-        //     if (j - i >= 0) {
-        //         filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
-        //     }
-        // }
-        // y.col(j) = filtered;
-        VectorXd reversed = y.col(j).reverse();
-        reversed = applyIIRFilter(b, a, reversed);
-        y.col(j) = reversed.reverse();
-    }
-    
-    return y;
+	// Apply filtering in backward direction
+	obs_log(LOG_INFO, "Backward direction");
+	for (int j = 0; j < cols; ++j) {
+		// VectorXd column = y.col(j);
+		// VectorXd filtered = column;
+		// for (int i = 1; i < b.size(); ++i) {
+		//     if (j - i >= 0) {
+		//         filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
+		//     }
+		// }
+		// y.col(j) = filtered;
+		VectorXd reversed = y.col(j).reverse();
+		reversed = applyIIRFilter(b, a, reversed);
+		y.col(j) = reversed.reverse();
+	}
+
+	return y;
 }
 
-vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps) {
+vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps)
+{
 
-    int order = 6;
-    double minHz = 0.65;
-    double maxHz = 4.0;
+	int order = 6;
+	double minHz = 0.65;
+	double maxHz = 4.0;
 
-    size_t rows = signal.size();
-    size_t cols = signal[0].size();
-    MatrixXd sig((int)rows, (int)cols);
+	size_t rows = signal.size();
+	size_t cols = signal[0].size();
+	MatrixXd sig((int)rows, (int)cols);
 
-    for (int i = 0; i < static_cast<int>(rows); ++i) {
-	    for (int j = 0; j < static_cast<int>(cols); ++j) {
-		    sig(i, j) = signal[i][j];
-	    }
-    }
+	for (int i = 0; i < static_cast<int>(rows); ++i) {
+		for (int j = 0; j < static_cast<int>(cols); ++j) {
+			sig(i, j) = signal[i][j];
+		}
+	}
 
-    sig.transposeInPlace();
+	sig.transposeInPlace();
 
-    VectorXd b, a;
-    butterworthBandpass(order, minHz, maxHz, fps, a, b);
+	VectorXd b, a;
+	butterworthBandpass(order, minHz, maxHz, fps, a, b);
 
-    MatrixXd y = forwardBackFilter(a, b, sig);
-    y.transposeInPlace();
+	MatrixXd y = forwardBackFilter(a, b, sig);
+	y.transposeInPlace();
 
-    vector<vector<double_t>> result(rows, vector<double>(cols));
-    for (int i = 0; i < static_cast<int>(rows); ++i) {
-        for (int j = 0; j < static_cast<int>(cols); ++j) {
-            result[i][j] = y(i, j);
-        }
-    }
-    
-    return result;
+	vector<vector<double_t>> result(rows, vector<double>(cols));
+	for (int i = 0; i < static_cast<int>(rows); ++i) {
+		for (int j = 0; j < static_cast<int>(cols); ++j) {
+			result[i][j] = y(i, j);
+		}
+	}
+
+	return result;
 }
 
 vector<vector<double_t>> applyPreFilter(vector<vector<double_t>> signal, int filter, int fps)
@@ -147,4 +151,3 @@ vector<vector<double_t>> applyPreFilter(vector<vector<double_t>> signal, int fil
 
 	return {};
 }
-
