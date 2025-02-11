@@ -61,6 +61,12 @@ void heart_rate_source_activate(void *data);
 void heart_rate_source_deactivate(void *data);
 void heart_rate_source_tick(void *data, float seconds);
 void heart_rate_source_render(void *data, gs_effect_t *effect);
+void *create_graph_source(obs_data_t *settings, obs_source_t *source);
+void destroy_graph_source(void *data);
+void draw_graph(struct graph_source *graphrender, int curHeartRate);
+void graph_source_render(void *data, gs_effect_t *effect);
+obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source);
+void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scene);
 
 #ifdef __cplusplus
 }

@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 extern struct obs_source_info heart_rate_source_info;
+extern struct obs_source_info graph_source_info;
 
 #ifdef __cplusplus
 }
