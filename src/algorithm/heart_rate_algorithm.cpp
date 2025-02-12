@@ -1,12 +1,12 @@
 #include "heart_rate_algorithm.h"
 #include "plugin-support.h"
+#include "filtering/pre_filters.h"
 
 #include <obs-module.h>
 #include <fstream>
 #include <string>
 #include <cstdlib>
 #include <cmath>
-#include "filtering/PreFilters.h"
 
 using namespace std;
 using namespace Eigen;

@@ -1,6 +1,5 @@
-#include "PreFilters.h"
+#include "pre_filters.h"
 
-#include "plugin-support.h"
 #include <obs-module.h>
 
 using namespace std;
@@ -47,7 +46,7 @@ void butterworthBandpass(int order, double minHz, double maxHz, double fps, Vect
 
 VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
 {
-	int n = x.size();
+	size_t n = x.size();
 	VectorXd y(n);
 	y.setZero();
 
@@ -65,39 +64,16 @@ VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
 
 MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x)
 {
-	obs_log(LOG_INFO, "Forward-backward filtering");
 	int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
-	obs_log(LOG_INFO, "Rows: %d, Cols: %d", rows, cols);
-	// MatrixXd y = x;
 	MatrixXd y(rows, cols);
 
 	// Apply filtering in forward direction
-	obs_log(LOG_INFO, "Forward direction");
 	for (int j = 0; j < cols; ++j) {
-		// VectorXd column = x.col(j);
-		// VectorXd filtered = column;
-		// obs_log(LOG_INFO, "Column size: %d", column.size());
-		// for (int i = 1; i < b.size(); ++i) {
-		//     obs_log(LOG_INFO, "iiiiiii");
-		//     if (j - i >= 0) {
-		// 	    filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
-		//     }
-		// }
-		// y.col(j) = filtered;
 		y.col(j) = applyIIRFilter(b, a, x.col(j));
 	}
 
 	// Apply filtering in backward direction
-	obs_log(LOG_INFO, "Backward direction");
 	for (int j = 0; j < cols; ++j) {
-		// VectorXd column = y.col(j);
-		// VectorXd filtered = column;
-		// for (int i = 1; i < b.size(); ++i) {
-		//     if (j - i >= 0) {
-		//         filtered(i) += b(i) * column(j - i) - a(i) * filtered(j - i);
-		//     }
-		// }
-		// y.col(j) = filtered;
 		VectorXd reversed = y.col(j).reverse();
 		reversed = applyIIRFilter(b, a, reversed);
 		y.col(j) = reversed.reverse();
