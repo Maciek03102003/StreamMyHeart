@@ -50,9 +50,9 @@ VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
 	VectorXd y(n);
 	y.setZero();
 
-	for (int i = 0; i < n; ++i) {
+	for (int i = 0; i < static_cast<int>(n); ++i) {
 		y(i) = b(0) * x(i);
-		for (int j = 1; j < b.size(); ++j) {
+		for (int j = 1; j < static_cast<int>(b.size()); ++j) {
 			if (i - j >= 0) {
 				y(i) += b(j) * x(i - j) - a(j) * y(i - j);
 			}
