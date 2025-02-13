@@ -23,8 +23,9 @@ const char *get_heart_rate_source_name(void *)
 	return "Heart Rate Monitor";
 }
 
-static void skip_video_filter_if_safe(obs_source_t *source)
+void skip_video_filter_if_safe(obs_source_t *source)
 {
+	obs_log(LOG_INFO, "skip video filter");
 	if (!source) {
 		return;
 	}
@@ -153,8 +154,9 @@ static void create_image_source(obs_scene_t *scene)
 	obs_source_release(image_source);
 }
 
-static void create_obs_heart_display_source_if_needed()
+static void create_obs_heart_display_source_if_needed(obs_source_t *hrs)
 {
+	obs_log(LOG_INFO, "create obs heart display source if needed");
 	obs_source_t *scene_as_source = obs_frontend_get_current_scene();
 	obs_scene_t *scene = obs_scene_from_source(scene_as_source);
 
@@ -168,38 +170,54 @@ static void create_obs_heart_display_source_if_needed()
 		create_text_source(scene);
 	}
 
-	obs_source_t *image_source = obs_get_source_by_name(IMAGE_SOURCE_NAME);
-	if (image_source) {
-		obs_source_release(image_source);
+	// obs_source_t *image_source = obs_get_source_by_name(IMAGE_SOURCE_NAME);
+	// if (image_source) {
+	// 	obs_source_release(image_source);
+	// 	obs_source_release(scene_as_source);
+	// 	return;
+	// } else {
+	// 	create_image_source(scene);
+	// }
+
+	// Check if the graph source already exists before creating one
+	// obs_log(LOG_INFO, "create new graph source");
+	// create_graph_source(scene);
+	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	if (graph_source) {
+		// obs_log(LOG_INFO, "graph source already exists");
+		obs_source_release(graph_source);
 		obs_source_release(scene_as_source);
 		return;
 	} else {
-		create_image_source(scene);
+		// obs_log(LOG_INFO, "create new graph source");
+		create_graph_source(scene, hrs);
 	}
-
-	// Check if the graph source already exists before creating one
-	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
-	if (graph_source) {
-		obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, graph_source);
-		if (!scene_item) {
-			blog(LOG_INFO, "[pulse-obs] Graph source exists but is not in the scene, adding it...");
-			add_graph_source_to_scene(graph_source, scene);
-		} else {
-			blog(LOG_INFO, "[pulse-obs] Graph source already exists in the scene, skipping addition.");
-		}
-		obs_source_release(graph_source);
-	} else {
-		blog(LOG_INFO, "[pulse-obs] Graph source does not exist, creating a new one...");
-		//graph_source = reinterpret_cast<obs_source_t *>(create_graph_source(NULL, NULL));
-		add_graph_source_to_scene(graph_source, scene);
-	}
+	// graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	// if(graph_source) {
+	// 	obs_log(LOG_INFO, "in create if needed: there is a graph source");
+	// } else {
+	// 	obs_log(LOG_INFO, "in create if needed: there isn't a graph source");
+	// }
+	// if (graph_source) {
+	// 	obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, graph_source);
+	// 	if (!scene_item) {
+	// 		blog(LOG_INFO, "[pulse-obs] Graph source exists but is not in the scene, adding it...");
+	// 		add_graph_source_to_scene(graph_source, scene);
+	// 	} else {
+	// 		blog(LOG_INFO, "[pulse-obs] Graph source already exists in the scene, skipping addition.");
+	// 	}
+	// 	obs_source_release(graph_source);
+	// } else {
+	// 	blog(LOG_INFO, "[pulse-obs] Graph source does not exist, creating a new one...");
+	// 	graph_source = reinterpret_cast<struct graph_source *>(create_graph_source(NULL, NULL))->source;
+	// 	add_graph_source_to_scene(graph_source, scene);
+	// }
 	// if(graph_source) {
 	// 	obs_source_release(graph_source);
 	// 	obs_source_release(scene_as_source);
 	// } else {
 	// 	create_graph_source(scene);
 	// }
-	
 
 	obs_source_release(scene_as_source);
 }
@@ -225,11 +243,28 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 		heart_rate_source_destroy(hrs);
 		hrs = NULL;
 	}
+
+	// hrs->graph_effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+	// if(!hrs->graph_effect) {
+	// 	heart_rate_source_destroy(hrs);
+	// 	hrs = NULL;
+	// }
+
 	obs_leave_graphics();
 
-	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
-	create_obs_heart_display_source_if_needed();
-
+	// hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
+	// obs_source_t *graph_source = obs_source_create("user_drawn_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
+	// this fix the crash on start
+	obs_log(LOG_INFO, "heart rate source create");
+	create_obs_heart_display_source_if_needed(hrs->source);
+	// hrs->graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	// obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	// if(graph_source) {
+	// 	obs_log(LOG_INFO, "there exists a graph source");
+	// 	hrs->graph_source = graph_source;
+	// }
+	// std::vector<int> buffer;
+	// hrs->buffer = buffer;
 
 	return hrs;
 }
@@ -260,7 +295,7 @@ void heart_rate_source_destroy(void *data)
 		hrs->isDisabled = true;
 
 		remove_source(TEXT_SOURCE_NAME);
-		remove_source(IMAGE_SOURCE_NAME);
+		// remove_source(IMAGE_SOURCE_NAME);
 		remove_source(GRAPH_SOURCE_NAME);
 
 		obs_enter_graphics();
@@ -270,12 +305,12 @@ void heart_rate_source_destroy(void *data)
 		}
 		gs_effect_destroy(hrs->testing);
 		// Destroy graph renderer
-		if (hrs->graphrender) {
-			obs_log(LOG_INFO, "Destroying graph renderer...");
-			destroy_graph_source(hrs->graphrender);  // Call graph-specific destroy function
-			hrs->graphrender = nullptr;
-		}
-		
+		// if (hrs->graphrender) {
+		// 	obs_log(LOG_INFO, "Destroying graph renderer...");
+		// 	destroy_graph_source(hrs->graphrender);  // Call graph-specific destroy function
+		// 	hrs->graphrender = nullptr;
+		// }
+
 		obs_leave_graphics();
 		hrs->~heart_rate_source();
 		bfree(hrs);
@@ -288,8 +323,8 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
 	obs_data_set_default_int(settings, "ppg algorithm", 0);
-	obs_data_set_default_string(settings, "heart rate text", "Heart Rate: {hr} BPM");
-	obs_data_set_default_int(settings, "heart rate", 1);
+	// obs_data_set_default_string(settings, "heart rate text", "Heart Rate: {hr} BPM");
+	// obs_data_set_default_int(settings, "heart rate", 1);
 }
 
 static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -308,19 +343,19 @@ static bool update_properties(obs_properties_t *props, obs_property_t *property,
 	obs_property_set_visible(frame_update_interval, is_dlib_selected && is_tracker_enabled);
 	obs_property_set_visible(frame_update_interval_explain, is_dlib_selected && is_tracker_enabled);
 
-	obs_source_t *text_source = obs_get_source_by_name(TEXT_SOURCE_NAME);
-	if (text_source) {
-		obs_data_t *text_settings = obs_source_get_settings(text_source);
-		std::string textFormat = obs_data_get_string(settings, "heart rate text");
-		size_t pos = textFormat.find("{hr}");
-		if (pos != std::string::npos) {
-			textFormat.replace(pos, 4, std::to_string(obs_data_get_int(settings, "heart rate")));
-		}
-		obs_data_set_string(text_settings, "text", textFormat.c_str());
-		obs_source_update(text_source, text_settings);
-		obs_data_release(text_settings);
-		obs_source_release(text_source);
-	}
+	// obs_source_t *text_source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+	// if (text_source) {
+	// 	obs_data_t *text_settings = obs_source_get_settings(text_source);
+	// 	std::string textFormat = obs_data_get_string(settings, "heart rate text");
+	// 	size_t pos = textFormat.find("{hr}");
+	// 	if (pos != std::string::npos) {
+	// 		textFormat.replace(pos, 4, std::to_string(obs_data_get_int(settings, "heart rate")));
+	// 	}
+	// 	obs_data_set_string(text_settings, "text", textFormat.c_str());
+	// 	obs_source_update(text_source, text_settings);
+	// 	obs_data_release(text_settings);
+	// 	obs_source_release(text_source);
+	// }
 
 	return true; // Forces the UI to refresh
 }
@@ -359,18 +394,18 @@ obs_properties_t *heart_rate_source_properties(void *data)
 	obs_property_list_add_int(ppg_dropdown, "Green Channel", 0);
 	obs_property_list_add_int(ppg_dropdown, "PCA", 1);
 	obs_property_list_add_int(ppg_dropdown, "Chrom", 2);
-	
-	// Allow user to customise heart rate display text 
-	obs_property_t *heartRateText = obs_properties_add_text(
-		props, "heart rate text",
-		obs_module_text("Enter display text with {hr} representing the heart rate we calculated: "),
-		OBS_TEXT_DEFAULT);
+
+	// // Allow user to customise heart rate display text
+	// obs_property_t *heartRateText = obs_properties_add_text(
+	// 	props, "heart rate text",
+	// 	obs_module_text("Enter display text with {hr} representing the heart rate we calculated: "),
+	// 	OBS_TEXT_DEFAULT);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 	obs_property_set_modified_callback(dropdown, update_properties);
 	obs_property_set_modified_callback(enable_tracker, update_properties);
 	obs_property_set_modified_callback(ppg_dropdown, update_properties);
-	obs_property_set_modified_callback(heartRateText, update_properties);
+	// obs_property_set_modified_callback(heartRateText, update_properties);
 	update_properties(props, dropdown, settings); // Apply default visibility
 	obs_data_release(settings);
 
@@ -578,19 +613,22 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 void heart_rate_source_render(void *data, gs_effect_t *effect)
 {
 	// UNUSED_PARAMETER(effect);
-
+	obs_log(LOG_INFO, "start heart_rate_source_render");
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
 	if (!hrs->source) {
+		obs_log(LOG_INFO, "no source???");
 		return;
 	}
 
 	if (hrs->isDisabled) {
+		obs_log(LOG_INFO, "hrs disabled");
 		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
 
 	if (!getBGRAFromStageSurface(hrs)) {
+		obs_log(LOG_INFO, "BGRA failed");
 		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
@@ -603,13 +641,15 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 
 	obs_data_t *settings = obs_source_get_settings(hrs->source);
-
+	if (!settings) {
+		obs_log(LOG_INFO, "settings is null");
+	}
 	int64_t selected_algorithm = obs_data_get_int(settings, "face detection algorithm");
 	bool enable_debug_boxes = obs_data_get_bool(settings, "face detection debug boxes");
 
 	std::vector<double_t> avg;
 	std::vector<struct vec4> face_coordinates;
-
+	obs_log(LOG_INFO, "start face detection");
 	if (selected_algorithm == 0) {
 		// Haarcascade face detection with OpenCV
 		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates, enable_debug_boxes);
@@ -620,37 +660,44 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
 				    enable_debug_boxes);
 	}
-	
+	obs_log(LOG_INFO, "done face detection");
+
 	// Get the selected PPG algorithm
 	int64_t selected_ppg_algorithm = obs_data_get_int(settings, "ppg algorithm");
 
 	double heart_rate = movingAvg.calculateHeartRate(avg, 0, selected_ppg_algorithm, 0);
-	obs_data_set_int(settings, "heart rate", (int)heart_rate);
+	obs_log(LOG_INFO, "done calculating");
+	// obs_data_set_int(settings, "heart rate", (int)heart_rate);
 
 	if (heart_rate != 0.0) {
-		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
-		if (source) {
-			obs_data_t *source_settings = obs_source_get_settings(source);
-			// Replace {hr} in the format string with the actual heart rate
-			std::string textFormat = obs_data_get_string(settings, "heart rate text");
-			size_t pos = textFormat.find("{hr}");
-			if (pos != std::string::npos) {
-				textFormat.replace(pos, 4, std::to_string((int)heart_rate));
-			}
-			obs_data_set_string(source_settings, "text", textFormat.c_str());
-			obs_source_update(source, source_settings);
-			obs_data_release(source_settings);
-			obs_source_release(source);
-		}
+		// obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+		// if (source) {
+		// 	obs_data_t *source_settings = obs_source_get_settings(source);
+		// 	// Replace {hr} in the format string with the actual heart rate
+		// 	std::string textFormat = obs_data_get_string(settings, "heart rate text");
+		// 	size_t pos = textFormat.find("{hr}");
+		// 	if (pos != std::string::npos) {
+		// 		textFormat.replace(pos, 4, std::to_string((int)heart_rate));
+		// 	}
+		// 	obs_data_set_string(source_settings, "text", textFormat.c_str());
+		// 	obs_source_update(source, source_settings);
+		// 	obs_data_release(source_settings);
+		// 	obs_source_release(source);
+		// }
 	}
+	obs_log(LOG_INFO, "update source settings");
 	obs_source_update(hrs->source, settings);
 	obs_data_release(settings);
 
-	graph_source_render(hrs->graphrender, effect);
-	// draw_graph(hrs->graphrender, heart_rate);
-	obs_log(LOG_INFO, "After draw graph!");
+	// obs_data_t *graph_settings = obs_source_get_settings(hrs->graph_source);
+	// obs_data_set_int(settings, "heart rate", (int)heart_rate);
+
+	// graph_source_render(hrs->graphrender, effect);
+	// draw_graph(hrs, heart_rate);
+	// obs_log(LOG_INFO, "After draw graph!");
 
 	if (enable_debug_boxes) {
+		obs_log(LOG_INFO, "starting drawing");
 		gs_texture_t *testingTexture =
 			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
 
@@ -674,7 +721,9 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		gs_texture_destroy(testingTexture);
 
 	} else {
+		obs_log(LOG_INFO, "starting to skip");
 		skip_video_filter_if_safe(hrs->source);
 	}
+	obs_log(LOG_INFO, "end heart_rate_source_render");
 	// obs_log(LOG_INFO, "FINISH RENDERING");
 }

@@ -16,11 +16,13 @@ struct obs_source_info heart_rate_source_info = {
 };
 
 struct obs_source_info graph_source_info = {
-	.id = "user_drawn_graph",
+	.id = "heart_rate_graph",
 	.type = OBS_SOURCE_TYPE_FILTER,
-	.output_flags = OBS_SOURCE_VIDEO,
+	.output_flags = OBS_SOURCE_VIDEO | OBS_SOURCE_CUSTOM_DRAW,
 	.get_name = get_graph_source_name,
-	.create = create_graph_source,
-	.destroy = destroy_graph_source,
+	.create = create_graph_source_info,
+	.destroy = destroy_graph_source_info,
 	.video_render = graph_source_render,
+	.get_width = graph_source_info_get_width,
+	.get_height = graph_source_info_get_height,
 };
