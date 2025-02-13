@@ -182,6 +182,8 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
 	obs_data_set_default_int(settings, "ppg algorithm", 1);
+	obs_data_set_default_int(settings, "pre-filtering method", 1);
+	obs_data_set_default_bool(settings, "post-filtering", true);
 }
 
 static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -237,6 +239,18 @@ obs_properties_t *heart_rate_source_properties(void *data)
 	obs_property_list_add_int(ppg_dropdown, "Green Channel", 0);
 	obs_property_list_add_int(ppg_dropdown, "PCA", 1);
 	obs_property_list_add_int(ppg_dropdown, "Chrom", 2);
+
+	// Add dropdown for pre-filtering methods
+	obs_property_t *pre_filter_dropdown = obs_properties_add_list(props, "pre-filtering method",
+								      obs_module_text("Pre-Filtering Method:"),
+								      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(pre_filter_dropdown, "None", 0);
+	obs_property_list_add_int(pre_filter_dropdown, "Bandpass", 1);
+	obs_property_list_add_int(pre_filter_dropdown, "Detrend", 2);
+	obs_property_list_add_int(pre_filter_dropdown, "Zero Mean", 3);
+
+	// Add boolean tick box for post-filtering
+	obs_properties_add_bool(props, "post-filtering", obs_module_text("Enable Post-Filtering"));
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 	obs_property_set_modified_callback(dropdown, update_properties);
@@ -479,10 +493,13 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 				    enable_debug_boxes);
 	}
 
-	// Get the selected PPG algorithm
+	// Get the settings for calculating the heart rate
 	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
+	int64_t selected_pre_filtering = obs_data_get_int(obs_source_get_settings(hrs->source), "pre-filtering method");
+	bool enable_post_filtering = obs_data_get_bool(obs_source_get_settings(hrs->source), "post-filtering");
+	int64_t selected_post_filtering = enable_post_filtering ? 1 : 0;
 
-	double heart_rate = movingAvg.calculateHeartRate(avg, 1, selected_ppg_algorithm, 0);
+	double heart_rate = movingAvg.calculateHeartRate(avg, selected_pre_filtering, selected_ppg_algorithm, selected_post_filtering);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	if (heart_rate != 0.0) {
