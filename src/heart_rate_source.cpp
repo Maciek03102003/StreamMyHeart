@@ -499,7 +499,8 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	bool enable_post_filtering = obs_data_get_bool(obs_source_get_settings(hrs->source), "post-filtering");
 	int64_t selected_post_filtering = enable_post_filtering ? 1 : 0;
 
-	double heart_rate = movingAvg.calculateHeartRate(avg, selected_pre_filtering, selected_ppg_algorithm, selected_post_filtering);
+	double heart_rate = movingAvg.calculateHeartRate(avg, selected_pre_filtering, selected_ppg_algorithm,
+							 selected_post_filtering);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
 
 	if (heart_rate != 0.0) {
