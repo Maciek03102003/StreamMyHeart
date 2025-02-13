@@ -1,0 +1,83 @@
+#include "filter_util.h"
+
+#include <obs-module.h>
+
+using namespace std;
+using namespace Eigen;
+
+void butterworthBandpass(int order, double minHz, double maxHz, double fps, VectorXd &a, VectorXd &b)
+{
+	double nyquist = fps / 2.0;
+	double low = minHz / nyquist;
+	double high = maxHz / nyquist;
+
+	// Convert to pre-warped analog frequencies
+	double omega1 = tan(M_PI * low);
+	double omega2 = tan(M_PI * high);
+
+	// Get the center frequency and bandwidth
+	double omega0 = sqrt(omega1 * omega2);
+	double bandwidth = omega2 - omega1;
+
+	// Initialize coefficient vectors
+	a = VectorXd(order + 1);
+	b = VectorXd(order + 1);
+
+	// Compute coefficients (Butterworth poles in s-domain)
+	vector<double> A(order + 1, 0);
+	vector<double> B(order + 1, 0);
+
+	for (int i = 0; i <= order; ++i) {
+		double theta = M_PI * (2 * i + 1) / (2.0 * order);
+		double sigma = -omega0 * sin(theta);
+		double omega = omega0 * cos(theta);
+		double denominator = sigma * sigma + omega * omega + bandwidth * sigma;
+
+		B[i] = bandwidth / denominator;
+		A[i] = 1.0 - (2 * sigma / denominator);
+	}
+
+	// Convert to Eigen vectors
+	for (int i = 0; i <= order; ++i) {
+		b(i) = B[i];
+		a(i) = A[i];
+	}
+}
+
+VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
+{
+	size_t n = x.size();
+	VectorXd y(n);
+	y.setZero();
+
+	for (int i = 0; i < static_cast<int>(n); ++i) {
+		y(i) = b(0) * x(i);
+		for (int j = 1; j < static_cast<int>(b.size()); ++j) {
+			if (i - j >= 0) {
+				y(i) += b(j) * x(i - j) - a(j) * y(i - j);
+			}
+		}
+	}
+
+	return y;
+}
+
+MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x)
+{
+	int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
+	MatrixXd y(rows, cols);
+
+	// Apply filtering in forward direction
+	for (int j = 0; j < cols; ++j) {
+		y.col(j) = applyIIRFilter(b, a, x.col(j));
+	}
+
+	// Apply filtering in backward direction
+	for (int j = 0; j < cols; ++j) {
+		VectorXd reversed = y.col(j).reverse();
+		reversed = applyIIRFilter(b, a, reversed);
+		y.col(j) = reversed.reverse();
+	}
+
+	return y;
+}

@@ -110,6 +110,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0, fps);
 		if (heartRate != 0) {
+			std::cout << heartRate << std::endl;
 			predicted.push_back(heartRate);
 		}
 
@@ -179,7 +180,7 @@ void evaluateHeartRate(const std::string &csvFilePath)
 
 int main()
 {
-	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
+	std::string csvFilePath = "../../eval/ground_truth.csv";
 
 	evaluateHeartRate(csvFilePath);
 

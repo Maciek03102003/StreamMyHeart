@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <iostream>
+#include <numeric>
 
 std::vector<std::vector<double_t>> applyPreFilter(std::vector<std::vector<double_t>> signal, int filter, int fps);
 

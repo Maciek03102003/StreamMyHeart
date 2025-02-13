@@ -1,6 +1,7 @@
 #include "heart_rate_algorithm.h"
 #include "plugin-support.h"
 #include "filtering/pre_filters.h"
+#include "filtering/post_filters.h"
 
 #include <obs-module.h>
 #include <fstream>
@@ -160,7 +161,7 @@ double MovingAvg::welch(vector<double_t> bvps)
 	int overlap = 200;
 
 	double frequency_resolution = (fps * 60.0) / num_frames;
-	int nyquist_limit = segment_size / 2;
+	int nyquist_limit = fps / 2;
 
 	// Convert signal to Eigen array
 	ArrayXd signal = Eigen::Map<const ArrayXd>(bvps.data(), bvps.size());
@@ -267,7 +268,6 @@ Window concatWindows(Windows windows)
 double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps,
 				     int sampleRate)
 { // Assume frame in YUV format: struct obs_source_frame *source
-	UNUSED_PARAMETER(postFilter);
 
 	fps = Fps;
 	windowSize = sampleRate * fps;
@@ -283,20 +283,22 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 
 		switch (ppg) {
 		case 0:
-			obs_log(LOG_INFO, "Current PPG Algorithm: Green channel");
+			//obs_log(LOG_INFO, "Current PPG Algorithm: Green channel");
 			ppgSignal = green(filteredWindow);
 			break;
 		case 1:
-			obs_log(LOG_INFO, "Current PPG Algorithm: PCA");
+			//obs_log(LOG_INFO, "Current PPG Algorithm: PCA");
 			ppgSignal = pca(filteredWindow);
 			break;
 		case 2:
-			obs_log(LOG_INFO, "Current PPG Algorithm: Chrom");
+			//obs_log(LOG_INFO, "Current PPG Algorithm: Chrom");
 			ppgSignal = chrom(filteredWindow);
 			break;
 		default:
 			break;
 		}
+
+		vector<double_t> filtered_ppg = applyPostFilter(ppgSignal, postFilter, fps);
 
 		return welch(ppgSignal);
 	} else {
