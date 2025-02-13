@@ -1,4 +1,5 @@
 #include "algorithm/face_detection/opencv_haarcascade.h"
+#include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
 #include "../src/algorithm/heart_rate_algorithm.h"
 
 #include <iostream>
@@ -105,12 +106,13 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		input_BGRA_data bgraData = extractBGRAData(bgraFrame);
 
 		// Perform face detection
-		std::vector<double_t> avg = detectFacesAndCreateMask(&bgraData, faceCoordinates, false, true);
+		std::vector<double_t> avg = detectFaceAOI(&bgraData, faceCoordinates, 60, true, false, true);
+
+		// std::vector<double_t> avg = detectFacesAndCreateMask(&bgraData, faceCoordinates, false, true);
 
 		// Calculate heart rate using your algorithm
-		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0, fps);
+		double heartRate = movingAvg.calculateHeartRate(avg, 1, 2, 1, fps);
 		if (heartRate != 0) {
-			std::cout << heartRate << std::endl;
 			predicted.push_back(heartRate);
 		}
 
@@ -180,7 +182,7 @@ void evaluateHeartRate(const std::string &csvFilePath)
 
 int main()
 {
-	std::string csvFilePath = "../../eval/ground_truth.csv";
+	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
 
 	evaluateHeartRate(csvFilePath);
 

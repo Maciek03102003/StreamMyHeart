@@ -10,6 +10,7 @@
 #include "heart_rate_source.h"
 
 std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates,
-				    int reset_tracker_count, bool enable_tracking, bool enable_debug_boxes);
+				    int reset_tracker_count, bool enable_tracking, bool enable_debug_boxes,
+				    bool evaluation = false);
 
 #endif // FACE_TRACKER_H

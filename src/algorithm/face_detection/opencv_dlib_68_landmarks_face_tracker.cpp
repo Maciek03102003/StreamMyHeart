@@ -44,9 +44,14 @@ static struct vec4 getBoundingBox(const std::vector<cv::Point> &landmarks, uint3
 	return rect;
 }
 
-static void loadFiles()
+static void loadFiles(bool evaluation)
 {
-	face_landmark_path = obs_module_file("shape_predictor_68_face_landmarks.dat");
+	if (evaluation) {
+		face_landmark_path = (char *)bmalloc(strlen("shape_predictor_68_face_landmarks.dat") + 1);
+		strcpy(face_landmark_path, "shape_predictor_68_face_landmarks.dat");
+	} else {
+		face_landmark_path = obs_module_file("shape_predictor_68_face_landmarks.dat");
+	}
 
 	if (!face_landmark_path) {
 		throw std::runtime_error("Failed to find face landmark file");
@@ -64,7 +69,8 @@ static void loadFiles()
 
 // Function to detect face on the first frame and track in subsequent frames
 std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates,
-				    int reset_tracker_count, bool enable_tracking, bool enable_debug_boxes)
+				    int reset_tracker_count, bool enable_tracking, bool enable_debug_boxes,
+				    bool evaluation)
 {
 	uint32_t width = frame->width;
 	uint32_t height = frame->height;
@@ -77,7 +83,7 @@ std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<s
 	cv::cvtColor(frameMat, frameGray, cv::COLOR_BGRA2GRAY);
 
 	if (!isLoaded) {
-		loadFiles();
+		loadFiles(evaluation);
 	}
 
 	dlib::cv_image<unsigned char> dlibImg(frameGray);
