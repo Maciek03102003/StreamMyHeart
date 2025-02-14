@@ -162,6 +162,8 @@ target_sources(
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c
+    src/graph_source.cpp
+    src/graph_source_info.c
     src/eval/run_evaluation.cpp
 )
 
