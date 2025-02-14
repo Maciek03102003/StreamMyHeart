@@ -73,9 +73,9 @@ vector<double_t> pca(Window windowsRGB)
 
 	MatrixXd cov = (centered.transpose() * centered) / double(numSamples - 1);
 	SelfAdjointEigenSolver<MatrixXd> solver(cov);
-	MatrixXd eigenvects = solver.eigenvectors();
+	MatrixXd eigenVects = solver.eigenvectors();
 
-	VectorXd pc = eigenvects.col(numFeatures - 1);
+	VectorXd pc = eigenVects.col(numFeatures - 1);
 	VectorXd transformed = centered * pc;
 
 	vector<double_t> result(transformed.data(), transformed.data() + transformed.size());
@@ -105,10 +105,10 @@ vector<double_t> chrom(Window windowsRGB)
 	return vector<double_t>(bvp.data(), bvp.data() + bvp.size());
 }
 
-void MovingAvg::updateWindows(vector<double_t> frame_avg)
+void MovingAvg::updateWindows(vector<double_t> frameAvg)
 {
 	if (windows.empty()) {
-		windows.push_back({frame_avg});
+		windows.push_back({frameAvg});
 		return;
 	}
 
@@ -116,22 +116,22 @@ void MovingAvg::updateWindows(vector<double_t> frame_avg)
 
 	if (static_cast<int>(last.size()) == windowSize) {
 		Window newWindow = Window(last.end() - windowStride, last.end());
-		newWindow.push_back(frame_avg);
+		newWindow.push_back(frameAvg);
 		if (static_cast<int>(windows.size()) == maxNumWindows) {
 			windows.erase(windows.begin());
 		}
 		windows.push_back(newWindow);
 	} else {
-		windows.back().push_back(frame_avg);
+		windows.back().push_back(frameAvg);
 	}
 }
 
-FrameRGB extractRGB(struct input_BGRA_data *BGRA_data)
+FrameRGB extractRGB(struct input_BGRA_data *bgraData)
 {
-	uint8_t *data = BGRA_data->data;
-	uint32_t width = BGRA_data->width;
-	uint32_t height = BGRA_data->height;
-	uint32_t linesize = BGRA_data->linesize;
+	uint8_t *data = bgraData->data;
+	uint32_t width = bgraData->width;
+	uint32_t height = bgraData->height;
+	uint32_t linesize = bgraData->linesize;
 
 	FrameRGB frameRGB(height, vector<vector<uint8_t>>(width));
 
@@ -153,103 +153,103 @@ double MovingAvg::welch(vector<double_t> bvps)
 
 	using Eigen::ArrayXd;
 
-	int num_frames = static_cast<int>(bvps.size());
+	int numFrames = static_cast<int>(bvps.size());
 	int nfft = 2048;
 
 	// Define segment size and overlap
-	int segment_size = 256;
+	int segmentSize = 256;
 	int overlap = 200;
 
-	double frequency_resolution = (fps * 60.0) / num_frames;
-	int nyquist_limit = fps / 2;
+	double frequencyResolution = (fps * 60.0) / numFrames;
+	int nyquistLimit = fps / 2;
 
 	// Convert signal to Eigen array
 	ArrayXd signal = Eigen::Map<const ArrayXd>(bvps.data(), bvps.size());
 
 	// Divide signal into overlapping segments
-	int num_segments = 0;
+	int numSegments = 0;
 	ArrayXd psd = ArrayXd::Zero(nfft / 2 + 1);
 
-	if (num_frames < segment_size) {
+	if (numFrames < segmentSize) {
 
 		// Hann window
-		ArrayXd hann_window(num_frames);
-		for (int i = 0; i < num_frames; ++i) {
-			hann_window[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (num_frames - 1)));
+		ArrayXd hannWindow(numFrames);
+		for (int i = 0; i < numFrames; ++i) {
+			hannWindow[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (numFrames - 1)));
 		}
 
-		ArrayXd windowed_signal = signal * hann_window;
-		Eigen::ArrayXcd fft_result(num_frames);
-		for (int k = 0; k < num_frames; ++k) {
+		ArrayXd windowedSignal = signal * hannWindow;
+		Eigen::ArrayXcd fft_result(numFrames);
+		for (int k = 0; k < numFrames; ++k) {
 			std::complex<double> sum(0.0, 0.0);
-			for (int n = 0; n < num_frames; ++n) {
-				double angle = -2.0 * M_PI * k * n / num_frames;
-				sum += windowed_signal[n] * std::exp(std::complex<double>(0, angle));
+			for (int n = 0; n < numFrames; ++n) {
+				double angle = -2.0 * M_PI * k * n / numFrames;
+				sum += windowedSignal[n] * std::exp(std::complex<double>(0, angle));
 			}
 			fft_result[k] = sum;
 		}
 
 		// Compute power spectrum
-		ArrayXd power_spectrum =
-			ArrayXd::Zero(num_frames / 2 + 1); // Only half the spectrum (0 to Nyquist frequency)
-		for (int k = 0; k <= num_frames / 2; ++k) {
-			psd[k] += std::norm(fft_result[k]) / num_frames;
+		ArrayXd powerSpectrum =
+			ArrayXd::Zero(numFrames / 2 + 1); // Only half the spectrum (0 to Nyquist frequency)
+		for (int k = 0; k <= numFrames / 2; ++k) {
+			psd[k] += std::norm(fft_result[k]) / numFrames;
 		}
 
-		++num_segments;
+		++numSegments;
 	} else {
 
-		ArrayXd hann_window(segment_size);
-		for (int i = 0; i < segment_size; ++i) {
-			hann_window[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (segment_size - 1)));
+		ArrayXd hannWindow(segmentSize);
+		for (int i = 0; i < segmentSize; ++i) {
+			hannWindow[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (segmentSize - 1)));
 		}
 
-		for (int start = 0; start + segment_size <= num_frames; start += (segment_size - overlap)) {
+		for (int start = 0; start + segmentSize <= numFrames; start += (segmentSize - overlap)) {
 			// Extract segment and apply window
-			ArrayXd segment = signal.segment(start, segment_size) * hann_window;
+			ArrayXd segment = signal.segment(start, segmentSize) * hannWindow;
 
-			Eigen::ArrayXcd fft_result(segment_size);
-			for (int k = 0; k < segment_size; ++k) {
+			Eigen::ArrayXcd fftResult(segmentSize);
+			for (int k = 0; k < segmentSize; ++k) {
 				std::complex<double> sum(0.0, 0.0);
-				for (int n = 0; n < segment_size; ++n) {
-					double angle = -2.0 * M_PI * k * n / segment_size;
+				for (int n = 0; n < segmentSize; ++n) {
+					double angle = -2.0 * M_PI * k * n / segmentSize;
 					sum += segment[n] * std::exp(std::complex<double>(0, angle));
 				}
-				fft_result[k] = sum;
+				fftResult[k] = sum;
 			}
 
 			// Compute power spectrum
-			ArrayXd power_spectrum =
-				ArrayXd::Zero(nyquist_limit + 1); // Only half the spectrum (0 to Nyquist frequency)
-			for (int k = 0; k <= nyquist_limit; ++k) {
-				psd[k] += std::norm(fft_result[k]) / segment_size;
+			ArrayXd powerSpectrum =
+				ArrayXd::Zero(nyquistLimit + 1); // Only half the spectrum (0 to Nyquist frequency)
+			for (int k = 0; k <= nyquistLimit; ++k) {
+				psd[k] += std::norm(fftResult[k]) / segmentSize;
 			}
 
-			++num_segments;
+			++numSegments;
 		}
 	}
 
 	// Average PSD for this estimator
-	if (num_segments > 0) {
-		psd /= num_segments;
+	if (numSegments > 0) {
+		psd /= numSegments;
 	}
 
 	// Adjust Nyquist limit for human heart rates
-	int nyquist_limit_bpm = min(min(num_frames / 2, nyquist_limit), static_cast<int>(200 / frequency_resolution));
+	int nyquistLimitBPM = min(min(numFrames / 2, nyquistLimit), static_cast<int>(200 / frequencyResolution));
 
-	double lower_limit = 50;
-	for (int k = 0; k <= nyquist_limit_bpm; ++k) {
-		if (k * frequency_resolution < lower_limit) {
+	double lowerLimit = 50;
+	for (int k = 0; k <= nyquistLimitBPM; ++k) {
+		if (k * frequencyResolution < lowerLimit) {
 			psd[k] = 0;
 		}
 	}
 
 	// Find dominant frequency in BPM
-	int max_index;
-	psd.head(nyquist_limit_bpm + 1).maxCoeff(&max_index);
-	double dominant_frequency = max_index * frequency_resolution;
+	int maxIndex;
+	psd.head(nyquistLimitBPM + 1).maxCoeff(&maxIndex);
+	double dominantFrequency = maxIndex * frequencyResolution;
 
-	return dominant_frequency;
+	return dominantFrequency;
 }
 
 Window concatWindows(Windows windows)
