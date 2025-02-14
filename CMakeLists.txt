@@ -164,6 +164,7 @@ target_sources(
     src/heart_rate_source_info.c
     src/graph_source.cpp
     src/graph_source_info.c
+    src/obs_utils.cpp
     src/eval/run_evaluation.cpp
 )
 

@@ -13,6 +13,7 @@
 #include <vector>
 #include <sstream>
 #include "plugin-support.h"
+#include "obs_utils.h"
 #include "heart_rate_source.h"
 
 MovingAvg movingAvg;
@@ -20,51 +21,6 @@ MovingAvg movingAvg;
 const char *get_heart_rate_source_name(void *)
 {
 	return "Heart Rate Monitor";
-}
-
-static void skip_video_filter_if_safe(obs_source_t *source)
-{
-	if (!source) {
-		return;
-	}
-
-	obs_source_t *parent = obs_filter_get_parent(source);
-	if (parent) {
-		obs_log(LOG_INFO, "Source is skipped");
-		obs_source_skip_video_filter(source);
-	} else {
-		obs_log(LOG_INFO, "No valid parent, skipping filter safely");
-	}
-}
-
-// Callback function to find the matching scene item
-static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
-{
-	UNUSED_PARAMETER(scene);
-	obs_source_t *target_source = (obs_source_t *)((void **)param)[0];      // First element is target source
-	obs_sceneitem_t **found_item = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
-
-	obs_source_t *item_source = obs_sceneitem_get_source(item);
-
-	if (item_source == target_source) {
-		// Add a reference to the scene item to ensure it doesn't get released
-		obs_sceneitem_addref(item);
-		*found_item = item; // Store the found scene item
-		return false;       // Stop enumeration since we found the item
-	}
-
-	return true; // Continue enumeration
-}
-
-static obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source)
-{
-	obs_sceneitem_t *found_item = NULL;
-	void *params[2] = {source, &found_item}; // Pass source and output pointer
-
-	// Enumerate scene items and find the one matching the source
-	obs_scene_enum_items(scene, find_scene_item_callback, params);
-
-	return found_item;
 }
 
 static void create_obs_heart_display_source_if_needed()
@@ -165,6 +121,8 @@ void heart_rate_source_destroy(void *data)
 	obs_log(LOG_INFO, "Heart rate monitor destroyed");
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
+	remove_source(TEXT_SOURCE_NAME);
+
 	if (hrs) {
 		hrs->isDisabled = true;
 		obs_enter_graphics();
@@ -246,6 +204,7 @@ obs_properties_t *heart_rate_source_properties(void *data)
 	obs_property_set_modified_callback(enable_tracker, update_properties);
 	obs_property_set_modified_callback(ppg_dropdown, update_properties);
 	update_properties(props, dropdown, settings); // Apply default visibility
+	obs_data_release(settings);
 
 	return props;
 }
@@ -398,6 +357,10 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 		BGRA_data->height = height;
 		BGRA_data->linesize = linesize;
 		BGRA_data->data = video_data;
+		if (hrs->BGRA_data) {
+			bfree(hrs->BGRA_data->data);
+			bfree(hrs->BGRA_data);
+		}
 		hrs->BGRA_data = BGRA_data;
 	}
 
@@ -471,25 +434,28 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 
+	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
+
 	std::vector<struct vec4> face_coordinates;
-	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
+	int64_t selected_algorithm = obs_data_get_int(hrsSettings, "face detection algorithm");
 	obs_log(LOG_INFO, "Which algo: %d", selected_algorithm);
-	bool enable_debug_boxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
+	bool enable_debug_boxes = obs_data_get_bool(hrsSettings, "face detection debug boxes");
 	std::vector<double_t> avg;
 	if (selected_algorithm == 0) {
 		// Haarcascade face detection with OpenCV
 		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates, enable_debug_boxes);
 	} else if (selected_algorithm == 1) {
 		// Dlib face detection with 68 landmarks, with/without tracking
-		bool enable_tracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
-		int64_t frame_update_interval =
-			obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
+		bool enable_tracker = obs_data_get_bool(hrsSettings, "enable face tracking");
+		int64_t frame_update_interval = obs_data_get_int(hrsSettings, "frame update interval");
 		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
 				    enable_debug_boxes);
 	}
 
 	// Get the selected PPG algorithm
-	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
+	int64_t selected_ppg_algorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
+
+	obs_data_release(hrsSettings);
 
 	double heart_rate = movingAvg.calculateHeartRate(avg, 0, selected_ppg_algorithm, 0);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
