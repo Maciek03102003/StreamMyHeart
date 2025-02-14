@@ -1,5 +1,4 @@
-#include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
-#include "algorithm/face_detection/opencv_haarcascade.h"
+#include "algorithm/face_detection/face_detection.h"
 #include "algorithm/heart_rate_algorithm.h"
 #include "heart_rate_source.h"
 #include "plugin-support.h"
@@ -463,21 +462,14 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 
-	std::vector<struct vec4> face_coordinates;
 	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
 	bool enable_debug_boxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
-	std::vector<double_t> avg;
-	if (selected_algorithm == 0) {
-		// Haarcascade face detection with OpenCV
-		avg = detectFacesAndCreateMask(hrs->BGRA_data, face_coordinates, enable_debug_boxes);
-	} else if (selected_algorithm == 1) {
-		// Dlib face detection with 68 landmarks, with/without tracking
-		bool enable_tracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
-		int64_t frame_update_interval =
-			obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
-		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
-				    enable_debug_boxes);
-	}
+	bool enable_tracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
+	int64_t frame_update_interval = obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
+
+	std::vector<struct vec4> face_coordinates;
+	std::vector<double_t> avg = detectFace(selected_algorithm, hrs->BGRA_data, face_coordinates, enable_debug_boxes,
+					       enable_tracker, frame_update_interval);
 
 	// Get the selected PPG algorithm
 	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
