@@ -112,7 +112,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, 1, 2, 1, fps);
-		if (heartRate != 0) {
+		if (heartRate != 0 && heartRate != -1) {
 			predicted.push_back(heartRate);
 		}
 

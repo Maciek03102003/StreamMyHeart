@@ -415,7 +415,7 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 }
 
 static gs_texture_t *drawRectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
-				    std::vector<struct vec4> &face_coordinates)
+				   std::vector<struct vec4> &face_coordinates)
 {
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
@@ -493,7 +493,14 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 	double heart_rate = movingAvg.calculateHeartRate(avg, selected_pre_filtering, selected_ppg_algorithm,
 							 selected_post_filtering);
-	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
+
+	std::string result;
+
+	if (heart_rate == -1.0) {
+		result = "Calibrating...";
+	} else {
+		result = "Heart Rate: " + std::to_string((int)heart_rate);
+	}
 
 	if (heart_rate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
