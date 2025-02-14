@@ -9,6 +9,6 @@
 
 std::vector<double_t> detectFace(int faceDetectionAlgorithm, struct input_BGRA_data *bgraData,
 				 std::vector<struct vec4> &faceCoordinates, bool enableDebugBoxes,
-				 bool enableTracker = true, bool frameUpdateInterval = 60);
+				 bool enableTracker = true, bool frameUpdateInterval = 60, bool evaluation = false);
 
 #endif // FACE_DETECTION_H
