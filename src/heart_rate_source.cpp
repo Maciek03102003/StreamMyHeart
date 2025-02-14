@@ -16,12 +16,12 @@
 
 MovingAvg movingAvg;
 
-const char *get_heart_rate_source_name(void *)
+const char *getHeartRateSourceName(void *)
 {
 	return "Heart Rate Monitor";
 }
 
-static void skip_video_filter_if_safe(obs_source_t *source)
+static void skipVideoFilterIfSafe(obs_source_t *source)
 {
 	if (!source) {
 		return;
@@ -35,7 +35,7 @@ static void skip_video_filter_if_safe(obs_source_t *source)
 }
 
 // Callback function to find the matching scene item
-static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
+static bool findSceneItemCallback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
 {
 	UNUSED_PARAMETER(scene);
 	obs_source_t *target_source = (obs_source_t *)((void **)param)[0];      // First element is target source
@@ -53,18 +53,18 @@ static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, 
 	return true; // Continue enumeration
 }
 
-static obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source)
+static obs_sceneitem_t *getSceneItemFromSource(obs_scene_t *scene, obs_source_t *source)
 {
 	obs_sceneitem_t *found_item = NULL;
 	void *params[2] = {source, &found_item}; // Pass source and output pointer
 
 	// Enumerate scene items and find the one matching the source
-	obs_scene_enum_items(scene, find_scene_item_callback, params);
+	obs_scene_enum_items(scene, findSceneItemCallback, params);
 
 	return found_item;
 }
 
-static void create_obs_heart_display_source_if_needed()
+static void createOBSHeartDisplaySourceIfNeeded()
 {
 	// check if a source called TEXT_SOURCE_NAME exists
 	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
@@ -116,7 +116,7 @@ static void create_obs_heart_display_source_if_needed()
 		transform_info.scale.x = 1.0;
 		transform_info.scale.y = 1.0;
 		transform_info.rot = 0.0;
-		obs_sceneitem_t *source_sceneitem = get_scene_item_from_source(scene, source);
+		obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, source);
 		if (source_sceneitem != NULL) {
 			obs_sceneitem_set_info2(source_sceneitem, &transform_info);
 			obs_sceneitem_release(source_sceneitem);
@@ -128,7 +128,7 @@ static void create_obs_heart_display_source_if_needed()
 }
 
 // Create function
-void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
+void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 {
 	UNUSED_PARAMETER(settings);
 
@@ -145,19 +145,19 @@ void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source)
 
 	bfree(effect_file);
 	if (!hrs->testing) {
-		heart_rate_source_destroy(hrs);
+		heartRateSourceDestroy(hrs);
 		hrs = NULL;
 	}
 	obs_leave_graphics();
 
 	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
-	create_obs_heart_display_source_if_needed();
+	createOBSHeartDisplaySourceIfNeeded();
 
 	return hrs;
 }
 
 // Destroy function
-void heart_rate_source_destroy(void *data)
+void heartRateSourceDestroy(void *data)
 {
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
@@ -175,7 +175,7 @@ void heart_rate_source_destroy(void *data)
 	}
 }
 
-void heart_rate_source_defaults(obs_data_t *settings)
+void heartRateSourceDefaults(obs_data_t *settings)
 {
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
@@ -183,7 +183,7 @@ void heart_rate_source_defaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "ppg algorithm", 1);
 }
 
-static bool update_properties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
+static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
 {
 	UNUSED_PARAMETER(property);
 	bool is_dlib_selected = obs_data_get_int(settings, "face detection algorithm") == 1;
@@ -202,7 +202,7 @@ static bool update_properties(obs_properties_t *props, obs_property_t *property,
 	return true; // Forces the UI to refresh
 }
 
-obs_properties_t *heart_rate_source_properties(void *data)
+obs_properties_t *heartRateSourceProperties(void *data)
 {
 	UNUSED_PARAMETER(data);
 
@@ -238,28 +238,28 @@ obs_properties_t *heart_rate_source_properties(void *data)
 	obs_property_list_add_int(ppg_dropdown, "Chrom", 2);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
-	obs_property_set_modified_callback(dropdown, update_properties);
-	obs_property_set_modified_callback(enable_tracker, update_properties);
-	obs_property_set_modified_callback(ppg_dropdown, update_properties);
-	update_properties(props, dropdown, settings); // Apply default visibility
+	obs_property_set_modified_callback(dropdown, updateProperties);
+	obs_property_set_modified_callback(enable_tracker, updateProperties);
+	obs_property_set_modified_callback(ppg_dropdown, updateProperties);
+	updateProperties(props, dropdown, settings); // Apply default visibility
 
 	return props;
 }
 
-void heart_rate_source_activate(void *data)
+void heartRateSourceActivate(void *data)
 {
 	struct heart_rate_source *hrs = reinterpret_cast<heart_rate_source *>(data);
 	hrs->isDisabled = false;
 }
 
-void heart_rate_source_deactivate(void *data)
+void heartRateSourceDeactivate(void *data)
 {
 	struct heart_rate_source *hrs = reinterpret_cast<heart_rate_source *>(data);
 	hrs->isDisabled = true;
 }
 
 // Tick function
-void heart_rate_source_tick(void *data, float seconds)
+void heartRateSourceTick(void *data, float seconds)
 {
 	UNUSED_PARAMETER(seconds);
 
@@ -400,7 +400,7 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 	return true;
 }
 
-static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
+static gs_texture_t *drawRectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
 				    std::vector<struct vec4> &face_coordinates)
 {
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
@@ -435,7 +435,7 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 }
 
 // Render function
-void heart_rate_source_render(void *data, gs_effect_t *effect)
+void heartRateSourceRender(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
 
@@ -446,19 +446,19 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 	}
 
 	if (hrs->isDisabled) {
-		skip_video_filter_if_safe(hrs->source);
+		skipVideoFilterIfSafe(hrs->source);
 		return;
 	}
 
 	if (!getBGRAFromStageSurface(hrs)) {
-		skip_video_filter_if_safe(hrs->source);
+		skipVideoFilterIfSafe(hrs->source);
 		return;
 	}
 
 	if (!hrs->testing) {
 		obs_log(LOG_INFO, "Effect not loaded");
 		// Effect failed to load, skip rendering
-		skip_video_filter_if_safe(hrs->source);
+		skipVideoFilterIfSafe(hrs->source);
 		return;
 	}
 
@@ -490,10 +490,10 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 
 	if (enable_debug_boxes) {
 		gs_texture_t *testingTexture =
-			draw_rectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
+			drawRectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
 
 		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
-			skip_video_filter_if_safe(hrs->source);
+			skipVideoFilterIfSafe(hrs->source);
 			gs_texture_destroy(testingTexture);
 			return;
 		}
@@ -512,6 +512,6 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		gs_texture_destroy(testingTexture);
 
 	} else {
-		skip_video_filter_if_safe(hrs->source);
+		skipVideoFilterIfSafe(hrs->source);
 	}
 }
