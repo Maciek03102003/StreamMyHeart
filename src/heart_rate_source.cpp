@@ -149,6 +149,66 @@ static void createTextSource(obs_scene_t *scene)
 	}
 }
 
+static void createMoodSource(obs_scene_t *scene)
+{
+	obs_source_t *source = obs_get_source_by_name(MOOD_SOURCE_NAME);
+	if (source) {
+		obs_source_release(source); // Release if source already exists
+		return;
+	}
+	source = obs_source_create("text_ft2_source_v2", MOOD_SOURCE_NAME, nullptr, nullptr);
+	if (source) {
+		// Add source to the current scene
+		obs_scene_add(scene, source);
+		// Set source settings
+		obs_data_t *sourceSettings = obs_source_get_settings(source);
+		obs_data_set_bool(sourceSettings, "word_wrap", true);
+		obs_data_set_bool(sourceSettings, "extents", false);
+		obs_data_set_bool(sourceSettings, "outline", true);
+		obs_data_set_int(sourceSettings, "outline_color", 4278190080); // Black
+		obs_data_set_int(sourceSettings, "outline_size", 7);
+		obs_data_set_int(sourceSettings, "extents_cx", 1200); // Width
+		obs_data_set_int(sourceSettings, "extents_cy", 200);  // Height
+
+		// Set font properties
+		obs_data_t *fontData = obs_data_create();
+		obs_data_set_string(fontData, "face", "Verdana");
+		obs_data_set_string(fontData, "style", "Bold");
+		obs_data_set_int(fontData, "size", 64);
+		obs_data_set_int(fontData, "flags", 0);
+		obs_data_set_obj(sourceSettings, "font", fontData);
+		obs_data_release(fontData);
+
+		// Set the default text
+		std::string moodText = "Mood: Normal";
+		obs_data_set_string(sourceSettings, "text", moodText.c_str());
+		obs_source_update(source, sourceSettings);
+		obs_data_release(sourceSettings);
+
+		// Set transform settings
+		obs_transform_info transformInfo;
+		transformInfo.pos.x = 800.0;  // Position it elsewhere
+		transformInfo.pos.y = 800.0;
+		transformInfo.bounds.x = 400.0; // Resize bounds
+		transformInfo.bounds.y = 100.0;
+		transformInfo.bounds_type = OBS_BOUNDS_NONE;
+		transformInfo.bounds_alignment = OBS_ALIGN_LEFT;
+		transformInfo.alignment = OBS_ALIGN_CENTER;
+		transformInfo.scale.x = 1.0;
+		transformInfo.scale.y = 1.0;
+		transformInfo.rot = 0.0;
+
+		obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, source);
+		if (sourceSceneItem != NULL) {
+			obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+			obs_sceneitem_release(sourceSceneItem);
+		}
+
+		obs_source_release(source);
+	}
+}
+
+
 static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 {
 	// create a new OBS text source called TEXT_SOURCE_NAME
@@ -163,6 +223,9 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	}
 	if (obs_data_get_bool(settings, "enable text source")) {
 		createTextSource(scene);
+	}
+	if (obs_data_get_bool(settings, "enable mood source")) {
+		createMoodSource(scene);
 	}
 
 	obs_source_release(sceneAsSource);
@@ -234,6 +297,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable text source", true);
 	obs_data_set_default_bool(settings, "enable graph source", false);
 	obs_data_set_default_bool(settings, "enable image source", true);
+	obs_data_set_default_bool(settings, "enable mood source", true);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -295,6 +359,12 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		create_image_source(scene);
 	}
 
+	if (!obs_data_get_bool(settings, "enable mood source")) {
+		removeSource(MOOD_SOURCE_NAME);
+	} else {
+		createMoodSource(scene);
+	}
+
   obs_source_release(sceneAsSource);
 
 	return true; // Forces the UI to refresh
@@ -349,6 +419,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("Enable graph source"));
 	obs_property_t *enableImage =
 		obs_properties_add_bool(props, "enable image source", obs_module_text("Enable image source"));
+	obs_property_t *enableMood =
+		obs_properties_add_bool(props, "enable mood source", obs_module_text("Enable mood source"));
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
@@ -359,6 +431,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(enableText, updateProperties);
 	obs_property_set_modified_callback(enableGraph, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
+	obs_property_set_modified_callback(enableMood, updateProperties);
+
 
 	obs_data_release(settings);
 
@@ -553,6 +627,28 @@ static gs_texture_t *drawRectangle(struct heartRateSource *hrs, uint32_t width, 
 	return blurredTexture;
 }
 
+std::string getMood(int heart_rate) {
+	std::string mood;
+	if (heart_rate > 150) {
+		mood = "Extremely hyped";
+	} else if (heart_rate > 130) {
+		mood = "Very Intense";
+	} else if (heart_rate > 110) {
+		mood = "Highly excited";
+	} else if (heart_rate > 90) {
+		mood = "Moderately excited";
+	} else if (heart_rate > 75) {
+		mood = "Slightly excited";
+	} else if (heart_rate > 60) {
+		mood = "Normal";
+	} else if (heart_rate > 50) {
+		mood = "Very Calm";
+	} else {
+		mood = "Extremely calm";
+	}
+	return mood;
+}
+
 // Render function
 void heartRateSourceRender(void *data, gs_effect_t *effect)
 {
@@ -623,10 +719,22 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	obs_data_release(hrsSettings); // possibly cause of crash
 
 	if (heartRate != 0.0) {
+		// Updating heart rate text source 
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
 			obs_data_set_string(sourceSettings, "text", textFormat.c_str());
+			// obs_data_set_string(sourceSettings, "text", result.c_str());
+			obs_source_update(source, sourceSettings);
+			obs_data_release(sourceSettings);
+			obs_source_release(source);
+		}
+		// Updating mood source
+		source = obs_get_source_by_name(MOOD_SOURCE_NAME);
+		if (source) {
+			obs_data_t *sourceSettings = obs_source_get_settings(source);
+			std::string moodText = "Mood: " + getMood(heartRate);
+			obs_data_set_string(sourceSettings, "text", moodText.c_str());
 			// obs_data_set_string(sourceSettings, "text", result.c_str());
 			obs_source_update(source, sourceSettings);
 			obs_data_release(sourceSettings);
