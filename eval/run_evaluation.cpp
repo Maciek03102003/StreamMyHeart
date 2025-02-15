@@ -88,6 +88,7 @@ struct VideoData {
 
 std::vector<VideoData> readCSV(const std::string &csvFilePath)
 {
+	static int calibrationTime = 5;
 	std::vector<VideoData> videoDataList;
 	std::ifstream file(csvFilePath);
 	std::string line;
@@ -103,10 +104,14 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath)
 
 		// Read the ground truth heart rates
 		std::getline(ss, token, ','); // Skip the initial '['
+		size_t count = 0;
 		while (std::getline(ss, token, ',')) {
 			if (token == "]")
 				break;
-			groundTruthHeartRates.push_back(std::stod(token));
+			if (count >= calibrationTime) { // Skip the first few heart rates for calibration
+				groundTruthHeartRates.push_back(std::stod(token));
+			}
+			count++;
 		}
 
 		// Read the other algorithm's RMSE and MAE
