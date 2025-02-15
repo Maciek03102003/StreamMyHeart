@@ -478,8 +478,9 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	std::vector<double_t> avg;
 
 	// User has changed face detection algorithm, recreate the face detection object
-	if (selectedFaceDetectionAlgorithm == 0 && dynamic_cast<DlibFaceDetection *>(hrs->faceDetection.get()) ||
-	    selectedFaceDetectionAlgorithm == 1 && dynamic_cast<HaarCascadeFaceDetection *>(hrs->faceDetection.get())) {
+	if ((selectedFaceDetectionAlgorithm == 0 && dynamic_cast<DlibFaceDetection *>(hrs->faceDetection.get())) ||
+	    (selectedFaceDetectionAlgorithm == 1 &&
+	     dynamic_cast<HaarCascadeFaceDetection *>(hrs->faceDetection.get()))) {
 		hrs->faceDetection =
 			FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
 	}
