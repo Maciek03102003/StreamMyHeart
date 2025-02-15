@@ -28,7 +28,12 @@ const char *getHeartRateSourceName(void *)
 
 static void create_graph_source(obs_scene_t *scene)
 {
-	obs_source_t *graph_source = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
+	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	if (graph_source) {
+		obs_source_release(graph_source); // source already exists, release it
+		return;
+	}
+	graph_source = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
 	if (!graph_source) {
 		return;
 	}
@@ -55,10 +60,15 @@ static void create_graph_source(obs_scene_t *scene)
 
 static void create_image_source(obs_scene_t *scene)
 {
+	obs_source_t *image_source = obs_get_source_by_name(IMAGE_SOURCE_NAME);
+	if (image_source) {
+		obs_source_release(image_source); // source already exists, release it
+		return;
+	}
 	// Create the heart rate image source (assuming a file path)
 	obs_data_t *image_settings = obs_data_create();
 	obs_data_set_string(image_settings, "file", obs_module_file("heart_rate.gif"));
-	obs_source_t *image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
+	image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
 	obs_data_release(image_settings);
 
 	obs_scene_add(scene, image_source);
@@ -84,30 +94,14 @@ static void create_image_source(obs_scene_t *scene)
 	obs_source_release(image_source);
 }
 
-static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
+static void createTextSource(obs_scene_t *scene)
 {
-	// check if a source called TEXT_SOURCE_NAME exists
 	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 	if (source) {
-		// source already exists, release it
-		obs_source_release(source);
+		obs_source_release(source); // source already exists, release it
 		return;
 	}
-
-	// create a new OBS text source called TEXT_SOURCE_NAME
-	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
-	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
-
-	if (obs_data_get_bool(settings, "enable graph source")) {
-		create_graph_source(scene);
-	}
-	if (obs_data_get_bool(settings, "enable image source")) {
-		create_image_source(scene);
-	}
-	if (obs_data_get_bool(settings, "enable text source")) {
-		source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
-	}
-
+	source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
 	if (source) {
 		// add source to the current scene
 		obs_scene_add(scene, source);
@@ -153,6 +147,24 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 
 		obs_source_release(source);
 	}
+}
+
+static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
+{
+	// create a new OBS text source called TEXT_SOURCE_NAME
+	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
+	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
+
+	if (obs_data_get_bool(settings, "enable graph source")) {
+		create_graph_source(scene);
+	}
+	if (obs_data_get_bool(settings, "enable image source")) {
+		create_image_source(scene);
+	}
+	if (obs_data_get_bool(settings, "enable text source")) {
+		createTextSource(scene);
+	}
+
 	obs_source_release(sceneAsSource);
 }
 
@@ -256,18 +268,35 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		obs_source_release(text_source);
 	}
 
-	bool isTextEnabled = obs_data_get_bool(settings, "enable text source");
-	bool isGraphEnabled = obs_data_get_bool(settings, "enable graph source");
-	bool isImageEnabled = obs_data_get_bool(settings, "enable image source");
-	if (!isTextEnabled) {
+	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
+	if (!sceneAsSource) {
+		return true;
+	}
+	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
+	if (!scene) {
+		return true;
+	}
+
+	if (!obs_data_get_bool(settings, "enable text source")) {
 		removeSource(TEXT_SOURCE_NAME);
+	} else {
+		createTextSource(scene);
 	}
-	if (!isGraphEnabled) {
+
+	if (!obs_data_get_bool(settings, "enable graph source")) {
 		removeSource(GRAPH_SOURCE_NAME);
+	} else {
+		create_graph_source(scene);
 	}
-	if (!isImageEnabled) {
+
+	if (!obs_data_get_bool(settings, "enable image source")) {
 		removeSource(IMAGE_SOURCE_NAME);
+	} else {
+		create_image_source(scene);
 	}
+
+  obs_source_release(sceneAsSource);
+
 	return true; // Forces the UI to refresh
 }
 
@@ -323,10 +352,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
-	obs_data_set_default_bool(settings, "enable text source", true);
-	obs_data_set_default_bool(settings, "enable graph source", false);
-	obs_data_set_default_bool(settings, "enable image source", true);
-
 	obs_property_set_modified_callback(dropdown, updateProperties);
 	obs_property_set_modified_callback(enableTracker, updateProperties);
 	obs_property_set_modified_callback(ppgDropdown, updateProperties);
@@ -335,7 +360,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(enableGraph, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 
-	updateProperties(props, dropdown, settings); // Apply default visibility
 	obs_data_release(settings);
 
 	return props;
