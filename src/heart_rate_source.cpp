@@ -97,13 +97,13 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	// create a new OBS text source called TEXT_SOURCE_NAME
 	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
 	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
-	
+
 	if (obs_data_get_bool(settings, "enable graph source")) {
 		create_graph_source(scene);
-	} 
+	}
 	if (obs_data_get_bool(settings, "enable image source")) {
 		create_image_source(scene);
-	} 
+	}
 	if (obs_data_get_bool(settings, "enable text source")) {
 		source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
 	}
@@ -264,7 +264,7 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	}
 	if (!isGraphEnabled) {
 		removeSource(GRAPH_SOURCE_NAME);
-	} 
+	}
 	if (!isImageEnabled) {
 		removeSource(IMAGE_SOURCE_NAME);
 	}
@@ -306,11 +306,9 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(ppgDropdown, "PCA", 1);
 	obs_property_list_add_int(ppgDropdown, "Chrom", 2);
 
-	// Allow user to customise heart rate display text 
-	obs_property_t *heartRateText = obs_properties_add_text(
-		props, "heart rate text",
-		obs_module_text("Heart Rate Text:"),
-		OBS_TEXT_DEFAULT);
+	// Allow user to customise heart rate display text
+	obs_property_t *heartRateText = obs_properties_add_text(props, "heart rate text",
+								obs_module_text("Heart Rate Text:"), OBS_TEXT_DEFAULT);
 	obs_properties_add_text(
 		props, "heart rate text explain",
 		obs_module_text("Enter display text with {hr} representing the heart rate we calculated: "),
@@ -328,7 +326,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_data_set_default_bool(settings, "enable text source", true);
 	obs_data_set_default_bool(settings, "enable graph source", false);
 	obs_data_set_default_bool(settings, "enable image source", true);
-	
+
 	obs_property_set_modified_callback(dropdown, updateProperties);
 	obs_property_set_modified_callback(enableTracker, updateProperties);
 	obs_property_set_modified_callback(ppgDropdown, updateProperties);
