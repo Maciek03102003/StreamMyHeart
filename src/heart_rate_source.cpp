@@ -69,6 +69,33 @@ static obs_sceneitem_t *getSceneItemFromSource(obs_scene_t *scene, obs_source_t 
 	return foundItem;
 }
 
+static void create_graph_source(obs_scene_t *scene)
+{
+	obs_source_t *graph_source = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
+	if (!graph_source) {
+		return;
+	}
+
+	obs_scene_add(scene, graph_source);
+	obs_transform_info transform_info;
+	transform_info.pos.x = 100.0f;
+	transform_info.pos.y = 300.0f;
+	transform_info.bounds.x = 600.0f;
+	transform_info.bounds.y = 400.0f;
+	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
+	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
+	transform_info.alignment = OBS_ALIGN_CENTER;
+	transform_info.scale.x = 2.0f;
+	transform_info.scale.y = 2.0f;
+	transform_info.rot = 0.0f;
+	obs_sceneitem_t *source_sceneitem = get_scene_item_from_source(scene, graph_source);
+	if (source_sceneitem != NULL) {
+		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
+		obs_sceneitem_release(source_sceneitem);
+	}
+	obs_source_release(graph_source);
+}
+
 static void createOBSHeartDisplaySourceIfNeeded()
 {
 	// check if a source called TEXT_SOURCE_NAME exists
@@ -135,7 +162,7 @@ static void createOBSHeartDisplaySourceIfNeeded()
 // Create function
 void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 {
-	UNUSED_PARAMETER(settings);
+	// UNUSED_PARAMETER(settings);
 
 	void *data = bmalloc(sizeof(struct heartRateSource));
 	struct heartRateSource *hrs = new (data) heartRateSource();
@@ -159,6 +186,7 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	createOBSHeartDisplaySourceIfNeeded();
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
+	obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
 	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
 
 	return hrs;
@@ -404,10 +432,6 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 		bgraData->height = height;
 		bgraData->linesize = linesize;
 		bgraData->data = video_data;
-		if (hrs->BGRA_data) {
-			bfree(hrs->BGRA_data->data);
-			bfree(hrs->BGRA_data);
-		}
 		hrs->bgraData = bgraData;
 	}
 
@@ -482,10 +506,10 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
 
 	int64_t selectedFaceDetectionAlgorithm =
-		obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
-	bool enableDebugBoxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
-	bool enableTracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
-	int64_t frameUpdateInterval = obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
+		obs_data_get_int(hrsSettings, "face detection algorithm");
+	bool enableDebugBoxes = obs_data_get_bool(hrsSettings, "face detection debug boxes");
+	bool enableTracker = obs_data_get_bool(hrsSettings, "enable face tracking");
+	int64_t frameUpdateInterval = obs_data_get_int(hrsSettings, "frame update interval");
 
 	std::vector<struct vec4> faceCoordinates;
 	std::vector<double_t> avg;
@@ -505,10 +529,12 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
 	// Get the selected PPG algorithm
-	int64_t selectedPpgAlgorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
+	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
 
 	double heartRate = movingAvg.calculateHeartRate(avg, 0, selectedPpgAlgorithm, 0);
 	std::string result = "Heart Rate: " + std::to_string((int)heartRate);
+
+	obs_data_release(hrsSettings); // possibly cause of crash 
 
 	if (heartRate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
@@ -547,4 +573,5 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	} else {
 		skipVideoFilterIfSafe(hrs->source);
 	}
+	obs_log(LOG_INFO, "FINISH RENDERING");
 }
