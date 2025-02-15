@@ -1,4 +1,6 @@
 #include "algorithm/face_detection/face_detection.h"
+#include "algorithm/face_detection/opencv_haarcascade.h"
+#include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
 #include "algorithm/heart_rate_algorithm.h"
 #include "heart_rate_source.h"
 #include "plugin-support.h"
@@ -473,6 +475,12 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 	std::vector<struct vec4> face_coordinates;
 	std::vector<double_t> avg;
+
+	// User has changed face detection algorithm, recreate the face detection object
+	if (selected_algorithm == 0 && dynamic_cast<DlibFaceDetection *>(hrs->faceDetection.get()) ||
+	    selected_algorithm == 1 && dynamic_cast<HaarCascadeFaceDetection *>(hrs->faceDetection.get())) {
+		hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selected_algorithm));
+	}
 
 	if (hrs->faceDetection) {
 		avg = hrs->faceDetection->detectFace(hrs->BGRA_data, face_coordinates, enable_debug_boxes,
