@@ -3,20 +3,24 @@
 #include <obs-frontend-api.h>
 #include <obs-source.h>
 #include <obs-data.h>
+#include "plugin-support.h"
 #include "obs_utils.h"
 #include "heart_rate_source.h"
 
 void remove_source(const char *source_name)
 {
-	obs_sceneitem_t *obs_scene_find_source(obs_scene_t * scene, const char *name);
 	obs_source_t *source = obs_get_source_by_name(source_name);
 	if (source) {
+		obs_log(LOG_INFO, "[remove_source] found text source");
 		obs_source_t *scene_as_source = obs_frontend_get_current_scene();
 		if (scene_as_source) {
+			obs_log(LOG_INFO, "[remove_source] found scene source");
 			obs_scene_t *scene = obs_scene_from_source(scene_as_source);
 			if (scene) {
+				obs_log(LOG_INFO, "[remove_source] found scene");
 				obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, source);
 				if (scene_item) {
+					obs_log(LOG_INFO, "[remove_source] found scene item");
 					obs_sceneitem_remove(scene_item);  // Remove from scene
 					obs_sceneitem_release(scene_item); // Release scene item reference
 				}
@@ -25,6 +29,7 @@ void remove_source(const char *source_name)
 		}
 		obs_source_release(source); // Release the source reference
 	}
+	obs_log(LOG_INFO, "[remove_source] done removing text source");
 }
 
 void skip_video_filter_if_safe(obs_source_t *source)

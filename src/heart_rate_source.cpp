@@ -402,7 +402,7 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 	gs_texrender_end(hrs->texrender);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
 	uint64_t rect_after = os_gettime_ns();
-	obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
+	// obs_log(LOG_INFO, "Rect time: %lu ns", rect_after - rect_before);
 	return blurredTexture;
 }
 
@@ -410,6 +410,7 @@ static gs_texture_t *draw_rectangle(struct heart_rate_source *hrs, uint32_t widt
 void heart_rate_source_render(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
+	obs_log(LOG_INFO, "START RENDERING");
 
 	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
 
@@ -433,12 +434,11 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		skip_video_filter_if_safe(hrs->source);
 		return;
 	}
-
+	obs_log(LOG_INFO, "[heart_rate_source_render] START FACE DETECTION");
 	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
 
 	std::vector<struct vec4> face_coordinates;
 	int64_t selected_algorithm = obs_data_get_int(hrsSettings, "face detection algorithm");
-	obs_log(LOG_INFO, "Which algo: %d", selected_algorithm);
 	bool enable_debug_boxes = obs_data_get_bool(hrsSettings, "face detection debug boxes");
 	std::vector<double_t> avg;
 	if (selected_algorithm == 0) {
@@ -451,11 +451,12 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 		avg = detectFaceAOI(hrs->BGRA_data, face_coordinates, frame_update_interval, enable_tracker,
 				    enable_debug_boxes);
 	}
+	obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
 	// Get the selected PPG algorithm
 	int64_t selected_ppg_algorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
 
-	obs_data_release(hrsSettings);
+	// obs_data_release(hrsSettings); // somehow crashes obs
 
 	double heart_rate = movingAvg.calculateHeartRate(avg, 0, selected_ppg_algorithm, 0);
 	std::string result = "Heart Rate: " + std::to_string((int)heart_rate);
@@ -470,7 +471,6 @@ void heart_rate_source_render(void *data, gs_effect_t *effect)
 			obs_source_release(source);
 		}
 	}
-	obs_log(LOG_INFO, "Heart rate: %f", heart_rate);
 
 	if (enable_debug_boxes) {
 		gs_texture_t *testingTexture =
