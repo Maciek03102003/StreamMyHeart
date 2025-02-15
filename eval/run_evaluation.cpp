@@ -104,7 +104,7 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath)
 
 		// Read the ground truth heart rates
 		std::getline(ss, token, ','); // Skip the initial '['
-		size_t count = 0;
+		int count = 0;
 		while (std::getline(ss, token, ',')) {
 			if (token == "]")
 				break;
