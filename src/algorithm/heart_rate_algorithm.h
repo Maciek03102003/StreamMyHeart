@@ -1,6 +1,8 @@
 #ifndef HEART_RATE_ALGO_H
 #define HEART_RATE_ALGO_H
 
+#include "heart_rate_source.h"
+
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -13,7 +15,6 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include "heart_rate_source.h"
 
 class MovingAvg {
 private:
@@ -30,13 +31,13 @@ private:
 	std::vector<double_t> averageRGB(std::vector<std::vector<std::vector<uint8_t>>> rgb,
 					 std::vector<std::vector<bool>> skinKey = {});
 
-	void updateWindows(std::vector<double_t> frame_avg);
+	void updateWindows(std::vector<double_t> frameAvg);
 
 	double welch(std::vector<double_t> ppgSignal);
 
 public:
-	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 0, int ppg = 0, int postFilter = 0,
-				  int Fps = 30, int sampleRate = 1);
+	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 0, int ppgAlgorithm = 1,
+				  int postFilter = 0, int Fps = 30, int sampleRate = 1);
 };
 
 #endif

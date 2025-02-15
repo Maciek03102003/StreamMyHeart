@@ -5,6 +5,7 @@
 
 #ifdef __cplusplus
 #include <mutex>
+#include "algorithm/face_detection/face_detection.h"
 #else
 #include <stdbool.h>
 #endif
@@ -22,31 +23,33 @@ struct input_BGRA_data {
 	uint32_t linesize;
 };
 
-struct heart_rate_source {
+struct heartRateSource {
 	obs_source_t *source;
 	gs_texrender_t *texrender;
 	gs_stagesurf_t *stagesurface;
 	gs_effect_t *testing;
 #ifdef __cplusplus
-	input_BGRA_data *BGRA_data;
-	std::mutex BGRA_data_mutex;
+	input_BGRA_data *bgraData;
+	std::mutex bgraDataMutex;
+	std::unique_ptr<FaceDetection> faceDetection;
 #else
-	struct input_BGRA_data *BGRA_data;
-	void *BGRA_data_mutex; // Placeholder for C compatibility
+	struct input_BGRA_data *bgraData;
+	void *bgraDataMutex; // Placeholder for C compatibility
+	void *faceDetection;
 #endif
 	bool isDisabled;
 };
 
 // Function declarations
-const char *get_heart_rate_source_name(void *);
-void *heart_rate_source_create(obs_data_t *settings, obs_source_t *source);
-void heart_rate_source_destroy(void *data);
-void heart_rate_source_defaults(obs_data_t *settings);
-obs_properties_t *heart_rate_source_properties(void *data);
-void heart_rate_source_activate(void *data);
-void heart_rate_source_deactivate(void *data);
-void heart_rate_source_tick(void *data, float seconds);
-void heart_rate_source_render(void *data, gs_effect_t *effect);
+const char *getHeartRateSourceName(void *);
+void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source);
+void heartRateSourceDestroy(void *data);
+void heartRateSourceDefaults(obs_data_t *settings);
+obs_properties_t *heartRateSourceProperties(void *data);
+void heartRateSourceActivate(void *data);
+void heartRateSourceDeactivate(void *data);
+void heartRateSourceTick(void *data, float seconds);
+void heartRateSourceRender(void *data, gs_effect_t *effect);
 
 #ifdef __cplusplus
 }

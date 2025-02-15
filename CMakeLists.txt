@@ -56,10 +56,6 @@ if(UNIX)
   message("Configuring OpenCV for MacOS and Linux")
   set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-macos/lib/cmake/opencv4)
 elseif(WIN32)
-  # set(OpenCV_DIR "C:/tools/opencv/build")
-  # set(OpenCV_INCLUDE_DIR "C:/tools/opencv/build/include")
-  # set(OpenCV_LIBRARIES "C:/tools/opencv/build/x64/vc16/lib")
-  # find_package(OpenCV REQUIRED)
   set(OpenCV_STATIC ON)
   set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/binary/opencv-4.11.0-windows)
 endif()
@@ -154,15 +150,14 @@ endif()
 target_sources(
   ${CMAKE_PROJECT_NAME}
   PRIVATE
-    src/algorithm/HeartRateAlgorithm.cpp
+    src/algorithm/heart_rate_algorithm.cpp
+    src/algorithm/face_detection/face_detection.cpp
     src/algorithm/face_detection/opencv_haarcascade.cpp
-    # src/algorithm/face_detection/opencv_dlib_dnn.cpp
-    # src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c
-    src/eval/run_evaluation.cpp
+    eval/run_evaluation.cpp
 )
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})

@@ -17,18 +17,18 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "heart_rate_source_info.h"
+#include "plugin-support.h"
 
 #include <obs-module.h>
-#include "plugin-support.h"
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
-extern struct obs_source_info heart_rate_source_info;
+extern struct obs_source_info heartRateSourceInfo;
 
 bool obs_module_load(void)
 {
-	obs_register_source(&heart_rate_source_info);
+	obs_register_source(&heartRateSourceInfo);
 
 	obs_log(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
 	return true;
