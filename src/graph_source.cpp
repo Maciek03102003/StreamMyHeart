@@ -1,5 +1,6 @@
 #include <obs-module.h>
 #include <obs.h>
+#include "obs_utils.h"
 #include <obs-frontend-api.h>
 #include <obs-source.h>
 #include <obs-data.h>
@@ -45,17 +46,6 @@ static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, 
 	}
 
 	return true; // Continue enumeration
-}
-
-static obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source)
-{
-	obs_sceneitem_t *found_item = NULL;
-	void *params[2] = {source, &found_item}; // Pass source and output pointer
-
-	// Enumerate scene items and find the one matching the source
-	obs_scene_enum_items(scene, find_scene_item_callback, params);
-
-	return found_item;
 }
 
 void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scene)
