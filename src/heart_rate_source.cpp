@@ -53,7 +53,38 @@ static void create_graph_source(obs_scene_t *scene)
 	obs_source_release(graph_source);
 }
 
-static void createOBSHeartDisplaySourceIfNeeded()
+static void create_image_source(obs_scene_t *scene)
+{
+	// Create the heart rate image source (assuming a file path)
+	obs_data_t *image_settings = obs_data_create();
+	obs_data_set_string(image_settings, "file", obs_module_file("heart_rate.gif"));
+	obs_source_t *image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
+	obs_data_release(image_settings);
+
+	obs_scene_add(scene, image_source);
+
+	// set transform settings
+	obs_transform_info transform_info;
+	transform_info.pos.x = 260.0;
+	transform_info.pos.y = 700.0;
+	transform_info.bounds.x = 300.0;
+	transform_info.bounds.y = 400.0;
+	transform_info.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
+	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
+	transform_info.alignment = OBS_ALIGN_CENTER;
+	transform_info.scale.x = 0.1;
+	transform_info.scale.y = 0.1;
+	transform_info.rot = 0.0;
+	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, image_source);
+	if (source_sceneitem != NULL) {
+		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
+		obs_sceneitem_release(source_sceneitem);
+	}
+
+	obs_source_release(image_source);
+}
+
+static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 {
 	// check if a source called TEXT_SOURCE_NAME exists
 	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
@@ -66,10 +97,16 @@ static void createOBSHeartDisplaySourceIfNeeded()
 	// create a new OBS text source called TEXT_SOURCE_NAME
 	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
 	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
-
-	create_graph_source(scene);
-
-	source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
+	
+	if (obs_data_get_bool(settings, "enable graph source")) {
+		create_graph_source(scene);
+	} 
+	if (obs_data_get_bool(settings, "enable image source")) {
+		create_image_source(scene);
+	} 
+	if (obs_data_get_bool(settings, "enable text source")) {
+		source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
+	}
 
 	if (source) {
 		// add source to the current scene
@@ -142,7 +179,7 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	obs_leave_graphics();
 
 	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
-	createOBSHeartDisplaySourceIfNeeded();
+	createOBSHeartDisplaySourceIfNeeded(settings);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
 	obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
@@ -158,6 +195,7 @@ void heartRateSourceDestroy(void *data)
 
 	removeSource(TEXT_SOURCE_NAME);
 	removeSource(GRAPH_SOURCE_NAME);
+	removeSource(IMAGE_SOURCE_NAME);
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -180,6 +218,10 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "frame update interval", 60);
 	obs_data_set_default_int(settings, "ppg algorithm", 1);
 	obs_data_set_default_int(settings, "heart rate", 1);
+	obs_data_set_default_string(settings, "heart rate text", "Heart rate: {hr} BPM");
+	obs_data_set_default_bool(settings, "enable text source", true);
+	obs_data_set_default_bool(settings, "enable graph source", false);
+	obs_data_set_default_bool(settings, "enable image source", true);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -198,18 +240,42 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	obs_property_set_visible(frameUpdateInterval, isDlibSelected && isTrackerEnabled);
 	obs_property_set_visible(frameUpdateIntervalExplain, isDlibSelected && isTrackerEnabled);
 
+	obs_source_t *text_source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+	if (text_source) {
+		obs_data_t *text_settings = obs_source_get_settings(text_source);
+		if (text_settings) {
+			std::string textFormat = obs_data_get_string(settings, "heart rate text");
+			size_t pos = textFormat.find("{hr}");
+			if (pos != std::string::npos) {
+				textFormat.replace(pos, 4, std::to_string(obs_data_get_int(settings, "heart rate")));
+			}
+			obs_data_set_string(text_settings, "text", textFormat.c_str());
+			obs_source_update(text_source, text_settings);
+			obs_data_release(text_settings);
+		}
+		obs_source_release(text_source);
+	}
+
+	bool isTextEnabled = obs_data_get_bool(settings, "enable text source");
+	bool isGraphEnabled = obs_data_get_bool(settings, "enable graph source");
+	bool isImageEnabled = obs_data_get_bool(settings, "enable image source");
+	if (!isTextEnabled) {
+		removeSource(TEXT_SOURCE_NAME);
+	}
+	if (!isGraphEnabled) {
+		removeSource(GRAPH_SOURCE_NAME);
+	} 
+	if (!isImageEnabled) {
+		removeSource(IMAGE_SOURCE_NAME);
+	}
 	return true; // Forces the UI to refresh
 }
 
 obs_properties_t *heartRateSourceProperties(void *data)
 {
 	UNUSED_PARAMETER(data);
-
+	obs_log(LOG_INFO, "heartRateSourceProperties");
 	obs_properties_t *props = obs_properties_create();
-
-	// Allow user to disable face detection boxes drawing
-	obs_properties_add_bool(props, "face detection debug boxes",
-				obs_module_text("See face detection/tracking result"));
 
 	// Set the face detection algorithm
 	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
@@ -217,6 +283,10 @@ obs_properties_t *heartRateSourceProperties(void *data)
 							   OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(dropdown, "OpenCV Haarcascade Face Detection", 0);
 	obs_property_list_add_int(dropdown, "Dlib Face Detection", 1);
+
+	// Allow user to disable face detection boxes drawing
+	obs_properties_add_bool(props, "face detection debug boxes",
+				obs_module_text("See Face Detection/Tracking result"));
 
 	// Set if enable face tracking
 	obs_property_t *enableTracker =
@@ -236,10 +306,36 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(ppgDropdown, "PCA", 1);
 	obs_property_list_add_int(ppgDropdown, "Chrom", 2);
 
+	// Allow user to customise heart rate display text 
+	obs_property_t *heartRateText = obs_properties_add_text(
+		props, "heart rate text",
+		obs_module_text("Heart Rate Text:"),
+		OBS_TEXT_DEFAULT);
+	obs_properties_add_text(
+		props, "heart rate text explain",
+		obs_module_text("Enter display text with {hr} representing the heart rate we calculated: "),
+		OBS_TEXT_INFO);
+
+	obs_property_t *enableText =
+		obs_properties_add_bool(props, "enable text source", obs_module_text("Enable text source"));
+	obs_property_t *enableGraph =
+		obs_properties_add_bool(props, "enable graph source", obs_module_text("Enable graph source"));
+	obs_property_t *enableImage =
+		obs_properties_add_bool(props, "enable image source", obs_module_text("Enable image source"));
+
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
+
+	obs_data_set_default_bool(settings, "enable text source", true);
+	obs_data_set_default_bool(settings, "enable graph source", false);
+	obs_data_set_default_bool(settings, "enable image source", true);
+	
 	obs_property_set_modified_callback(dropdown, updateProperties);
 	obs_property_set_modified_callback(enableTracker, updateProperties);
 	obs_property_set_modified_callback(ppgDropdown, updateProperties);
+	obs_property_set_modified_callback(heartRateText, updateProperties);
+	obs_property_set_modified_callback(enableText, updateProperties);
+	obs_property_set_modified_callback(enableGraph, updateProperties);
+	obs_property_set_modified_callback(enableImage, updateProperties);
 
 	updateProperties(props, dropdown, settings); // Apply default visibility
 	obs_data_release(settings);
@@ -492,15 +588,24 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
 
 	double heartRate = movingAvg.calculateHeartRate(avg, 0, selectedPpgAlgorithm, 0);
-	std::string result = "Heart Rate: " + std::to_string(static_cast<int>(std::round(heartRate)));
+
+	// std::string result = "Heart Rate: " + std::to_string(static_cast<int>(std::round(heartRate)));
 	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
+
+	std::string textFormat = obs_data_get_string(hrsSettings, "heart rate text");
+	size_t pos = textFormat.find("{hr}");
+	if (pos != std::string::npos) {
+		textFormat.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
+	}
+
 	obs_data_release(hrsSettings); // possibly cause of crash
 
 	if (heartRate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
-			obs_data_set_string(sourceSettings, "text", result.c_str());
+			obs_data_set_string(sourceSettings, "text", textFormat.c_str());
+			// obs_data_set_string(sourceSettings, "text", result.c_str());
 			obs_source_update(source, sourceSettings);
 			obs_data_release(sourceSettings);
 			obs_source_release(source);
