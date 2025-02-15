@@ -13,8 +13,6 @@
 extern "C" {
 #endif
 
-#define GRAPH_SOURCE_NAME "Heart Rate Graph"
-
 struct graph_source {
 	obs_source_t *source;
 	// 	gs_vertbuffer_t *vertex_buffer;
@@ -34,8 +32,6 @@ uint32_t graph_source_info_get_height(void *data);
 
 void draw_graph(struct graph_source *source, int curHeartRate);
 
-obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source);
-// void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scene);
 #ifdef __cplusplus
 }
 #endif

@@ -7,7 +7,7 @@
 #include "obs_utils.h"
 #include "heart_rate_source.h"
 
-void remove_source(const char *source_name)
+void removeSource(const char *source_name)
 {
 	obs_source_t *source = obs_get_source_by_name(source_name);
 	if (source) {
@@ -18,7 +18,7 @@ void remove_source(const char *source_name)
 			obs_scene_t *scene = obs_scene_from_source(scene_as_source);
 			if (scene) {
 				obs_log(LOG_INFO, "[remove_source] found scene");
-				obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, source);
+				obs_sceneitem_t *scene_item = getSceneItemFromSource(scene, source);
 				if (scene_item) {
 					obs_log(LOG_INFO, "[remove_source] found scene item");
 					obs_sceneitem_remove(scene_item);  // Remove from scene
@@ -32,7 +32,7 @@ void remove_source(const char *source_name)
 	obs_log(LOG_INFO, "[remove_source] done removing text source");
 }
 
-void skip_video_filter_if_safe(obs_source_t *source)
+void skipVideoFilterIfSafe(obs_source_t *source)
 {
 	if (!source) {
 		return;
@@ -63,7 +63,7 @@ static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, 
 	return true; // Continue enumeration
 }
 
-obs_sceneitem_t *get_scene_item_from_source(obs_scene_t *scene, obs_source_t *source)
+obs_sceneitem_t *getSceneItemFromSource(obs_scene_t *scene, obs_source_t *source)
 {
 	obs_sceneitem_t *found_item = NULL;
 	void *params[2] = {source, &found_item}; // Pass source and output pointer

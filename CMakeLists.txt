@@ -154,6 +154,8 @@ target_sources(
     src/algorithm/face_detection/face_detection.cpp
     src/algorithm/face_detection/opencv_haarcascade.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
+    src/graph_source.cpp
+    src/graph_source_info.c
     src/plugin-main.cpp
     src/heart_rate_source.cpp
     src/heart_rate_source_info.c

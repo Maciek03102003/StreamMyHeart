@@ -1,6 +1,5 @@
 #include <obs-module.h>
 #include <obs.h>
-#include "obs_utils.h"
 #include <obs-frontend-api.h>
 #include <obs-source.h>
 #include <obs-data.h>
@@ -11,109 +10,10 @@
 #include <vector>
 #include <sstream>
 #include "plugin-support.h"
+#include "obs_utils.h"
 #include "graph_source.h"
 #include "graph_source_info.h"
-
-static void skip_video_filter_if_safe(obs_source_t *source)
-{
-	if (!source) {
-		return;
-	}
-
-	obs_source_t *parent = obs_filter_get_parent(source);
-	if (parent) {
-		obs_log(LOG_INFO, "Source is skipped");
-		obs_source_skip_video_filter(source);
-	} else {
-		obs_log(LOG_INFO, "No valid parent, skipping filter safely");
-	}
-}
-
-// Callback function to find the matching scene item
-static bool find_scene_item_callback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
-{
-	UNUSED_PARAMETER(scene);
-	obs_source_t *target_source = (obs_source_t *)((void **)param)[0];      // First element is target source
-	obs_sceneitem_t **found_item = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
-
-	obs_source_t *item_source = obs_sceneitem_get_source(item);
-
-	if (item_source == target_source) {
-		// Add a reference to the scene item to ensure it doesn't get released
-		obs_sceneitem_addref(item);
-		*found_item = item; // Store the found scene item
-		return false;       // Stop enumeration since we found the item
-	}
-
-	return true; // Continue enumeration
-}
-
-void add_graph_source_to_scene(obs_source_t *graph_obs_source, obs_scene_t *scene)
-{
-	// Add the graph to the OBS scene
-	obs_scene_add(scene, graph_obs_source);
-
-	// Set transform properties
-	obs_transform_info transform_info;
-	transform_info.pos.x = 300.0f;
-	transform_info.pos.y = 600.0f;
-	transform_info.bounds.x = 400.0f;
-	transform_info.bounds.y = 200.0f;
-	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
-	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 30.0f;
-	transform_info.scale.y = 30.0f;
-	transform_info.rot = 0.0f;
-
-	obs_sceneitem_t *scene_item = get_scene_item_from_source(scene, graph_obs_source);
-	if (scene_item != NULL) {
-		obs_sceneitem_set_info2(scene_item, &transform_info);
-		obs_sceneitem_release(scene_item);
-	}
-
-	obs_source_release(graph_obs_source);
-}
-
-void create_graph_source(obs_scene_t *scene, obs_source_t *parent_source)
-{
-	obs_log(LOG_INFO, "create graph source");
-
-	// Create OBS source for the graph
-	obs_data_t *graph_settings = obs_data_create();
-	obs_data_set_int(graph_settings, "heart rate", 1);
-	obs_source_t *graph_obs_source =
-		obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, graph_settings, nullptr);
-	obs_data_release(graph_settings);
-	if (!graph_obs_source) {
-		obs_log(LOG_INFO, "graph_obs_source is null");
-	}
-
-	// obs_log(LOG_INFO, "parent source name: %s", obs_source_get_name(parent_source));
-	// obs_source_filter_add(parent_source, graph_obs_source);
-
-	obs_scene_add(scene, graph_obs_source);
-	obs_transform_info transform_info;
-	transform_info.pos.x = 100.0f;
-	transform_info.pos.y = 300.0f;
-	transform_info.bounds.x = 600.0f;
-	transform_info.bounds.y = 400.0f;
-	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
-	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 2.0f;
-	transform_info.scale.y = 2.0f;
-	transform_info.rot = 0.0f;
-	obs_sceneitem_t *source_sceneitem = get_scene_item_from_source(scene, graph_obs_source);
-
-	if (source_sceneitem != NULL) {
-		obs_log(LOG_INFO, "Entering transform info adding part");
-
-		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
-		obs_sceneitem_release(source_sceneitem);
-	}
-	obs_source_release(graph_obs_source);
-}
+#include "heart_rate_source.h"
 
 // Destroy function for graph source
 // void destroy_graph_source(void *data)
@@ -154,6 +54,33 @@ void create_graph_source(obs_scene_t *scene, obs_source_t *parent_source)
 // 	}
 // }
 
+static bool find_heart_rate_monitor_filter(void *param, obs_source_t *source)
+{
+	const char *filter_name = "Heart Rate Monitor";
+
+	// Try to get the filter from the current source
+	obs_source_t *filter = obs_source_get_filter_by_name(source, filter_name);
+	obs_log(LOG_INFO, "Source: %s", obs_source_get_name(source));
+
+	if (filter) {
+		// Store the filter reference in param
+		*(obs_source_t **)param = filter;
+		return false; // Stop further enumeration
+	}
+
+	return true; // Continue searching
+}
+
+obs_source_t *get_heart_rate_monitor_filter()
+{
+	obs_source_t *found_filter = nullptr;
+
+	// Enumerate all sources to find the desired filter
+	obs_enum_sources(find_heart_rate_monitor_filter, &found_filter);
+
+	return found_filter; // Return the filter reference (must be released later)
+}
+
 void graph_source_render(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
@@ -166,16 +93,15 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	obs_log(LOG_INFO, "Rendering graph source...");
 
 	// Retrieve OBS settings for the heart rate monitor source
-	// obs_source_t *heart_rate_source = obs_get_source_by_name("Heart Rate Monitor");
-	// if (!heart_rate_source) {
-	//     obs_log(LOG_ERROR, "Heart Rate Monitor source not found");
-	//     return;
-	// }
-
-	obs_data_t *settings = obs_source_get_settings(graphSource->source);
-	int curHeartRate = static_cast<int>(obs_data_get_int(settings, "heart rate")); // Retrieve heart rate
-	obs_data_release(settings);
-	obs_source_release(graphSource->source);
+	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
+	if (!heartRateSource) {
+		obs_log(LOG_INFO, "Failed to get heart rate source");
+		return;
+	}
+	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+	int curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
+	obs_data_release(hrsSettings);
+	obs_source_release(heartRateSource);
 
 	obs_log(LOG_INFO, "Current heart rate: %d", curHeartRate);
 
@@ -202,7 +128,6 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	obs_log(LOG_INFO, "Updating heart rate buffer...");
 
 	// Start rendering
-	// gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	if (!graph_source->effect) {
 		obs_log(LOG_ERROR, "Failed to get solid effect for rendering");
 		return;
@@ -213,7 +138,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		gs_render_start(true); // Use GS_LINESTRIP to connect the points
 
-		obs_log(LOG_INFO, "Drawing heart rate graph...");
+		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
 		for (size_t i = 0; i < graph_source->buffer.size(); i++) {
 
@@ -238,12 +163,15 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 		obs_log(LOG_INFO, "current source in create graph source is null");
 		return nullptr;
 	}
-	obs_data_set_int(settings, "heart rate", 1);
+
 	std::vector<int> buffer;
 	graph_src->buffer = buffer;
-	obs_log(LOG_INFO, "create graph source info triggered");
-	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
-	graph_src->effect = effect;
+
+	graph_src->effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+	if (!graph_src->effect) {
+		destroy_graph_source_info(graph_src);
+		graph_src = NULL;
+	}
 	return graph_src;
 }
 void destroy_graph_source_info(void *data)

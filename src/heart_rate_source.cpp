@@ -26,49 +26,6 @@ const char *getHeartRateSourceName(void *)
 	return "Heart Rate Monitor";
 }
 
-static void skipVideoFilterIfSafe(obs_source_t *source)
-{
-	if (!source) {
-		return;
-	}
-
-	obs_source_t *parent = obs_filter_get_parent(source);
-	if (parent) {
-		obs_source_skip_video_filter(source);
-	} else {
-	}
-}
-
-// Callback function to find the matching scene item
-static bool findSceneItemCallback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
-{
-	UNUSED_PARAMETER(scene);
-	obs_source_t *targetSource = (obs_source_t *)((void **)param)[0];      // First element is target source
-	obs_sceneitem_t **foundItem = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
-
-	obs_source_t *itemSource = obs_sceneitem_get_source(item);
-
-	if (itemSource == targetSource) {
-		// Add a reference to the scene item to ensure it doesn't get released
-		obs_sceneitem_addref(item);
-		*foundItem = item; // Store the found scene item
-		return false;      // Stop enumeration since we found the item
-	}
-
-	return true; // Continue enumeration
-}
-
-static obs_sceneitem_t *getSceneItemFromSource(obs_scene_t *scene, obs_source_t *source)
-{
-	obs_sceneitem_t *foundItem = NULL;
-	void *params[2] = {source, &foundItem}; // Pass source and output pointer
-
-	// Enumerate scene items and find the one matching the source
-	obs_scene_enum_items(scene, findSceneItemCallback, params);
-
-	return foundItem;
-}
-
 static void create_graph_source(obs_scene_t *scene)
 {
 	obs_source_t *graph_source = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
@@ -88,7 +45,7 @@ static void create_graph_source(obs_scene_t *scene)
 	transform_info.scale.x = 2.0f;
 	transform_info.scale.y = 2.0f;
 	transform_info.rot = 0.0f;
-	obs_sceneitem_t *source_sceneitem = get_scene_item_from_source(scene, graph_source);
+	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, graph_source);
 	if (source_sceneitem != NULL) {
 		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
 		obs_sceneitem_release(source_sceneitem);
@@ -109,6 +66,9 @@ static void createOBSHeartDisplaySourceIfNeeded()
 	// create a new OBS text source called TEXT_SOURCE_NAME
 	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
 	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
+
+	create_graph_source(scene);
+
 	source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
 
 	if (source) {
@@ -169,9 +129,8 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 
 	hrs->source = source;
 
-	char *effectFile;
 	obs_enter_graphics();
-	effectFile = obs_module_file("test.effect");
+	char *effectFile = obs_module_file("test.effect");
 
 	hrs->testing = gs_effect_create_from_file(effectFile, NULL);
 
@@ -197,7 +156,8 @@ void heartRateSourceDestroy(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
-	remove_source(TEXT_SOURCE_NAME);
+	removeSource(TEXT_SOURCE_NAME);
+	removeSource(GRAPH_SOURCE_NAME);
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -219,6 +179,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
 	obs_data_set_default_int(settings, "ppg algorithm", 1);
+	obs_data_set_default_int(settings, "heart rate", 1);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -505,8 +466,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	obs_log(LOG_INFO, "[heart_rate_source_render] START FACE DETECTION");
 	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
 
-	int64_t selectedFaceDetectionAlgorithm =
-		obs_data_get_int(hrsSettings, "face detection algorithm");
+	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(hrsSettings, "face detection algorithm");
 	bool enableDebugBoxes = obs_data_get_bool(hrsSettings, "face detection debug boxes");
 	bool enableTracker = obs_data_get_bool(hrsSettings, "enable face tracking");
 	int64_t frameUpdateInterval = obs_data_get_int(hrsSettings, "frame update interval");
@@ -532,9 +492,9 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
 
 	double heartRate = movingAvg.calculateHeartRate(avg, 0, selectedPpgAlgorithm, 0);
-	std::string result = "Heart Rate: " + std::to_string((int)heartRate);
-
-	obs_data_release(hrsSettings); // possibly cause of crash 
+	std::string result = "Heart Rate: " + std::to_string(static_cast<int>(std::round(heartRate)));
+	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
+	obs_data_release(hrsSettings); // possibly cause of crash
 
 	if (heartRate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
