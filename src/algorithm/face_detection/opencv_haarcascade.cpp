@@ -3,42 +3,38 @@
 #include <graphics/matrix4.h>
 #include <algorithm>
 
-// Static variables for face detection
-static cv::CascadeClassifier face_cascade, mouth_cascade, left_eye_cascade, right_eye_cascade;
-static bool cascade_loaded = false;
-
 static void loadCascade(cv::CascadeClassifier &cascade, const char *module_name, const char *file_name)
 {
-	char *cascade_path = obs_module_file(file_name);
-	if (!cascade_path) {
+	char *cascadePath = obs_module_file(file_name);
+	if (!cascadePath) {
 		obs_log(LOG_INFO, "Error finding %s file!", file_name);
 		throw std::runtime_error("Error finding cascade file!");
 	}
 
-	if (!cascade.load(cascade_path)) {
+	if (!cascade.load(cascadePath)) {
 		obs_log(LOG_INFO, "Error loading %s!", file_name);
 		throw std::runtime_error("Error loading cascade!");
 	}
 
-	bfree(cascade_path);
+	bfree(cascadePath);
 }
 
 // Ensure the face cascade is loaded once
-static void initializeFaceCascade(bool evaluation)
+void HaarCascadeFaceDetection::initializeFaceCascade(bool evaluation)
 {
-	if (!cascade_loaded) {
+	if (!cascadeLoaded) {
 		if (evaluation) {
-			face_cascade.load("./haarcascade_frontalface_default.xml");
-			mouth_cascade.load("./haarcascade_mcs_mouth.xml");
-			left_eye_cascade.load("./haarcascade_lefteye_2splits.xml");
-			right_eye_cascade.load("./haarcascade_righteye_2splits.xml");
-			cascade_loaded = true;
+			faceCascade.load("./haarcascade_frontalface_default.xml");
+			mouthCascade.load("./haarcascade_mcs_mouth.xml");
+			leftEyeCascade.load("./haarcascade_lefteye_2splits.xml");
+			rightEyeCascade.load("./haarcascade_righteye_2splits.xml");
+			cascadeLoaded = true;
 		} else {
-			loadCascade(face_cascade, "pulse-obs", "haarcascade_frontalface_default.xml");
-			loadCascade(mouth_cascade, "pulse-obs", "haarcascade_mcs_mouth.xml");
-			loadCascade(left_eye_cascade, "pulse-obs", "haarcascade_lefteye_2splits.xml");
-			loadCascade(right_eye_cascade, "pulse-obs", "haarcascade_righteye_2splits.xml");
-			cascade_loaded = true;
+			loadCascade(faceCascade, "pulse-obs", "haarcascade_frontalface_default.xml");
+			loadCascade(mouthCascade, "pulse-obs", "haarcascade_mcs_mouth.xml");
+			loadCascade(leftEyeCascade, "pulse-obs", "haarcascade_lefteye_2splits.xml");
+			loadCascade(rightEyeCascade, "pulse-obs", "haarcascade_righteye_2splits.xml");
+			cascadeLoaded = true;
 		}
 	}
 }
@@ -46,21 +42,25 @@ static void initializeFaceCascade(bool evaluation)
 // Normalise the rectangle coordinates to pass to the effect files for drawing boxes
 static struct vec4 getNormalisedRect(const cv::Rect &region, uint32_t width, uint32_t height)
 {
-	float norm_min_x = static_cast<float>(region.x) / width;
-	float norm_max_x = static_cast<float>(region.x + region.width) / width;
-	float norm_min_y = static_cast<float>(region.y) / height;
-	float norm_max_y = static_cast<float>(region.y + region.height) / height;
+	float normMinX = static_cast<float>(region.x) / width;
+	float normMaxX = static_cast<float>(region.x + region.width) / width;
+	float normMinY = static_cast<float>(region.y) / height;
+	float normMaxY = static_cast<float>(region.y + region.height) / height;
 
 	struct vec4 rect;
-	vec4_set(&rect, norm_min_x, norm_max_x, norm_min_y, norm_max_y);
+	vec4_set(&rect, normMinX, normMaxX, normMinY, normMaxY);
 	return rect;
 }
 
 // Function to detect faces and create a mask
-std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
-					       std::vector<struct vec4> &face_coordinates, bool enable_debug_boxes,
-					       bool evaluation)
+std::vector<double_t> HaarCascadeFaceDetection::detectFace(struct input_BGRA_data *frame,
+							   std::vector<struct vec4> &faceCoordinates,
+							   bool enableDebugBoxes, bool enableTracker,
+							   int frameUpdateInterval, bool evaluation)
 {
+	UNUSED_PARAMETER(frameUpdateInterval);
+	UNUSED_PARAMETER(enableTracker);
+
 	if (!frame || !frame->data) {
 		throw std::runtime_error("Invalid BGRA frame data!");
 	}
@@ -75,115 +75,114 @@ std::vector<double_t> detectFacesAndCreateMask(struct input_BGRA_data *frame,
 	uint32_t linesize = frame->linesize;
 
 	// Initialize a 2D boolean mask
-	std::vector<std::vector<bool>> face_mask(height, std::vector<bool>(width, false));
+	std::vector<std::vector<bool>> faceMask(height, std::vector<bool>(width, false));
 
 	// Create an OpenCV Mat for the BGRA frame
 	// `linesize` specifies the number of bytes per row, which can include padding
-	cv::Mat bgra_frame(height, linesize / 4, CV_8UC4, data);
+	cv::Mat bgraFrame(height, linesize / 4, CV_8UC4, data);
 
 	// Crop to remove padding if linesize > width * 4
-	cv::Mat cropped_bgra_frame = bgra_frame(cv::Rect(0, 0, width, height));
+	cv::Mat croppedBgraFrame = bgraFrame(cv::Rect(0, 0, width, height));
 
 	// Convert BGRA to BGR (OpenCV processes images in BGR format)
-	cv::Mat bgr_frame;
-	cv::cvtColor(cropped_bgra_frame, bgr_frame, cv::COLOR_BGRA2BGR);
+	cv::Mat bgrFrame;
+	cv::cvtColor(croppedBgraFrame, bgrFrame, cv::COLOR_BGRA2BGR);
 
 	// Detect faces
 	std::vector<cv::Rect> faces;
-	face_cascade.detectMultiScale(bgr_frame, faces, 1.1, 10, 0, cv::Size(30, 30));
+	faceCascade.detectMultiScale(bgrFrame, faces, 1.1, 10, 0, cv::Size(30, 30));
 
 	// Detect eyes and mouth within detected faces
-	cv::Rect initial_face;
+	cv::Rect initialFace;
 	if (!faces.empty()) {
-		initial_face = faces[0]; // Assume first detected face is the target
+		initialFace = faces[0]; // Assume first detected face is the target
 	} else {
 		// If no face detected, return empty mask
 		return std::vector<double_t>(3, 0.0);
 	}
 
-	if (enable_debug_boxes) {
+	if (enableDebugBoxes) {
 		// Push absolute face bounding box as normalized coordinates
-		face_coordinates.push_back(getNormalisedRect(initial_face, width, height));
+		faceCoordinates.push_back(getNormalisedRect(initialFace, width, height));
 	}
 
 	// Define region of interest (ROI) for eyes and mouth
-	cv::Mat faceROI = bgr_frame(initial_face);
-	cv::Mat gray_faceROI;
-	cv::cvtColor(faceROI, gray_faceROI, cv::COLOR_BGR2GRAY);
+	cv::Mat faceROI = bgrFrame(initialFace);
+	cv::Mat grayFaceROI;
+	cv::cvtColor(faceROI, grayFaceROI, cv::COLOR_BGR2GRAY);
 
 	cv::Mat lowerFaceROI =
-		gray_faceROI(cv::Rect(0, gray_faceROI.rows / 2, gray_faceROI.cols, faceROI.rows / 2)); // Lower half
-	cv::Mat leftFaceROI = gray_faceROI(cv::Rect(0, 0, gray_faceROI.cols / 2, gray_faceROI.rows));  // Upper half
-	cv::Mat rightFaceROI =
-		gray_faceROI(cv::Rect(gray_faceROI.cols / 2, 0, gray_faceROI.cols / 2, gray_faceROI.rows));
+		grayFaceROI(cv::Rect(0, grayFaceROI.rows / 2, grayFaceROI.cols, faceROI.rows / 2)); // Lower half
+	cv::Mat leftFaceROI = grayFaceROI(cv::Rect(0, 0, grayFaceROI.cols / 2, grayFaceROI.rows));  // Upper half
+	cv::Mat rightFaceROI = grayFaceROI(cv::Rect(grayFaceROI.cols / 2, 0, grayFaceROI.cols / 2, grayFaceROI.rows));
 
 	// Detect left eyes
-	std::vector<cv::Rect> left_eyes;
-	left_eye_cascade.detectMultiScale(leftFaceROI, left_eyes, 1.1, 10, 0, cv::Size(15, 15));
-	cv::Rect absolute_left_eye;
-	if (!left_eyes.empty()) {
-		const auto &eye = left_eyes[0];
+	std::vector<cv::Rect> leftEyes;
+	leftEyeCascade.detectMultiScale(leftFaceROI, leftEyes, 1.1, 10, 0, cv::Size(15, 15));
+	cv::Rect absoluteLeftEye;
+	if (!leftEyes.empty()) {
+		const auto &eye = leftEyes[0];
 		// Calculate absolute coordinates for the eye
-		absolute_left_eye = cv::Rect(eye.x + initial_face.x, eye.y + initial_face.y, eye.width, eye.height);
+		absoluteLeftEye = cv::Rect(eye.x + initialFace.x, eye.y + initialFace.y, eye.width, eye.height);
 
-		if (enable_debug_boxes) {
+		if (enableDebugBoxes) {
 			// Push absolute eye bounding box as normalized coordinates
-			face_coordinates.push_back(getNormalisedRect(absolute_left_eye, width, height));
+			faceCoordinates.push_back(getNormalisedRect(absoluteLeftEye, width, height));
 		}
 	}
 
 	// Detect right eyes
-	std::vector<cv::Rect> right_eyes;
-	right_eye_cascade.detectMultiScale(rightFaceROI, right_eyes, 1.1, 10, 0, cv::Size(15, 15));
-	cv::Rect absolute_right_eye;
-	if (!right_eyes.empty()) {
-		const auto &eye = right_eyes[0];
+	std::vector<cv::Rect> rightEyes;
+	rightEyeCascade.detectMultiScale(rightFaceROI, rightEyes, 1.1, 10, 0, cv::Size(15, 15));
+	cv::Rect absoluteRightEye;
+	if (!rightEyes.empty()) {
+		const auto &eye = rightEyes[0];
 		// Calculate absolute coordinates for the eye
-		absolute_right_eye = cv::Rect(eye.x + initial_face.x + initial_face.width / 2, eye.y + initial_face.y,
-					      eye.width, eye.height);
+		absoluteRightEye = cv::Rect(eye.x + initialFace.x + initialFace.width / 2, eye.y + initialFace.y,
+					    eye.width, eye.height);
 
-		if (enable_debug_boxes) {
+		if (enableDebugBoxes) {
 			// Push absolute eye bounding box as normalized coordinates
-			face_coordinates.push_back(getNormalisedRect(absolute_right_eye, width, height));
+			faceCoordinates.push_back(getNormalisedRect(absoluteRightEye, width, height));
 		}
 	}
 
 	// Detect mouth in the lower half of the face ROI
 	std::vector<cv::Rect> mouths;
-	mouth_cascade.detectMultiScale(lowerFaceROI, mouths, 1.05, 35, 0, cv::Size(30, 15));
-	cv::Rect absolute_mouth;
+	mouthCascade.detectMultiScale(lowerFaceROI, mouths, 1.05, 35, 0, cv::Size(30, 15));
+	cv::Rect absoluteMouth;
 	if (!mouths.empty()) {
 		const auto &mouth = mouths[0];
 		// Calculate absolute coordinates for the mouth
-		absolute_mouth = cv::Rect(mouth.x + initial_face.x, mouth.y + initial_face.y + faceROI.rows / 2,
-					  mouth.width, mouth.height);
+		absoluteMouth = cv::Rect(mouth.x + initialFace.x, mouth.y + initialFace.y + faceROI.rows / 2,
+					 mouth.width, mouth.height);
 
-		if (enable_debug_boxes) {
+		if (enableDebugBoxes) {
 			// Push absolute mouth bounding box as normalized coordinates
-			face_coordinates.push_back(getNormalisedRect(absolute_mouth, width, height));
+			faceCoordinates.push_back(getNormalisedRect(absoluteMouth, width, height));
 		}
 	}
 
 	// Instead of returning a 2D boolean mask, create an OpenCV mask image
 	// that we will use to compute the average RGB.
-	cv::Mat maskMat = cv::Mat::zeros(bgr_frame.size(), CV_8UC1);
+	cv::Mat maskMat = cv::Mat::zeros(bgrFrame.size(), CV_8UC1);
 
-	// Mark the entire face region (initial_face) as valid (white)
-	cv::rectangle(maskMat, initial_face, cv::Scalar(255), cv::FILLED);
+	// Mark the entire face region (initialFace) as valid (white)
+	cv::rectangle(maskMat, initialFace, cv::Scalar(255), cv::FILLED);
 
 	// Remove (mask out) the detected left eye, right eye, and mouth regions by setting them to black.
-	if (!left_eyes.empty()) {
-		cv::rectangle(maskMat, absolute_left_eye, cv::Scalar(0), cv::FILLED);
+	if (!leftEyes.empty()) {
+		cv::rectangle(maskMat, absoluteLeftEye, cv::Scalar(0), cv::FILLED);
 	}
-	if (!right_eyes.empty()) {
-		cv::rectangle(maskMat, absolute_right_eye, cv::Scalar(0), cv::FILLED);
+	if (!rightEyes.empty()) {
+		cv::rectangle(maskMat, absoluteRightEye, cv::Scalar(0), cv::FILLED);
 	}
 	if (!mouths.empty()) {
-		cv::rectangle(maskMat, absolute_mouth, cv::Scalar(0), cv::FILLED);
+		cv::rectangle(maskMat, absoluteMouth, cv::Scalar(0), cv::FILLED);
 	}
 
 	// Now compute the mean color in the face region (where maskMat is nonzero)
-	cv::Scalar meanRGB = cv::mean(bgr_frame, maskMat);
+	cv::Scalar meanRGB = cv::mean(bgrFrame, maskMat);
 
 	// Convert the result to a vector<double_t> (B, G, R order)
 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};

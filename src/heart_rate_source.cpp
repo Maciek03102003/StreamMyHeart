@@ -153,6 +153,9 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
 	createOBSHeartDisplaySourceIfNeeded();
 
+	int64_t selected_algorithm = obs_data_get_int(settings, "face detection algorithm");
+	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selected_algorithm));
+
 	return hrs;
 }
 
@@ -241,6 +244,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(dropdown, updateProperties);
 	obs_property_set_modified_callback(enable_tracker, updateProperties);
 	obs_property_set_modified_callback(ppg_dropdown, updateProperties);
+
 	updateProperties(props, dropdown, settings); // Apply default visibility
 
 	return props;
@@ -401,7 +405,7 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 }
 
 static gs_texture_t *drawRectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
-				    std::vector<struct vec4> &face_coordinates)
+				   std::vector<struct vec4> &face_coordinates)
 {
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
@@ -468,8 +472,12 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	int64_t frame_update_interval = obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
 
 	std::vector<struct vec4> face_coordinates;
-	std::vector<double_t> avg = detectFace(selected_algorithm, hrs->BGRA_data, face_coordinates, enable_debug_boxes,
-					       enable_tracker, frame_update_interval);
+	std::vector<double_t> avg;
+
+	if (hrs->faceDetection) {
+		avg = hrs->faceDetection->detectFace(hrs->BGRA_data, face_coordinates, enable_debug_boxes,
+						     enable_tracker, frame_update_interval);
+	}
 
 	// Get the selected PPG algorithm
 	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");

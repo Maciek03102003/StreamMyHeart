@@ -88,6 +88,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 	}
 
 	MovingAvg movingAvg;
+	HaarCascadeFaceDetection faceDetection;
 	cv::Mat frame;
 
 	int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
@@ -105,7 +106,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		input_BGRA_data bgraData = extractBGRAData(bgraFrame);
 
 		// Perform face detection
-		std::vector<double_t> avg = detectFacesAndCreateMask(&bgraData, faceCoordinates, false, true);
+		std::vector<double_t> avg = faceDetection.detectFace(&bgraData, faceCoordinates, false, true, 60, true);
 
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0, fps);

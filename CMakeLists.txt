@@ -153,8 +153,6 @@ target_sources(
     src/algorithm/heart_rate_algorithm.cpp
     src/algorithm/face_detection/face_detection.cpp
     src/algorithm/face_detection/opencv_haarcascade.cpp
-    # src/algorithm/face_detection/opencv_dlib_dnn.cpp
-    # src/algorithm/face_detection/opencv_dlib_68_landmarks.cpp
     src/algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.cpp
     src/plugin-main.cpp
     src/heart_rate_source.cpp

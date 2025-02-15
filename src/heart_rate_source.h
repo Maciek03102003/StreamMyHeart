@@ -5,6 +5,7 @@
 
 #ifdef __cplusplus
 #include <mutex>
+#include "algorithm/face_detection/face_detection.h"
 #else
 #include <stdbool.h>
 #endif
@@ -30,9 +31,11 @@ struct heart_rate_source {
 #ifdef __cplusplus
 	input_BGRA_data *BGRA_data;
 	std::mutex BGRA_data_mutex;
+	std::unique_ptr<FaceDetection> faceDetection;
 #else
 	struct input_BGRA_data *BGRA_data;
 	void *BGRA_data_mutex; // Placeholder for C compatibility
+	void *faceDetection;
 #endif
 	bool isDisabled;
 };
