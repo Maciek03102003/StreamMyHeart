@@ -8,8 +8,6 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
-enum class FaceDetectionAlgorithm { HAAR_CASCADE, DLIB };
-
 enum class PreFilteringAlgorithm { NONE, BUTTERWORTH_BANDPASS, DETREND, ZERO_MEAN, LAST };
 
 enum class PPGAlgorithm {
@@ -158,6 +156,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceD
 	}
 
 	MovingAvg movingAvg;
+	std::unique_ptr<FaceDetection> faceDetection = FaceDetection::create(faceDetect);
 	cv::Mat frame;
 
 	int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
@@ -176,7 +175,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceD
 
 		// Perform face detection
 		std::vector<double_t> avg =
-			detectFace(static_cast<int>(faceDetect), &bgraData, faceCoordinates, false, true, 60, true);
+			faceDetection->detectFace(&bgraData, faceCoordinates, false, true, 60, true);
 
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, static_cast<int>(preFilter), static_cast<int>(ppg),
@@ -211,8 +210,8 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 	std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
 	// Construct the results filename based on the parameters
-	std::string resultsFilename = "../../../../../eval/results/evaluation_results_" + toString(faceDetect) + "_" + toString(preFilter) + "_" +
-				      toString(ppg) + "_" + toString(postFilter) + ".csv";
+	std::string resultsFilename = "../../../../../eval/results/evaluation_results_" + toString(faceDetect) + "_" +
+				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + ".csv";
 
 	// Print the table header
 	std::cout

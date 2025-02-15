@@ -1,21 +1,13 @@
 #include "face_detection.h"
+#include "opencv_haarcascade.h"
+#include "opencv_dlib_68_landmarks_face_tracker.h"
 
-enum FaceDetectionAlgorithm { OPENCV_HAARCASCADE = 0, DLIB_FACE_DETECTION = 1 };
-
-std::vector<double_t> detectFace(int faceDetectionAlgorithm, struct input_BGRA_data *bgraData,
-				 std::vector<struct vec4> &faceCoordinates, bool enableDebugBoxes, bool enableTracker,
-				 bool frameUpdateInterval, bool evaluation)
+std::unique_ptr<FaceDetection> FaceDetection::create(FaceDetectionAlgorithm algorithm)
 {
-	std::vector<double_t> avg;
-
-	if (faceDetectionAlgorithm == OPENCV_HAARCASCADE) {
-		// Haarcascade face detection with OpenCV
-		avg = detectFacesAndCreateMask(bgraData, faceCoordinates, enableDebugBoxes, evaluation);
-	} else if (faceDetectionAlgorithm == DLIB_FACE_DETECTION) {
-		// Dlib face detection with 68 landmarks, with/without tracking
-		avg = detectFaceAOI(bgraData, faceCoordinates, frameUpdateInterval, enableTracker, enableDebugBoxes,
-				    evaluation);
+	if (algorithm == FaceDetectionAlgorithm::HAAR_CASCADE) {
+		return std::make_unique<HaarCascadeFaceDetection>();
+	} else if (algorithm == FaceDetectionAlgorithm::DLIB) {
+		return std::make_unique<DlibFaceDetection>();
 	}
-
-	return avg;
+	return nullptr;
 }

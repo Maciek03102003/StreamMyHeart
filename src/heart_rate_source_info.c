@@ -1,6 +1,6 @@
 #include "heart_rate_source.h"
 
-struct obs_source_info heart_rate_source_info = {
+struct obs_source_info heartRateSourceInfo = {
 	.id = "heart_rate_filter",
 	.type = OBS_SOURCE_TYPE_FILTER,
 	.output_flags = OBS_SOURCE_VIDEO,

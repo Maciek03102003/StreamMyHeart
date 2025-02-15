@@ -1,4 +1,6 @@
 #include "algorithm/face_detection/face_detection.h"
+#include "algorithm/face_detection/opencv_haarcascade.h"
+#include "algorithm/face_detection/opencv_dlib_68_landmarks_face_tracker.h"
 #include "algorithm/heart_rate_algorithm.h"
 #include "heart_rate_source.h"
 #include "plugin-support.h"
@@ -38,16 +40,16 @@ static void skipVideoFilterIfSafe(obs_source_t *source)
 static bool findSceneItemCallback(obs_scene_t *scene, obs_sceneitem_t *item, void *param)
 {
 	UNUSED_PARAMETER(scene);
-	obs_source_t *target_source = (obs_source_t *)((void **)param)[0];      // First element is target source
-	obs_sceneitem_t **found_item = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
+	obs_source_t *targetSource = (obs_source_t *)((void **)param)[0];      // First element is target source
+	obs_sceneitem_t **foundItem = (obs_sceneitem_t **)((void **)param)[1]; // Second element is result pointer
 
-	obs_source_t *item_source = obs_sceneitem_get_source(item);
+	obs_source_t *itemSource = obs_sceneitem_get_source(item);
 
-	if (item_source == target_source) {
+	if (itemSource == targetSource) {
 		// Add a reference to the scene item to ensure it doesn't get released
 		obs_sceneitem_addref(item);
-		*found_item = item; // Store the found scene item
-		return false;       // Stop enumeration since we found the item
+		*foundItem = item; // Store the found scene item
+		return false;      // Stop enumeration since we found the item
 	}
 
 	return true; // Continue enumeration
@@ -55,13 +57,13 @@ static bool findSceneItemCallback(obs_scene_t *scene, obs_sceneitem_t *item, voi
 
 static obs_sceneitem_t *getSceneItemFromSource(obs_scene_t *scene, obs_source_t *source)
 {
-	obs_sceneitem_t *found_item = NULL;
-	void *params[2] = {source, &found_item}; // Pass source and output pointer
+	obs_sceneitem_t *foundItem = NULL;
+	void *params[2] = {source, &foundItem}; // Pass source and output pointer
 
 	// Enumerate scene items and find the one matching the source
 	obs_scene_enum_items(scene, findSceneItemCallback, params);
 
-	return found_item;
+	return foundItem;
 }
 
 static void createOBSHeartDisplaySourceIfNeeded()
@@ -75,56 +77,56 @@ static void createOBSHeartDisplaySourceIfNeeded()
 	}
 
 	// create a new OBS text source called TEXT_SOURCE_NAME
-	obs_source_t *scene_as_source = obs_frontend_get_current_scene();
-	obs_scene_t *scene = obs_scene_from_source(scene_as_source);
+	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
+	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
 	source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
 
 	if (source) {
 		// add source to the current scene
 		obs_scene_add(scene, source);
 		// set source settings
-		obs_data_t *source_settings = obs_source_get_settings(source);
-		obs_data_set_bool(source_settings, "word_wrap", true);
-		obs_data_set_bool(source_settings, "extents", true);
-		obs_data_set_bool(source_settings, "outline", true);
-		obs_data_set_int(source_settings, "outline_color", 4278190080);
-		obs_data_set_int(source_settings, "outline_size", 7);
-		obs_data_set_int(source_settings, "extents_cx", 1500);
-		obs_data_set_int(source_settings, "extents_cy", 230);
-		obs_data_t *font_data = obs_data_create();
-		obs_data_set_string(font_data, "face", "Arial");
-		obs_data_set_string(font_data, "style", "Regular");
-		obs_data_set_int(font_data, "size", 72);
-		obs_data_set_int(font_data, "flags", 0);
-		obs_data_set_obj(source_settings, "font", font_data);
-		obs_data_release(font_data);
+		obs_data_t *sourceSettings = obs_source_get_settings(source);
+		obs_data_set_bool(sourceSettings, "word_wrap", true);
+		obs_data_set_bool(sourceSettings, "extents", true);
+		obs_data_set_bool(sourceSettings, "outline", true);
+		obs_data_set_int(sourceSettings, "outline_color", 4278190080);
+		obs_data_set_int(sourceSettings, "outline_size", 7);
+		obs_data_set_int(sourceSettings, "extents_cx", 1500);
+		obs_data_set_int(sourceSettings, "extents_cy", 230);
+		obs_data_t *fontData = obs_data_create();
+		obs_data_set_string(fontData, "face", "Arial");
+		obs_data_set_string(fontData, "style", "Regular");
+		obs_data_set_int(fontData, "size", 72);
+		obs_data_set_int(fontData, "flags", 0);
+		obs_data_set_obj(sourceSettings, "font", fontData);
+		obs_data_release(fontData);
 
 		std::string heartRateText = "Heart Rate: 0 BPM";
-		obs_data_set_string(source_settings, "text", heartRateText.c_str());
-		obs_source_update(source, source_settings);
-		obs_data_release(source_settings);
+		obs_data_set_string(sourceSettings, "text", heartRateText.c_str());
+		obs_source_update(source, sourceSettings);
+		obs_data_release(sourceSettings);
 
 		// set transform settings
-		obs_transform_info transform_info;
-		transform_info.pos.x = 260.0;
-		transform_info.pos.y = 1040.0 - 50.0;
-		transform_info.bounds.x = 500.0;
-		transform_info.bounds.y = 145.0;
-		transform_info.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
-		transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-		transform_info.alignment = OBS_ALIGN_CENTER;
-		transform_info.scale.x = 1.0;
-		transform_info.scale.y = 1.0;
-		transform_info.rot = 0.0;
-		obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, source);
-		if (source_sceneitem != NULL) {
-			obs_sceneitem_set_info2(source_sceneitem, &transform_info);
-			obs_sceneitem_release(source_sceneitem);
+		obs_transform_info transformInfo;
+		transformInfo.pos.x = 260.0;
+		transformInfo.pos.y = 1040.0 - 50.0;
+		transformInfo.bounds.x = 500.0;
+		transformInfo.bounds.y = 145.0;
+		transformInfo.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
+		transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
+		transformInfo.alignment = OBS_ALIGN_CENTER;
+		transformInfo.scale.x = 1.0;
+		transformInfo.scale.y = 1.0;
+		transformInfo.rot = 0.0;
+		obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, source);
+		if (sourceSceneItem != NULL) {
+			obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+			obs_sceneitem_release(sourceSceneItem);
 		}
 
 		obs_source_release(source);
 	}
-	obs_source_release(scene_as_source);
+	obs_source_release(sceneAsSource);
 }
 
 // Create function
@@ -132,18 +134,18 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 {
 	UNUSED_PARAMETER(settings);
 
-	void *data = bmalloc(sizeof(struct heart_rate_source));
-	struct heart_rate_source *hrs = new (data) heart_rate_source();
+	void *data = bmalloc(sizeof(struct heartRateSource));
+	struct heartRateSource *hrs = new (data) heartRateSource();
 
 	hrs->source = source;
 
-	char *effect_file;
+	char *effectFile;
 	obs_enter_graphics();
-	effect_file = obs_module_file("test.effect");
+	effectFile = obs_module_file("test.effect");
 
-	hrs->testing = gs_effect_create_from_file(effect_file, NULL);
+	hrs->testing = gs_effect_create_from_file(effectFile, NULL);
 
-	bfree(effect_file);
+	bfree(effectFile);
 	if (!hrs->testing) {
 		heartRateSourceDestroy(hrs);
 		hrs = NULL;
@@ -153,13 +155,16 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	hrs->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
 	createOBSHeartDisplaySourceIfNeeded();
 
+	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
+	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
+
 	return hrs;
 }
 
 // Destroy function
 void heartRateSourceDestroy(void *data)
 {
-	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
+	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -170,7 +175,7 @@ void heartRateSourceDestroy(void *data)
 		}
 		gs_effect_destroy(hrs->testing);
 		obs_leave_graphics();
-		hrs->~heart_rate_source();
+		hrs->~heartRateSource();
 		bfree(hrs);
 	}
 }
@@ -188,18 +193,18 @@ void heartRateSourceDefaults(obs_data_t *settings)
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
 {
 	UNUSED_PARAMETER(property);
-	bool is_dlib_selected = obs_data_get_int(settings, "face detection algorithm") == 1;
-	bool is_tracker_enabled = obs_data_get_bool(settings, "enable face tracking");
+	bool isDlibSelected = obs_data_get_int(settings, "face detection algorithm") == 1;
+	bool isTrackerEnabled = obs_data_get_bool(settings, "enable face tracking");
 
-	obs_property_t *enable_tracker = obs_properties_get(props, "enable face tracking");
-	obs_property_t *face_tracking_explain = obs_properties_get(props, "face tracking explain");
-	obs_property_t *frame_update_interval = obs_properties_get(props, "frame update interval");
-	obs_property_t *frame_update_interval_explain = obs_properties_get(props, "frame update interval explain");
+	obs_property_t *enableTracker = obs_properties_get(props, "enable face tracking");
+	obs_property_t *faceTrackingExplain = obs_properties_get(props, "face tracking explain");
+	obs_property_t *frameUpdateInterval = obs_properties_get(props, "frame update interval");
+	obs_property_t *frameUpdateIntervalExplain = obs_properties_get(props, "frame update interval explain");
 
-	obs_property_set_visible(enable_tracker, is_dlib_selected);
-	obs_property_set_visible(face_tracking_explain, is_dlib_selected);
-	obs_property_set_visible(frame_update_interval, is_dlib_selected && is_tracker_enabled);
-	obs_property_set_visible(frame_update_interval_explain, is_dlib_selected && is_tracker_enabled);
+	obs_property_set_visible(enableTracker, isDlibSelected);
+	obs_property_set_visible(faceTrackingExplain, isDlibSelected);
+	obs_property_set_visible(frameUpdateInterval, isDlibSelected && isTrackerEnabled);
+	obs_property_set_visible(frameUpdateIntervalExplain, isDlibSelected && isTrackerEnabled);
 
 	return true; // Forces the UI to refresh
 }
@@ -222,7 +227,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(dropdown, "Dlib Face Detection", 1);
 
 	// Set if enable face tracking
-	obs_property_t *enable_tracker =
+	obs_property_t *enableTracker =
 		obs_properties_add_bool(props, "enable face tracking", obs_module_text("Enable Face Tracker"));
 	obs_properties_add_text(props, "face tracking explain",
 				obs_module_text("Enabling face tracking speeds up video processing."), OBS_TEXT_INFO);
@@ -233,28 +238,29 @@ obs_properties_t *heartRateSourceProperties(void *data)
 				OBS_TEXT_INFO);
 
 	// Add dropdown for selecting PPG algorithm
-	obs_property_t *ppg_dropdown = obs_properties_add_list(
-		props, "ppg algorithm", obs_module_text("PPG Algorithm:"), OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(ppg_dropdown, "Green Channel", 0);
-	obs_property_list_add_int(ppg_dropdown, "PCA", 1);
-	obs_property_list_add_int(ppg_dropdown, "Chrom", 2);
+	obs_property_t *ppgDropdown = obs_properties_add_list(props, "ppg algorithm", obs_module_text("PPG Algorithm:"),
+							      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(ppgDropdown, "Green Channel", 0);
+	obs_property_list_add_int(ppgDropdown, "PCA", 1);
+	obs_property_list_add_int(ppgDropdown, "Chrom", 2);
 
 	// Add dropdown for pre-filtering methods
-	obs_property_t *pre_filter_dropdown = obs_properties_add_list(props, "pre-filtering method",
-								      obs_module_text("Pre-Filtering Method:"),
-								      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(pre_filter_dropdown, "None", 0);
-	obs_property_list_add_int(pre_filter_dropdown, "Bandpass", 1);
-	obs_property_list_add_int(pre_filter_dropdown, "Detrend", 2);
-	obs_property_list_add_int(pre_filter_dropdown, "Zero Mean", 3);
+	obs_property_t *preFilterDropdown = obs_properties_add_list(props, "pre-filtering method",
+								    obs_module_text("Pre-Filtering Method:"),
+								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(preFilterDropdown, "None", 0);
+	obs_property_list_add_int(preFilterDropdown, "Bandpass", 1);
+	obs_property_list_add_int(preFilterDropdown, "Detrend", 2);
+	obs_property_list_add_int(preFilterDropdown, "Zero Mean", 3);
 
 	// Add boolean tick box for post-filtering
 	obs_properties_add_bool(props, "post-filtering", obs_module_text("Enable Post-Filtering"));
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 	obs_property_set_modified_callback(dropdown, updateProperties);
-	obs_property_set_modified_callback(enable_tracker, updateProperties);
-	obs_property_set_modified_callback(ppg_dropdown, updateProperties);
+	obs_property_set_modified_callback(enableTracker, updateProperties);
+	obs_property_set_modified_callback(ppgDropdown, updateProperties);
+
 	updateProperties(props, dropdown, settings); // Apply default visibility
 
 	return props;
@@ -262,13 +268,13 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 void heartRateSourceActivate(void *data)
 {
-	struct heart_rate_source *hrs = reinterpret_cast<heart_rate_source *>(data);
+	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = false;
 }
 
 void heartRateSourceDeactivate(void *data)
 {
-	struct heart_rate_source *hrs = reinterpret_cast<heart_rate_source *>(data);
+	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = true;
 }
 
@@ -277,7 +283,7 @@ void heartRateSourceTick(void *data, float seconds)
 {
 	UNUSED_PARAMETER(seconds);
 
-	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
+	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
 	if (hrs->isDisabled) {
 		return;
@@ -288,7 +294,7 @@ void heartRateSourceTick(void *data, float seconds)
 	}
 }
 
-static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
+static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 {
 	uint32_t width;
 	uint32_t height;
@@ -373,10 +379,10 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 
 	// Retrieve the old existing stage surface
 	if (hrs->stagesurface) {
-		uint32_t stagesurf_width = gs_stagesurface_get_width(hrs->stagesurface);
-		uint32_t stagesurf_height = gs_stagesurface_get_height(hrs->stagesurface);
+		uint32_t stagesurfWidth = gs_stagesurface_get_width(hrs->stagesurface);
+		uint32_t stagesurfHeight = gs_stagesurface_get_height(hrs->stagesurface);
 		// If it still matches the new width and height, reuse it
-		if (stagesurf_width != width || stagesurf_height != height) {
+		if (stagesurfWidth != width || stagesurfHeight != height) {
 			// Destroy the old stage surface
 			gs_stagesurface_destroy(hrs->stagesurface);
 			hrs->stagesurface = nullptr;
@@ -400,13 +406,13 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 	}
 
 	{
-		std::lock_guard<std::mutex> lock(hrs->BGRA_data_mutex);
-		struct input_BGRA_data *BGRA_data = (struct input_BGRA_data *)bzalloc(sizeof(struct input_BGRA_data));
-		BGRA_data->width = width;
-		BGRA_data->height = height;
-		BGRA_data->linesize = linesize;
-		BGRA_data->data = video_data;
-		hrs->BGRA_data = BGRA_data;
+		std::lock_guard<std::mutex> lock(hrs->bgraDataMutex);
+		struct input_BGRA_data *bgraData = (struct input_BGRA_data *)bzalloc(sizeof(struct input_BGRA_data));
+		bgraData->width = width;
+		bgraData->height = height;
+		bgraData->linesize = linesize;
+		bgraData->data = video_data;
+		hrs->bgraData = bgraData;
 	}
 
 	// Use gs_stagesurface_unmap to unmap the stage surface, releasing the mapped memory.
@@ -414,8 +420,8 @@ static bool getBGRAFromStageSurface(struct heart_rate_source *hrs)
 	return true;
 }
 
-static gs_texture_t *drawRectangle(struct heart_rate_source *hrs, uint32_t width, uint32_t height,
-				   std::vector<struct vec4> &face_coordinates)
+static gs_texture_t *drawRectangle(struct heartRateSource *hrs, uint32_t width, uint32_t height,
+				   std::vector<struct vec4> &faceCoordinates)
 {
 	gs_texture_t *blurredTexture = gs_texture_create(width, height, GS_BGRA, 1, nullptr, 0);
 	gs_copy_texture(blurredTexture, gs_texrender_get_texture(hrs->texrender));
@@ -430,9 +436,9 @@ static gs_texture_t *drawRectangle(struct heart_rate_source *hrs, uint32_t width
 
 	std::vector<std::string> params = {"face", "eye_1", "eye_2", "mouth", "detected"};
 
-	for (size_t i = 0; i < std::min(params.size(), face_coordinates.size()); i++) {
+	for (size_t i = 0; i < std::min(params.size(), faceCoordinates.size()); i++) {
 		gs_effect_set_vec4(gs_effect_get_param_by_name(hrs->testing, params[static_cast<int>(i)].c_str()),
-				   &face_coordinates[i]);
+				   &faceCoordinates[i]);
 	}
 
 	struct vec4 background;
@@ -453,7 +459,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
 
-	struct heart_rate_source *hrs = reinterpret_cast<struct heart_rate_source *>(data);
+	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
 	if (!hrs->source) {
 		return;
@@ -476,46 +482,59 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		return;
 	}
 
-	int64_t selected_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
-	bool enable_debug_boxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
-	bool enable_tracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
-	int64_t frame_update_interval = obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
+	int64_t selectedFaceDetectionAlgorithm =
+		obs_data_get_int(obs_source_get_settings(hrs->source), "face detection algorithm");
+	bool enableDebugBoxes = obs_data_get_bool(obs_source_get_settings(hrs->source), "face detection debug boxes");
+	bool enableTracker = obs_data_get_bool(obs_source_get_settings(hrs->source), "enable face tracking");
+	int64_t frameUpdateInterval = obs_data_get_int(obs_source_get_settings(hrs->source), "frame update interval");
 
-	std::vector<struct vec4> face_coordinates;
-	std::vector<double_t> avg = detectFace(selected_algorithm, hrs->BGRA_data, face_coordinates, enable_debug_boxes,
-					       enable_tracker, frame_update_interval);
+	std::vector<struct vec4> faceCoordinates;
+	std::vector<double_t> avg;
+
+	// User has changed face detection algorithm, recreate the face detection object
+	if ((selectedFaceDetectionAlgorithm == 0 && dynamic_cast<DlibFaceDetection *>(hrs->faceDetection.get())) ||
+	    (selectedFaceDetectionAlgorithm == 1 &&
+	     dynamic_cast<HaarCascadeFaceDetection *>(hrs->faceDetection.get()))) {
+		hrs->faceDetection =
+			FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
+	}
+
+	if (hrs->faceDetection) {
+		avg = hrs->faceDetection->detectFace(hrs->bgraData, faceCoordinates, enableDebugBoxes, enableTracker,
+						     frameUpdateInterval);
+	}
 
 	// Get the settings for calculating the heart rate
-	int64_t selected_ppg_algorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
-	int64_t selected_pre_filtering = obs_data_get_int(obs_source_get_settings(hrs->source), "pre-filtering method");
-	bool enable_post_filtering = obs_data_get_bool(obs_source_get_settings(hrs->source), "post-filtering");
-	int64_t selected_post_filtering = enable_post_filtering ? 1 : 0;
+	int64_t selectedPpgAlgorithm = obs_data_get_int(obs_source_get_settings(hrs->source), "ppg algorithm");
+	int64_t selectedPreFiltering = obs_data_get_int(obs_source_get_settings(hrs->source), "pre-filtering method");
+	bool enablePostFiltering = obs_data_get_bool(obs_source_get_settings(hrs->source), "post-filtering");
+	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
 
-	double heart_rate = movingAvg.calculateHeartRate(avg, selected_pre_filtering, selected_ppg_algorithm,
-							 selected_post_filtering);
+	double heartRate =
+		movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm, selectedPostFiltering);
 
 	std::string result;
 
-	if (heart_rate == -1.0) {
+	if (heartRate == -1.0) {
 		result = "Calibrating...";
 	} else {
-		result = "Heart Rate: " + std::to_string((int)heart_rate);
+		result = "Heart Rate: " + std::to_string((int)heartRate);
 	}
 
-	if (heart_rate != 0.0) {
+	if (heartRate != 0.0) {
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
-			obs_data_t *source_settings = obs_source_get_settings(source);
-			obs_data_set_string(source_settings, "text", result.c_str());
-			obs_source_update(source, source_settings);
-			obs_data_release(source_settings);
+			obs_data_t *sourceSettings = obs_source_get_settings(source);
+			obs_data_set_string(sourceSettings, "text", result.c_str());
+			obs_source_update(source, sourceSettings);
+			obs_data_release(sourceSettings);
 			obs_source_release(source);
 		}
 	}
 
-	if (enable_debug_boxes) {
+	if (enableDebugBoxes) {
 		gs_texture_t *testingTexture =
-			drawRectangle(hrs, hrs->BGRA_data->width, hrs->BGRA_data->height, face_coordinates);
+			drawRectangle(hrs, hrs->bgraData->width, hrs->bgraData->height, faceCoordinates);
 
 		if (!obs_source_process_filter_begin(hrs->source, GS_BGRA, OBS_ALLOW_DIRECT_RENDERING)) {
 			skipVideoFilterIfSafe(hrs->source);
@@ -528,8 +547,8 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		gs_reset_blend_state();
 
 		if (hrs->source) {
-			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->BGRA_data->width,
-							   hrs->BGRA_data->height, "Draw");
+			obs_source_process_filter_tech_end(hrs->source, hrs->testing, hrs->bgraData->width,
+							   hrs->bgraData->height, "Draw");
 		}
 
 		gs_blend_state_pop();
