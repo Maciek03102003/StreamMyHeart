@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-extern struct obs_source_info heart_rate_source_info;
+extern struct obs_source_info heartRateSourceInfo;
 
 #ifdef __cplusplus
 }

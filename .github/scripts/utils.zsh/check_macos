@@ -22,9 +22,9 @@ rehash
 log_group
 
 log_group 'Installing and building opencv...'
-  python3 .github/build-opencv-macos.py
+  python3 .github/scripts/build-opencv-macos.py
 log_group
 
 log_group "Installing and building dlib..."
-  python3 .github/build-dlib-macos.py
+  python3 .github/scripts/build-dlib-macos.py
 log_group

@@ -8,8 +8,26 @@
 #include <dlib/image_processing/correlation_tracker.h>
 
 #include "heart_rate_source.h"
+#include "face_detection.h"
 
-std::vector<double_t> detectFaceAOI(struct input_BGRA_data *frame, std::vector<struct vec4> &face_coordinates,
-				    int reset_tracker_count, bool enable_tracking, bool enable_debug_boxes);
+class DlibFaceDetection : public FaceDetection {
+public:
+	std::vector<double_t> detectFace(struct input_BGRA_data *frame, std::vector<struct vec4> &faceCoordinates,
+					 bool enableDebugBoxes, bool enableTracker, int frameUpdateInterval,
+					 bool evaluation = false);
+
+private:
+	void loadFiles(bool evaluation);
+
+	std::mutex detectionMutex;
+	bool isLoaded = false;
+	char *faceLandmarkPath;
+	dlib::correlation_tracker tracker;
+	dlib::frontal_face_detector detector;
+	dlib::shape_predictor sp;
+	int frameCount = 0;
+	dlib::rectangle detectedFace;
+	dlib::rectangle initialFace;
+};
 
 #endif // FACE_TRACKER_H
