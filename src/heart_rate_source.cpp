@@ -226,8 +226,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	// Set if enable face tracking
 	obs_property_t *enableTracker =
 		obs_properties_add_bool(props, "enable face tracking", obs_module_text("FaceTrackerEnable"));
-	obs_properties_add_text(props, "face tracking explain",
-				obs_module_text("FaceTrackerExplain"), OBS_TEXT_INFO);
+	obs_properties_add_text(props, "face tracking explain", obs_module_text("FaceTrackerExplain"), OBS_TEXT_INFO);
 
 	obs_properties_add_int(props, "frame update interval", obs_module_text("FrameUpdateInterval"), 1, 120, 1);
 	obs_properties_add_text(props, "frame update interval explain", obs_module_text("FrameUpdateIntervalExplain"),
