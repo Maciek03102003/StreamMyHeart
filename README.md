@@ -1,65 +1,121 @@
-# PulseOBS
-
-make - Compiles the plugin
-make docker-build - Builds the docker image
-make docker-run - Runs the docker container
-
-# OBS Plugin Template
+# OBS Plugin: PulseOBS - Webcam Based Heart Rate Monitoring for Live Streamers
+PulseOBS is a plugin that measures your heart rate directly using your webcam and facial detection. It supports both macOS and Windows.
 
 ## Introduction
 
-The plugin template is meant to be used as a starting point for OBS Studio plugin development. It includes:
+PulseOBS is designed to help live streamers monitor their heart rate without the need for wearable devices. Currently, it supports heart rate measurement for a single person visible in the webcam feed.
 
-* Boilerplate plugin source code
-* A CMake project file
-* GitHub Actions workflows and repository actions
+> **Note:** This plugin should not be used for medical purposes and does not provide any medical advice.
 
-## Supported Build Environments
+> **Warning:** This plugin consumes significant CPU resources.
+
+## Download
+
+### Windows
+(TODO: Add download link and instructions)
+
+### MacOs
+Download the installation package from (TODO: Add link).
+
+1. Double-click PACKAGE_NAME.pkg to open the installer.
+
+2. Follow the on-screen instructions to complete the installation.
+
+3. The plugin will be installed in:
+    ```
+    /Users/<user_name>/Library/Application\ Support/obs-studio/plugins
+    ```
+
+### OBS Version Support and Compatibility
+PulseOBS supports the latest OBS version 31.0.1.
+
+## Quick Start
+
+For a step-by-step guide, visit (TODO: Add quick start guide link).
+
+### How to Use
+
+1. Add a `Video Capture Device` as a source in OBS Studio.
+
+2. Select `Video Capture Device` and click `Filters`.
+
+3. Under `Effect Filters`, select `Heart Rate Monitor`.
+
+4. Click `Heart Rate Monitor` to configure settings.
+
+5. The heart rate can be displayed as a text source or a graph source.
+
+## Support and Feedback
+
+For assistance, please contact: (TODO: Add support email).
+
+To report bugs or suggest features, open an issue at (TODO: Add issue tracker link).
+
+## Technical Details
+
+### Heart Rate Calculation
+PulseOBS provides multiple algorithms to calculate heart rate:
+- Green
+- PCA
+- Chrom
+
+### Filtering
+Pre and Post Filtering methods are used to improve accuracy:
+
+Pre-Filtering:
+- Bandpass
+
+Post-Filtering:
+- Bandpass
+- Detrending
+- Zero Mean
+
+### Face Detection and Tracking
+PulseOBS uses face detection and tracking to optimize processing speed and improve accuracy. Available face detection methods:
+
+- OpenCV Haar Cascade
+
+- dlib HoG (with and without face tracking)
+    - Face detection is performed every 60 frames.
+    - Face tracking is used between detections to enhance performance.
+
+## Build Instructions
+
+PulseOBS is built and tested on macOS (Intel) and Windows. Contributions for additional OS support are welcome.
+
+This plugin utilizes the following libraries:
+- OpenCV
+- dlib
+- Eigen3
+
+### Supported Build Environments
 
 | Platform  | Tool   |
 |-----------|--------|
 | Windows   | Visal Studio 17 2022 |
 | macOS     | XCode 16.0 |
 | Windows, macOS  | CMake 3.30.5 |
-| Ubuntu 24.04 | CMake 3.28.3 |
+<!-- | Ubuntu 24.04 | CMake 3.28.3 |
 | Ubuntu 24.04 | `ninja-build` |
 | Ubuntu 24.04 | `pkg-config`
-| Ubuntu 24.04 | `build-essential` |
+| Ubuntu 24.04 | `build-essential` | -->
 
-## Quick Start
+### Windows
 
-An absolute bare-bones [Quick Start Guide](https://github.com/obsproject/obs-plugintemplate/wiki/Quick-Start-Guide) is available in the wiki.
+Run the following command in the repository directory:
+```
+.github/scripts/Build-Windows.ps1
+```
+This will install all required third-party libraries and compile the plugin into (TODO: Add release directory).
 
-## Documentation
+### MacOS
 
-All documentation can be found in the [Plugin Template Wiki](https://github.com/obsproject/obs-plugintemplate/wiki).
-
-Suggested reading to get up and running:
-
-* [Getting started](https://github.com/obsproject/obs-plugintemplate/wiki/Getting-Started)
-* [Build system requirements](https://github.com/obsproject/obs-plugintemplate/wiki/Build-System-Requirements)
-* [Build system options](https://github.com/obsproject/obs-plugintemplate/wiki/CMake-Build-System-Options)
-
-## GitHub Actions & CI
-
-Default GitHub Actions workflows are available for the following repository actions:
-
-* `push`: Run for commits or tags pushed to `master` or `main` branches.
-* `pr-pull`: Run when a Pull Request has been pushed or synchronized.
-* `dispatch`: Run when triggered by the workflow dispatch in GitHub's user interface.
-* `build-project`: Builds the actual project and is triggered by other workflows.
-* `check-format`: Checks CMake and plugin source code formatting and is triggered by other workflows.
-
-The workflows make use of GitHub repository actions (contained in `.github/actions`) and build scripts (contained in `.github/scripts`) which are not needed for local development, but might need to be adjusted if additional/different steps are required to build the plugin.
-
-### Retrieving build artifacts
-
-Successful builds on GitHub Actions will produce build artifacts that can be downloaded for testing. These artifacts are commonly simple archives and will not contain package installers or installation programs.
-
-### Building a Release
-
-To create a release, an appropriately named tag needs to be pushed to the `main`/`master` branch using semantic versioning (e.g., `12.3.4`, `23.4.5-beta2`). A draft release will be created on the associated repository with generated installer packages or installation programs attached as release artifacts.
-
-## Signing and Notarizing on macOS
-
-Basic concepts of codesigning and notarization on macOS are explained in the correspodning [Wiki article](https://github.com/obsproject/obs-plugintemplate/wiki/Codesigning-On-macOS) which has a specific section for the [GitHub Actions setup](https://github.com/obsproject/obs-plugintemplate/wiki/Codesigning-On-macOS#setting-up-code-signing-for-github-actions).
+Run the following command in the repository directory:
+```
+.github/scripts/build-macos
+```
+TThis will install all required third-party libraries and compile the plugin into: 
+```
+release/RelWithDebInfo
+``` 
+which contains `pluse-obs.plugin` and `pulse-obs.pkg`.
