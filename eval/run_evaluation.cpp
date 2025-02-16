@@ -18,7 +18,7 @@ enum class PreFilteringAlgorithm { NONE, BUTTERWORTH_BANDPASS, DETREND, ZERO_MEA
 enum class PPGAlgorithm {
 	GREEN,
 	PCA,
-	CHROME,
+	CHROM,
 };
 
 enum class PostFilteringAlgorithm { NONE, BUTTERWORTH_BANDPASS, LAST };
@@ -60,8 +60,8 @@ std::string toString(PPGAlgorithm algo)
 		return "GREEN";
 	case PPGAlgorithm::PCA:
 		return "PCA";
-	case PPGAlgorithm::CHROME:
-		return "CHROME";
+	case PPGAlgorithm::CHROM:
+		return "CHROM";
 	default:
 		return "UNKNOWN";
 	}
@@ -82,8 +82,10 @@ std::string toString(PostFilteringAlgorithm algo)
 struct VideoData {
 	std::string videoPath;
 	std::vector<double> groundTruthHeartRate;
-	double otherAlgorithmRMSE;
-	double otherAlgorithmMAE;
+	double pcaRMSE;
+	double pcaMAE;
+	double chromRMSE;
+	double chromMAE;
 };
 
 std::vector<VideoData> readCSV(const std::string &csvFilePath)
@@ -114,13 +116,20 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath)
 			count++;
 		}
 
-		// Read the other algorithm's RMSE and MAE
-		double otherAlgorithmRMSE, otherAlgorithmMAE;
-		ss >> otherAlgorithmRMSE;
+		// Read the PCA RMSE and MAE
+		double pcaRMSE, pcaMAE;
+		ss >> pcaRMSE;
 		ss.ignore(1); // Ignore the comma
-		ss >> otherAlgorithmMAE;
+		ss >> pcaMAE;
 
-		videoDataList.push_back({videoPath, groundTruthHeartRates, otherAlgorithmRMSE, otherAlgorithmMAE});
+		// Read the Chrom RMSE and MAE
+		double chromRMSE, chromMAE;
+		ss >> chromRMSE;
+		ss.ignore(1); // Ignore the comma
+		ss >> chromMAE;
+
+		videoDataList.push_back({videoPath, groundTruthHeartRates, pcaRMSE, pcaMAE, chromRMSE, chromMAE});
+		;
 	}
 	return videoDataList;
 }
@@ -233,9 +242,11 @@ void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect,
 
 	// Convert numbers to strings with fixed precision
 	std::string ourAlgorithmMAEStr = std::to_string(ourAlgorithmMAE);
-	std::string otherAlgorithmMAEStr = std::to_string(videoData.otherAlgorithmMAE);
+	std::string otherAlgorithmMAEStr = (ppg == PPGAlgorithm::CHROM) ? std::to_string(videoData.chromMAE)
+									: std::to_string(videoData.pcaMAE);
 	std::string ourAlgorithmRMSEStr = std::to_string(ourAlgorithmRMSE);
-	std::string otherAlgorithmRMSEStr = std::to_string(videoData.otherAlgorithmRMSE);
+	std::string otherAlgorithmRMSEStr = (ppg == PPGAlgorithm::CHROM) ? std::to_string(videoData.chromRMSE)
+									 : std::to_string(videoData.pcaRMSE);
 
 	// Lock the mutex before writing to the console and file
 	std::lock_guard<std::mutex> lock(outputMutex);
@@ -258,7 +269,7 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 	std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
 	// Construct the results filename based on the parameters
-	std::string resultsFilename = "../../../../../eval/results/evaluation_results_" + toString(faceDetect) + "_" +
+	std::string resultsFilename = "../../../../../eval/results/" + toString(faceDetect) + "_" +
 				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + ".csv";
 
 	// Print the table header
@@ -292,15 +303,20 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 int main()
 {
 	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
-	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::DETREND,
+	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::NONE,
+								     PreFilteringAlgorithm::BUTTERWORTH_BANDPASS,
+								     PreFilteringAlgorithm::DETREND,
 								     PreFilteringAlgorithm::ZERO_MEAN};
 	std::vector<PostFilteringAlgorithm> postFilteringAlgorithms = {PostFilteringAlgorithm::NONE,
 								       PostFilteringAlgorithm::BUTTERWORTH_BANDPASS};
 
 	for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
 		for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
+			if (preFilteringAlgorithm == PreFilteringAlgorithm::BUTTERWORTH_BANDPASS &&
+			    postFilteringAlgorithm == PostFilteringAlgorithm::NONE)
+				continue; // Skip this combination
 			evaluateHeartRate(csvFilePath, FaceDetectionAlgorithm::DLIB, preFilteringAlgorithm,
-					  PPGAlgorithm::PCA, postFilteringAlgorithm);
+					  PPGAlgorithm::CHROM, postFilteringAlgorithm);
 		}
 	}
 
