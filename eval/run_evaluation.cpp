@@ -121,6 +121,7 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath)
 		ss >> pcaRMSE;
 		ss.ignore(1); // Ignore the comma
 		ss >> pcaMAE;
+		ss.ignore(1); // Ignore the comma
 
 		// Read the Chrom RMSE and MAE
 		double chromRMSE, chromMAE;
