@@ -313,9 +313,6 @@ int main()
 
 	for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
 		for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
-			if (preFilteringAlgorithm == PreFilteringAlgorithm::BUTTERWORTH_BANDPASS &&
-			    postFilteringAlgorithm == PostFilteringAlgorithm::NONE)
-				continue; // Skip this combination
 			evaluateHeartRate(csvFilePath, FaceDetectionAlgorithm::DLIB, preFilteringAlgorithm,
 					  PPGAlgorithm::CHROM, postFilteringAlgorithm);
 		}
