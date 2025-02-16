@@ -20,7 +20,7 @@ MovingAvg movingAvg;
 
 const char *getHeartRateSourceName(void *)
 {
-	return "Heart Rate Monitor";
+	return obs_module_text("HeartRateMonitor");
 }
 
 static void skipVideoFilterIfSafe(obs_source_t *source)
@@ -69,7 +69,7 @@ static obs_sceneitem_t *getSceneItemFromSource(obs_scene_t *scene, obs_source_t 
 static void createOBSHeartDisplaySourceIfNeeded()
 {
 	// check if a source called TEXT_SOURCE_NAME exists
-	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+	obs_source_t *source = obs_get_source_by_name(obs_module_text("HeartRateDisplay"));
 	if (source) {
 		// source already exists, release it
 		obs_source_release(source);
@@ -79,7 +79,7 @@ static void createOBSHeartDisplaySourceIfNeeded()
 	// create a new OBS text source called TEXT_SOURCE_NAME
 	obs_source_t *sceneAsSource = obs_frontend_get_current_scene();
 	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
-	source = obs_source_create("text_ft2_source_v2", TEXT_SOURCE_NAME, nullptr, nullptr);
+	source = obs_source_create("text_ft2_source_v2", obs_module_text("HeartRateDisplay"), nullptr, nullptr);
 
 	if (source) {
 		// add source to the current scene
@@ -214,33 +214,31 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_properties_t *props = obs_properties_create();
 
 	// Allow user to disable face detection boxes drawing
-	obs_properties_add_bool(props, "face detection debug boxes",
-				obs_module_text("See face detection/tracking result"));
+	obs_properties_add_bool(props, "face detection debug boxes", obs_module_text("FaceDetectionDebugBoxes"));
 
 	// Set the face detection algorithm
 	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
-							   obs_module_text("Face Detection Algorithm:"),
+							   obs_module_text("FaceDetectionAlgorithm"),
 							   OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(dropdown, "OpenCV Haarcascade Face Detection", 0);
-	obs_property_list_add_int(dropdown, "Dlib Face Detection", 1);
+	obs_property_list_add_int(dropdown, obs_module_text("HaarCascade"), 0);
+	obs_property_list_add_int(dropdown, obs_module_text("Dlib"), 1);
 
 	// Set if enable face tracking
 	obs_property_t *enableTracker =
-		obs_properties_add_bool(props, "enable face tracking", obs_module_text("Enable Face Tracker"));
+		obs_properties_add_bool(props, "enable face tracking", obs_module_text("FaceTrackerEnable"));
 	obs_properties_add_text(props, "face tracking explain",
-				obs_module_text("Enabling face tracking speeds up video processing."), OBS_TEXT_INFO);
+				obs_module_text("FaceTrackerExplain"), OBS_TEXT_INFO);
 
-	obs_properties_add_int(props, "frame update interval", obs_module_text("Frame Update Interval"), 1, 120, 1);
-	obs_properties_add_text(props, "frame update interval explain",
-				obs_module_text("Set how often the face detector updates the face position in frames."),
+	obs_properties_add_int(props, "frame update interval", obs_module_text("FrameUpdateInterval"), 1, 120, 1);
+	obs_properties_add_text(props, "frame update interval explain", obs_module_text("FrameUpdateIntervalExplain"),
 				OBS_TEXT_INFO);
 
 	// Add dropdown for selecting PPG algorithm
-	obs_property_t *ppgDropdown = obs_properties_add_list(props, "ppg algorithm", obs_module_text("PPG Algorithm:"),
+	obs_property_t *ppgDropdown = obs_properties_add_list(props, "ppg algorithm", obs_module_text("PPGAlgorithm"),
 							      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(ppgDropdown, "Green Channel", 0);
-	obs_property_list_add_int(ppgDropdown, "PCA", 1);
-	obs_property_list_add_int(ppgDropdown, "Chrom", 2);
+	obs_property_list_add_int(ppgDropdown, obs_module_text("Green"), 0);
+	obs_property_list_add_int(ppgDropdown, obs_module_text("PCA"), 1);
+	obs_property_list_add_int(ppgDropdown, obs_module_text("Chrom"), 2);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 	obs_property_set_modified_callback(dropdown, updateProperties);
@@ -497,7 +495,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	std::string result = "Heart Rate: " + std::to_string((int)heartRate);
 
 	if (heartRate != 0.0) {
-		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
+		obs_source_t *source = obs_get_source_by_name(obs_module_text("HeartRateDisplay"));
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
 			obs_data_set_string(sourceSettings, "text", result.c_str());
