@@ -123,7 +123,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	while (graph_source->buffer.size() >= 10) {
 		graph_source->buffer.erase(graph_source->buffer.begin());
 	}
-	graph_source->buffer.push_back(curHeartRate);
+	//graph_source->buffer.push_back(curHeartRate);
 
 	obs_log(LOG_INFO, "Updating heart rate buffer...");
 
@@ -136,7 +136,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	while (gs_effect_loop(graph_source->effect, "Solid")) {
 		gs_effect_set_color(gs_effect_get_param_by_name(graph_source->effect, "color"), 0xFF0000FF);
 
-		gs_render_start(true); // Use GS_LINESTRIP to connect the points
+		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
 
 		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
@@ -220,10 +220,10 @@ void destroy_graph_source_info(void *data)
 uint32_t graph_source_info_get_width(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 0;
+	return 400;
 }
 uint32_t graph_source_info_get_height(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 0;
+	return 200;
 }

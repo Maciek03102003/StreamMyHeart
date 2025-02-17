@@ -271,6 +271,8 @@ void heartRateSourceDestroy(void *data)
 	removeSource(TEXT_SOURCE_NAME);
 	removeSource(GRAPH_SOURCE_NAME);
 	removeSource(IMAGE_SOURCE_NAME);
+	removeSource(MOOD_SOURCE_NAME);
+
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -741,6 +743,10 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 			obs_source_release(source);
 		}
 	}
+
+	// if (obs_data_get_bool(hrsSettings, "enable graph source")) {
+
+	// }
 
 	if (enableDebugBoxes) {
 		gs_texture_t *testingTexture =

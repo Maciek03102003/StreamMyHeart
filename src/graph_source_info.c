@@ -4,7 +4,7 @@
 struct obs_source_info graph_source_info = {
 	.id = "heart_rate_graph",
 	.type = OBS_SOURCE_TYPE_INPUT,
-	.output_flags = OBS_SOURCE_VIDEO | OBS_SOURCE_CUSTOM_DRAW,
+	.output_flags = OBS_SOURCE_VIDEO,
 	.get_name = get_graph_source_name,
 	.create = create_graph_source_info,
 	.destroy = destroy_graph_source_info,
