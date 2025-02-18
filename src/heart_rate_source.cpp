@@ -298,6 +298,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable graph source", false);
 	obs_data_set_default_bool(settings, "enable image source", true);
 	obs_data_set_default_bool(settings, "enable mood source", true);
+	obs_data_set_default_int(settings, "graphDropdown", 0);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -364,6 +365,11 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	} else {
 		createMoodSource(scene);
 	}
+	
+	obs_property_t *graphDropdown = obs_properties_get(props, "graphDropdown");
+	obs_property_set_visible(graphDropdown, obs_data_get_bool(settings, "enable graph source"));
+
+
 
 	obs_source_release(sceneAsSource);
 
@@ -417,6 +423,17 @@ obs_properties_t *heartRateSourceProperties(void *data)
 		obs_properties_add_bool(props, "enable text source", obs_module_text("Enable text source"));
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("Enable graph source"));
+	
+	obs_property_t *graphDropdown = obs_properties_add_list(props, "graphDropdown", obs_module_text("Graph color:"),
+							      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(graphDropdown, "White", 0);
+	obs_property_list_add_int(graphDropdown, "Red", 1);
+	obs_property_list_add_int(graphDropdown, "Yellow", 2);
+	obs_property_list_add_int(graphDropdown, "Green", 3);
+	obs_property_list_add_int(graphDropdown, "Blue", 4);
+
+
+
 	obs_property_t *enableImage =
 		obs_properties_add_bool(props, "enable image source", obs_module_text("Enable image source"));
 	obs_property_t *enableMood =
@@ -430,6 +447,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(heartRateText, updateProperties);
 	obs_property_set_modified_callback(enableText, updateProperties);
 	obs_property_set_modified_callback(enableGraph, updateProperties);
+	obs_property_set_modified_callback(graphDropdown, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
 

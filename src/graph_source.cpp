@@ -139,6 +139,25 @@ void graph_source_render(void *data, gs_effect_t *effect)
 // 	obs_leave_graphics();
 // }
 
+uint32_t get_color_code(int color_option)
+{
+    switch (color_option) {
+    case 0: // White
+        return 0xFFFFFFFF; // RGBA: White
+    case 1: // Red
+        return 0xFFFF0000; // RGBA: Red
+    case 2: // Yellow
+        return 0xFFFFFF00; // RGBA: Yellow
+	case 3: // Green
+        return 0xFF00FF00; // RGBA: Green
+	case 4: // Blue
+        return 0xFF0000FF; // RGBA: Blue
+    default:
+        return 0xFFFFFFFF; // Default: White
+    }
+}
+
+
 void draw_graph(struct graph_source *graph_source, int curHeartRate)
 {
 	obs_log(LOG_INFO, "Checking for null graph source");
@@ -194,8 +213,15 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		gs_render_stop(GS_LINESTRIP);
 
+		obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
+		if (!heartRateSource) {
+			obs_log(LOG_INFO, "Failed to get heart rate source");
+			return;
+		}
+		obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+
 		// **Draw X-Axis (Horizontal Line)**
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF); // White
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), get_color_code(obs_data_get_int(hrsSettings, "graphDropdown")));
 		gs_render_start(GS_LINES);
 
 		gs_vertex2f(0.0f, height); // Midpoint of the height
