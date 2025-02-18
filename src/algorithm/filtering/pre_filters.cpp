@@ -28,7 +28,7 @@ vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps)
 	VectorXd b, a;
 	butterworthBandpass(order, minHz, maxHz, fps, a, b);
 
-	MatrixXd y = forwardBackFilter(a, b, sig);
+	MatrixXd y = forwardBackFilter(b, a, sig);
 	y.transposeInPlace();
 
 	vector<vector<double_t>> result(rows, vector<double>(cols));
