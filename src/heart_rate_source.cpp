@@ -709,8 +709,8 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 	// std::string result = "Heart Rate: " + std::to_string(static_cast<int>(std::round(heartRate)));
 
+	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 	if (heartRate != 0.0) {
-		obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 
 		std::string textFormat = obs_data_get_string(hrsSettings, "heart rate text");
 		size_t pos = textFormat.find("{hr}");
@@ -740,6 +740,8 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 			obs_data_release(sourceSettings);
 			obs_source_release(source);
 		}
+	} else {
+		obs_data_release(hrsSettings);
 	}
 
 	if (enableDebugBoxes) {

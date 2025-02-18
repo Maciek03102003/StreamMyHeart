@@ -155,12 +155,14 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		return; // Avoid division by zero
 
 	// Maintain a buffer size of 10
-	while (graph_source->buffer.size() >= 10) {
-		graph_source->buffer.erase(graph_source->buffer.begin());
-	}
-	graph_source->buffer.push_back(curHeartRate);
+	if (curHeartRate > 0) {
+		while (graph_source->buffer.size() >= 10) {
+			graph_source->buffer.erase(graph_source->buffer.begin());
+		}
+		graph_source->buffer.push_back(curHeartRate);
 
-	obs_log(LOG_INFO, "[OBS Heart Rate]: %d", curHeartRate);
+		obs_log(LOG_INFO, "[OBS Heart Rate]: %d", curHeartRate);
+	}
 
 	obs_enter_graphics();
 
@@ -196,18 +198,29 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF); // White
 		gs_render_start(GS_LINES);
 
-		gs_vertex2f(0.0f, height / 2.0f); // Midpoint of the height
-		gs_vertex2f(width, height / 2.0f);
+		gs_vertex2f(0.0f, height); // Midpoint of the height
+		gs_vertex2f(width, height);
 
 		gs_render_stop(GS_LINES);
 
 		// **Draw Y-Axis (Vertical Line)**
 		gs_render_start(GS_LINES);
 
-		gs_vertex2f(width / 10.0f, 0.0f); // Small offset from the left
-		gs_vertex2f(width / 10.0f, height);
+		gs_vertex2f(0.0f, 0.0f); // Small offset from the left
+		gs_vertex2f(0.0f, height);
 
 		gs_render_stop(GS_LINES);
+
+		// **Draw Y-Axis Labels (20, 40, ..., 200)**
+		for (int i = 20; i <= 200; i += 20) {
+			float y = height - (static_cast<float>(i) / 200.0f) * height; // Scale Y position
+
+			// Tick mark for the label
+			gs_render_start(GS_LINES);
+			gs_vertex2f(-1.0f, y); // Left end of tick
+			gs_vertex2f(1.0f, y);  // Right end of tick
+			gs_render_stop(GS_LINES);
+		}
 	}
 
 	obs_leave_graphics();
