@@ -40,10 +40,10 @@ static void create_graph_source(obs_scene_t *scene)
 
 	obs_scene_add(scene, graph_source);
 	obs_transform_info transform_info;
-	transform_info.pos.x = 100.0f;
-	transform_info.pos.y = 300.0f;
-	transform_info.bounds.x = 100.0f;
-	transform_info.bounds.y = 100.0f;
+	transform_info.pos.x = 260.0f;
+	transform_info.pos.y = 700.0f;
+	transform_info.bounds.x = 250.0f;
+	transform_info.bounds.y = 250.0f;
 	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
 	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
 	transform_info.alignment = OBS_ALIGN_CENTER;
@@ -187,12 +187,12 @@ static void createMoodSource(obs_scene_t *scene)
 
 		// Set transform settings
 		obs_transform_info transformInfo;
-		transformInfo.pos.x = 800.0; // Position it elsewhere
-		transformInfo.pos.y = 800.0;
-		transformInfo.bounds.x = 400.0; // Resize bounds
-		transformInfo.bounds.y = 100.0;
-		transformInfo.bounds_type = OBS_BOUNDS_NONE;
-		transformInfo.bounds_alignment = OBS_ALIGN_LEFT;
+		transformInfo.pos.x = 260.0;
+		transformInfo.pos.y = 900.0;
+		transformInfo.bounds.x = 500.0;
+		transformInfo.bounds.y = 145.0;
+		transformInfo.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
+		transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
 		transformInfo.alignment = OBS_ALIGN_CENTER;
 		transformInfo.scale.x = 1.0;
 		transformInfo.scale.y = 1.0;
@@ -256,7 +256,7 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	createOBSHeartDisplaySourceIfNeeded(settings);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
-	obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
+	// obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
 	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
 
 	return hrs;
@@ -295,8 +295,8 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "heart rate", 1);
 	obs_data_set_default_string(settings, "heart rate text", "Heart rate: {hr} BPM");
 	obs_data_set_default_bool(settings, "enable text source", true);
-	obs_data_set_default_bool(settings, "enable graph source", false);
-	obs_data_set_default_bool(settings, "enable image source", true);
+	obs_data_set_default_bool(settings, "enable graph source", true);
+	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
 	obs_data_set_default_int(settings, "graphPlaneDropdown", 0);
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
@@ -366,14 +366,12 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	} else {
 		createMoodSource(scene);
 	}
-	
+
 	obs_property_t *graphPlaneDropdown = obs_properties_get(props, "graphPlaneDropdown");
 	obs_property_set_visible(graphPlaneDropdown, obs_data_get_bool(settings, "enable graph source"));
 
 	obs_property_t *graphLineDropdown = obs_properties_get(props, "graphLineDropdown");
 	obs_property_set_visible(graphLineDropdown, obs_data_get_bool(settings, "enable graph source"));
-
-
 
 	obs_source_release(sceneAsSource);
 
@@ -383,7 +381,7 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 obs_properties_t *heartRateSourceProperties(void *data)
 {
 	UNUSED_PARAMETER(data);
-	obs_log(LOG_INFO, "heartRateSourceProperties");
+	// obs_log(LOG_INFO, "heartRateSourceProperties");
 	obs_properties_t *props = obs_properties_create();
 
 	// Set the face detection algorithm
@@ -425,31 +423,31 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	obs_property_t *enableText =
 		obs_properties_add_bool(props, "enable text source", obs_module_text("Enable text source"));
+	obs_property_t *enableImage =
+		obs_properties_add_bool(props, "enable image source", obs_module_text("Enable image source"));
+	obs_property_t *enableMood =
+		obs_properties_add_bool(props, "enable mood source", obs_module_text("Enable mood source"));
+
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("Enable graph source"));
-	
-	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graphPlaneDropdown", obs_module_text("Graph plane color:"),
-							      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+
+	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graphPlaneDropdown",
+								     obs_module_text("Graph plane color:"),
+								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphPlaneDropdown, "White", 0);
 	obs_property_list_add_int(graphPlaneDropdown, "Red", 1);
 	obs_property_list_add_int(graphPlaneDropdown, "Yellow", 2);
 	obs_property_list_add_int(graphPlaneDropdown, "Green", 3);
 	obs_property_list_add_int(graphPlaneDropdown, "Blue", 4);
 
-	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown", obs_module_text("Graph line color:"),
-								OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown",
+								    obs_module_text("Graph line color:"),
+								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphLineDropdown, "White", 0);
 	obs_property_list_add_int(graphLineDropdown, "Red", 1);
 	obs_property_list_add_int(graphLineDropdown, "Yellow", 2);
 	obs_property_list_add_int(graphLineDropdown, "Green", 3);
 	obs_property_list_add_int(graphLineDropdown, "Blue", 4);
-
-
-
-	obs_property_t *enableImage =
-		obs_properties_add_bool(props, "enable image source", obs_module_text("Enable image source"));
-	obs_property_t *enableMood =
-		obs_properties_add_bool(props, "enable mood source", obs_module_text("Enable mood source"));
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
@@ -631,7 +629,7 @@ static gs_texture_t *drawRectangle(struct heartRateSource *hrs, uint32_t width, 
 
 	gs_texrender_reset(hrs->texrender);
 	if (!gs_texrender_begin(hrs->texrender, width, height)) {
-		obs_log(LOG_INFO, "Could not open background blur texrender!");
+		obs_log(LOG_INFO, "Could not open background texrender!");
 		return blurredTexture;
 	}
 
@@ -801,5 +799,5 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	} else {
 		skipVideoFilterIfSafe(hrs->source);
 	}
-	obs_log(LOG_INFO, "FINISH RENDERING");
+	// obs_log(LOG_INFO, "FINISH RENDERING");
 }

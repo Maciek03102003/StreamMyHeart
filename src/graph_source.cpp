@@ -18,7 +18,7 @@
 // Destroy function for graph source
 void destroy_graph_source(void *data)
 {
-	obs_log(LOG_INFO, "Graph source destroyed");
+	// obs_log(LOG_INFO, "Graph source destroyed");
 	struct graph_source *graph = reinterpret_cast<struct graph_source *>(data);
 
 	if (graph) {
@@ -75,7 +75,7 @@ void graph_source_render(void *data, gs_effect_t *effect)
 		return; // Ensure graphSource is valid
 	}
 
-	obs_log(LOG_INFO, "Rendering graph source...");
+	// obs_log(LOG_INFO, "Rendering graph source...");
 
 	// Retrieve OBS settings for the heart rate monitor source
 	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
@@ -88,79 +88,33 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	obs_data_release(hrsSettings);
 	obs_source_release(heartRateSource);
 
-	obs_log(LOG_INFO, "Current heart rate: %d", curHeartRate);
-
 	// Draw the graph using the retrieved heart rate
 	draw_graph(graphSource, curHeartRate);
 
-	obs_log(LOG_INFO, "Graph rendering completed!");
+	// obs_log(LOG_INFO, "Graph rendering completed!");
 }
-
-// void draw_graph(struct graph_source *graph_source, int curHeartRate)
-// {
-// 	obs_log(LOG_INFO, "checking for null graph source");
-
-// 	if (!graph_source)
-// 		return; // Null check to avoid crashes
-
-// 	// Maintain a buffer size of 10
-// 	while (graph_source->buffer.size() >= 10) {
-// 		graph_source->buffer.erase(graph_source->buffer.begin());
-// 	}
-// 	graph_source->buffer.push_back(curHeartRate);
-// 	obs_log(LOG_INFO, "[obs heart rate]: %s", std::to_string(curHeartRate));
-
-// 	// obs_log(LOG_INFO, "Updating heart rate buffer...");
-
-// 	// Start rendering
-// 	obs_enter_graphics();
-// 	gs_effect_t *active_effect = gs_get_effect();
-// 	if (active_effect) {
-// 		gs_technique_t *active_technique = gs_effect_get_current_technique(active_effect);
-// 		gs_technique_end(active_technique);
-// 		gs_effect_destroy(active_effect);
-// 	}
-
-// 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
-// 	while (gs_effect_loop(effect, "Solid")) {
-// 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF0000FF);
-
-// 		gs_render_start(true); // Use GS_LINESTRIP to connect the points
-
-// 		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
-
-// 		for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-
-// 			gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(graph_source->buffer[i]));
-// 		}
-
-// 		gs_render_stop(GS_LINESTRIP);
-// 	}
-// 	obs_leave_graphics();
-// }
 
 uint32_t get_color_code(int color_option)
 {
-    switch (color_option) {
-    case 0: // White
-        return 0xFFFFFFFF; // RGBA: White
-    case 1: // Red
-        return 0xFFFF0000; // RGBA: Red
-    case 2: // Yellow
-        return 0xFFFFFF00; // RGBA: Yellow
-	case 3: // Green
-        return 0xFF00FF00; // RGBA: Green
-	case 4: // Blue
-        return 0xFF0000FF; // RGBA: Blue
-    default:
-        return 0xFFFFFFFF; // Default: White
-    }
+	switch (color_option) {
+	case 0:                    // White
+		return 0xFFFFFFFF; // RGBA: White
+	case 1:                    // Red
+		return 0xFFFF0000; // RGBA: Red
+	case 2:                    // Yellow
+		return 0xFFFFFF00; // RGBA: Yellow
+	case 3:                    // Green
+		return 0xFF00FF00; // RGBA: Green
+	case 4:                    // Blue
+		return 0xFF0000FF; // RGBA: Blue
+	default:
+		return 0xFFFFFFFF; // Default: White
+	}
 }
-
 
 void draw_graph(struct graph_source *graph_source, int curHeartRate)
 {
-	obs_log(LOG_INFO, "Checking for null graph source");
+	// obs_log(LOG_INFO, "Checking for null graph source");
 	if (!graph_source || !graph_source->source)
 		return; // Null check to avoid crashes
 
@@ -168,7 +122,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	uint32_t width = obs_source_get_width(graph_source->source);
 	uint32_t height = obs_source_get_height(graph_source->source);
 
-	obs_log(LOG_INFO, "Graph source dimensions: Width = %u, Height = %u", width, height);
+	// obs_log(LOG_INFO, "Graph source dimensions: Width = %u, Height = %u", width, height);
 
 	if (width == 0 || height == 0)
 		return; // Avoid division by zero
@@ -179,8 +133,6 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 			graph_source->buffer.erase(graph_source->buffer.begin());
 		}
 		graph_source->buffer.push_back(curHeartRate);
-
-		obs_log(LOG_INFO, "[OBS Heart Rate]: %d", curHeartRate);
 	}
 
 	obs_enter_graphics();
@@ -194,21 +146,21 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	}
 
 	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
-		if (!heartRateSource) {
-			obs_log(LOG_INFO, "Failed to get heart rate source");
-			return;
-		}
+	if (!heartRateSource) {
+		obs_log(LOG_INFO, "Failed to get heart rate source");
+		return;
+	}
 	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
-
 
 	// Get base effect
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	while (gs_effect_loop(effect, "Solid")) {
 		// Set color for the graph (Red)
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
+				    get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
 
 		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
-		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
+		// obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
 		// Normalize and scale values to fit within the source box
 		for (size_t i = 0; i < graph_source->buffer.size(); i++) {
@@ -221,9 +173,9 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		gs_render_stop(GS_LINESTRIP);
 
-		
 		// **Draw X-Axis (Horizontal Line)**
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), get_color_code(obs_data_get_int(hrsSettings, "graphPlaneDropdown")));
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
+				    get_color_code(obs_data_get_int(hrsSettings, "graphPlaneDropdown")));
 		gs_render_start(GS_LINES);
 
 		gs_vertex2f(0.0f, height); // Midpoint of the height
@@ -277,10 +229,10 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 uint32_t graph_source_info_get_width(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 100;
+	return 250;
 }
 uint32_t graph_source_info_get_height(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 100;
+	return 250;
 }
