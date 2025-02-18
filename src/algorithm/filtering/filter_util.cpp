@@ -1,4 +1,5 @@
 #include "filter_util.h"
+#include "plugin-support.h"
 
 #include <obs-module.h>
 
@@ -48,19 +49,55 @@ VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
 {
 	size_t n = x.size();
 	VectorXd y(n);
-	y.setZero();
+
+	// Ensure a(0) is 1, normalize otherwise
+	if (a(0) == 0) {
+		obs_log(LOG_INFO, "A(0)=0 case");
+		std::cerr << "Error: a(0) cannot be zero in IIR filter!" << std::endl;
+		return y.setConstant(n, NAN); // Return NaN-filled vector
+	}
+
+	VectorXd a_norm = a / a(0);
+	VectorXd b_norm = b / a(0);
 
 	for (int i = 0; i < static_cast<int>(n); ++i) {
-		y(i) = b(0) * x(i);
-		for (int j = 1; j < static_cast<int>(b.size()); ++j) {
+		y(i) = 0.0;
+
+		// Apply FIR part (b coefficients)
+		for (int j = 0; j < static_cast<int>(b.size()); ++j) {
 			if (i - j >= 0) {
-				y(i) += b(j) * x(i - j) - a(j) * y(i - j);
+				y(i) += b_norm(j) * x(i - j);
+			}
+		}
+
+		// Apply IIR part (a coefficients)
+		for (int j = 1; j < static_cast<int>(a.size()); ++j) { // a[0] is already normalized
+			if (i - j >= 0) {
+				y(i) -= a_norm(j) * y(i - j);
 			}
 		}
 	}
 
 	return y;
 }
+
+// VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
+// {
+// 	size_t n = x.size();
+// 	VectorXd y(n);
+// 	y.setZero();
+
+// 	for (int i = 0; i < static_cast<int>(n); ++i) {
+// 		y(i) = b(0) * x(i);
+// 		for (int j = 1; j < static_cast<int>(b.size()); ++j) {
+// 			if (i - j >= 0) {
+// 				y(i) += b(j) * x(i - j) - a(j) * y(i - j);
+// 			}
+// 		}
+// 	}
+
+// 	return y;
+// }
 
 MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x)
 {
