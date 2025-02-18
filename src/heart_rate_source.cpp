@@ -298,7 +298,8 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable graph source", false);
 	obs_data_set_default_bool(settings, "enable image source", true);
 	obs_data_set_default_bool(settings, "enable mood source", true);
-	obs_data_set_default_int(settings, "graphDropdown", 0);
+	obs_data_set_default_int(settings, "graphPlaneDropdown", 0);
+	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -366,8 +367,11 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		createMoodSource(scene);
 	}
 	
-	obs_property_t *graphDropdown = obs_properties_get(props, "graphDropdown");
-	obs_property_set_visible(graphDropdown, obs_data_get_bool(settings, "enable graph source"));
+	obs_property_t *graphPlaneDropdown = obs_properties_get(props, "graphPlaneDropdown");
+	obs_property_set_visible(graphPlaneDropdown, obs_data_get_bool(settings, "enable graph source"));
+
+	obs_property_t *graphLineDropdown = obs_properties_get(props, "graphLineDropdown");
+	obs_property_set_visible(graphLineDropdown, obs_data_get_bool(settings, "enable graph source"));
 
 
 
@@ -424,13 +428,21 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("Enable graph source"));
 	
-	obs_property_t *graphDropdown = obs_properties_add_list(props, "graphDropdown", obs_module_text("Graph color:"),
+	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graphPlaneDropdown", obs_module_text("Graph plane color:"),
 							      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(graphDropdown, "White", 0);
-	obs_property_list_add_int(graphDropdown, "Red", 1);
-	obs_property_list_add_int(graphDropdown, "Yellow", 2);
-	obs_property_list_add_int(graphDropdown, "Green", 3);
-	obs_property_list_add_int(graphDropdown, "Blue", 4);
+	obs_property_list_add_int(graphPlaneDropdown, "White", 0);
+	obs_property_list_add_int(graphPlaneDropdown, "Red", 1);
+	obs_property_list_add_int(graphPlaneDropdown, "Yellow", 2);
+	obs_property_list_add_int(graphPlaneDropdown, "Green", 3);
+	obs_property_list_add_int(graphPlaneDropdown, "Blue", 4);
+
+	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown", obs_module_text("Graph line color:"),
+								OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(graphLineDropdown, "White", 0);
+	obs_property_list_add_int(graphLineDropdown, "Red", 1);
+	obs_property_list_add_int(graphLineDropdown, "Yellow", 2);
+	obs_property_list_add_int(graphLineDropdown, "Green", 3);
+	obs_property_list_add_int(graphLineDropdown, "Blue", 4);
 
 
 
@@ -447,7 +459,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(heartRateText, updateProperties);
 	obs_property_set_modified_callback(enableText, updateProperties);
 	obs_property_set_modified_callback(enableGraph, updateProperties);
-	obs_property_set_modified_callback(graphDropdown, updateProperties);
+	obs_property_set_modified_callback(graphPlaneDropdown, updateProperties);
+	obs_property_set_modified_callback(graphLineDropdown, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
 

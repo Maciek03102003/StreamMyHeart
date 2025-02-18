@@ -193,11 +193,19 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		gs_effect_destroy(active_effect);
 	}
 
+	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
+		if (!heartRateSource) {
+			obs_log(LOG_INFO, "Failed to get heart rate source");
+			return;
+		}
+	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+
+
 	// Get base effect
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	while (gs_effect_loop(effect, "Solid")) {
 		// Set color for the graph (Red)
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF0000FF);
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
 
 		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
 		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
@@ -213,15 +221,9 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		gs_render_stop(GS_LINESTRIP);
 
-		obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
-		if (!heartRateSource) {
-			obs_log(LOG_INFO, "Failed to get heart rate source");
-			return;
-		}
-		obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
-
+		
 		// **Draw X-Axis (Horizontal Line)**
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), get_color_code(obs_data_get_int(hrsSettings, "graphDropdown")));
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), get_color_code(obs_data_get_int(hrsSettings, "graphPlaneDropdown")));
 		gs_render_start(GS_LINES);
 
 		gs_vertex2f(0.0f, height); // Midpoint of the height
