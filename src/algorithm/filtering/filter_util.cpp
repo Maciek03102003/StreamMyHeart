@@ -1,5 +1,7 @@
 #include "filter_util.h"
 
+#include <obs-module.h>
+
 using namespace std;
 using namespace Eigen;
 
