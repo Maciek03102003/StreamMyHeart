@@ -52,7 +52,6 @@ VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
 
 	// Ensure a(0) is 1, normalize otherwise
 	if (a(0) == 0) {
-		obs_log(LOG_INFO, "A(0)=0 case");
 		std::cerr << "Error: a(0) cannot be zero in IIR filter!" << std::endl;
 		return y.setConstant(n, NAN); // Return NaN-filled vector
 	}
@@ -81,24 +80,6 @@ VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
 	return y;
 }
 
-// VectorXd applyIIRFilter(const VectorXd &b, const VectorXd &a, const VectorXd &x)
-// {
-// 	size_t n = x.size();
-// 	VectorXd y(n);
-// 	y.setZero();
-
-// 	for (int i = 0; i < static_cast<int>(n); ++i) {
-// 		y(i) = b(0) * x(i);
-// 		for (int j = 1; j < static_cast<int>(b.size()); ++j) {
-// 			if (i - j >= 0) {
-// 				y(i) += b(j) * x(i - j) - a(j) * y(i - j);
-// 			}
-// 		}
-// 	}
-
-// 	return y;
-// }
-
 MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd &x)
 {
 	int rows = static_cast<int>(x.rows()), cols = static_cast<int>(x.cols());
@@ -117,4 +98,46 @@ MatrixXd forwardBackFilter(const VectorXd &b, const VectorXd &a, const MatrixXd 
 	}
 
 	return y;
+}
+
+vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps)
+{
+
+	int order = 6;
+	double minHz = 0.65;
+	double maxHz = 3.0;
+
+	size_t rows = signal.size();
+	size_t cols = signal[0].size();
+	MatrixXd sig((int)rows, (int)cols);
+
+	for (int i = 0; i < static_cast<int>(rows); ++i) {
+		for (int j = 0; j < static_cast<int>(cols); ++j) {
+			sig(i, j) = signal[i][j];
+		}
+	}
+
+	sig.transposeInPlace();
+
+	VectorXd b, a;
+	butterworthBandpass(order, minHz, maxHz, fps, a, b);
+
+	MatrixXd y = forwardBackFilter(b, a, sig);
+	y.transposeInPlace();
+
+	vector<vector<double_t>> result(rows, vector<double>(cols));
+	for (int i = 0; i < static_cast<int>(rows); ++i) {
+		for (int j = 0; j < static_cast<int>(cols); ++j) {
+			result[i][j] = y(i, j);
+		}
+	}
+
+	std::string hrs = "BP filter heart rates: [";
+	for (int i = 0; i < static_cast<int>(rows); ++i) {
+		hrs += std::to_string(result[i][1]) + ", ";
+	}
+	hrs += "]";
+	obs_log(LOG_INFO, hrs.c_str());
+
+	return result;
 }

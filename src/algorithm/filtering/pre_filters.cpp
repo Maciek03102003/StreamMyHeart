@@ -7,48 +7,6 @@
 using namespace std;
 using namespace Eigen;
 
-vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps)
-{
-
-	int order = 6;
-	double minHz = 0.65;
-	double maxHz = 3.0;
-
-	size_t rows = signal.size();
-	size_t cols = signal[0].size();
-	MatrixXd sig((int)rows, (int)cols);
-
-	for (int i = 0; i < static_cast<int>(rows); ++i) {
-		for (int j = 0; j < static_cast<int>(cols); ++j) {
-			sig(i, j) = signal[i][j];
-		}
-	}
-
-	sig.transposeInPlace();
-
-	VectorXd b, a;
-	butterworthBandpass(order, minHz, maxHz, fps, a, b);
-
-	MatrixXd y = forwardBackFilter(b, a, sig);
-	y.transposeInPlace();
-
-	vector<vector<double_t>> result(rows, vector<double>(cols));
-	for (int i = 0; i < static_cast<int>(rows); ++i) {
-		for (int j = 0; j < static_cast<int>(cols); ++j) {
-			result[i][j] = y(i, j);
-		}
-	}
-
-	std::string hrs = "Pre filter heart rates: [";
-	for (int i = 0; i < static_cast<int>(rows); ++i) {
-		hrs += std::to_string(result[i][1]) + ", ";
-	}
-	hrs += "]";
-	obs_log(LOG_INFO, hrs.c_str());
-
-	return result;
-}
-
 vector<double_t> detrendSignal(const vector<double_t> &signal)
 {
 	int n = static_cast<int>(signal.size());
