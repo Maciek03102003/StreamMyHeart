@@ -22,20 +22,19 @@ void destroy_graph_source(void *data)
 	struct graph_source *graph = reinterpret_cast<struct graph_source *>(data);
 
 	if (graph) {
+		// Release the OBS source
+		if (graph->source) {
+			obs_source_release(graph->source);
+			graph->source = nullptr;
+		};
 
-		// // Release the OBS source
-		// if (graph->source) {
-		// 	obs_source_release(graph->source);
-		// 	graph->source = nullptr;
-		// };
+// Clear buffer (only applicable in C++)
+#ifdef __cplusplus
+		graph->buffer.clear();
+#endif
 
-		// 		// Clear buffer (only applicable in C++)
-		// #ifdef __cplusplus
-		// 		graph->buffer.clear();
-		// #endif
-
-		// 		// Free memory
-		// 		bfree(graph);
+		// Free memory
+		bfree(graph);
 	}
 }
 
@@ -155,7 +154,11 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	// Get base effect
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	while (gs_effect_loop(effect, "Solid")) {
-		// Set color for the graph (Red)
+		// Set background colour
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF);
+		gs_draw_sprite(nullptr, 0, width, height);
+
+		// Set color for the graph (Default: Red)
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
 				    get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
 

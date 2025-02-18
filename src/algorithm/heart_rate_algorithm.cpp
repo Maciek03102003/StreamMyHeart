@@ -280,15 +280,15 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 		Window currentWindow = concatWindows(windows);
 		switch (ppg) {
 		case 0:
-			obs_log(LOG_INFO, "Current PPG Algorithm: Green channel");
+			// obs_log(LOG_INFO, "Current PPG Algorithm: Green channel");
 			ppgSignal = green(currentWindow);
 			break;
 		case 1:
-			obs_log(LOG_INFO, "Current PPG Algorithm: PCA");
+			// obs_log(LOG_INFO, "Current PPG Algorithm: PCA");
 			ppgSignal = pca(currentWindow);
 			break;
 		case 2:
-			obs_log(LOG_INFO, "Current PPG Algorithm: Chrom");
+			// obs_log(LOG_INFO, "Current PPG Algorithm: Chrom");
 			ppgSignal = chrom(currentWindow);
 			break;
 		default:

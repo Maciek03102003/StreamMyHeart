@@ -298,7 +298,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable graph source", true);
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
-	obs_data_set_default_int(settings, "graphPlaneDropdown", 0);
+	obs_data_set_default_int(settings, "graphPlaneDropdown", 1);
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 }
 
