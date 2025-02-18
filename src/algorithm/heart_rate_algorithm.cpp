@@ -324,7 +324,7 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 
 		vector<double_t> filtered_ppg = applyPostFilter(ppgSignal, postFilter, fps);
 
-		double unsmoothedHeartRate = welch(ppgSignal);
+		double unsmoothedHeartRate = welch(filtered_ppg);
 
 		if (smooth) {
 			if (static_cast<int>(heartRates.size()) < numHeartRates) {
