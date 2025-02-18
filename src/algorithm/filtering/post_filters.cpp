@@ -13,10 +13,10 @@ vector<double_t> applyPostFilter(vector<double_t> signal, int filter, int fps)
 		for (size_t i = 0; i < signal.size(); ++i) {
 			newSignal[i][0] = signal[i];
 		}
-		vector<vector<double_t>> filterere = bpFilter(newSignal, fps);
+		vector<vector<double_t>> expandedFilter = bpFilter(newSignal, fps);
 		vector<double_t> res(signal.size());
 		for (size_t i = 0; i < signal.size(); ++i) {
-			res[i] = filterere[i][0];
+			res[i] = expandedFilter[i][0];
 		}
 		return res;
 	}

@@ -1,8 +1,5 @@
 #include "filter_util.h"
 
-#include "plugin-support.h"
-#include <obs-module.h>
-
 using namespace std;
 using namespace Eigen;
 
@@ -131,13 +128,6 @@ vector<vector<double_t>> bpFilter(vector<vector<double_t>> signal, int fps)
 			result[i][j] = y(i, j);
 		}
 	}
-
-	std::string hrs = "BP filter heart rates: [";
-	for (int i = 0; i < static_cast<int>(rows); ++i) {
-		hrs += std::to_string(result[i][1]) + ", ";
-	}
-	hrs += "]";
-	obs_log(LOG_INFO, hrs.c_str());
 
 	return result;
 }

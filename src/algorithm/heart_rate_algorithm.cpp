@@ -169,10 +169,8 @@ double MovingAvg::welch(vector<double_t> bvps)
 	// Divide signal into overlapping segments
 	int numSegments = 0;
 	ArrayXd psd = ArrayXd::Zero(nfft / 2 + 1);
-	obs_log(LOG_INFO, ("Num Frames: " + std::to_string(numFrames)).c_str());
 
 	if (numFrames < segmentSize) {
-		obs_log(LOG_INFO, "not segmented");
 		// Hann window
 		ArrayXd hannWindow(numFrames);
 		for (int i = 0; i < numFrames; ++i) {
@@ -199,7 +197,6 @@ double MovingAvg::welch(vector<double_t> bvps)
 
 		++numSegments;
 	} else {
-		obs_log(LOG_INFO, "Segment Welch!");
 		ArrayXd hannWindow(segmentSize);
 		for (int i = 0; i < segmentSize; ++i) {
 			hannWindow[i] = 0.5 * (1 - std::cos(2 * M_PI * i / (segmentSize - 1)));
@@ -254,9 +251,7 @@ double MovingAvg::welch(vector<double_t> bvps)
 	int maxIndex;
 	psd.head(nyquistLimitBPM + 1).maxCoeff(&maxIndex);
 	double dominantFrequency = maxIndex * frequencyResolution;
-	std::string str_freq = "Dominate Frequency: " + std::to_string(dominantFrequency);
 
-	obs_log(LOG_INFO, str_freq.c_str());
 	return dominantFrequency;
 }
 
