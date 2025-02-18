@@ -16,43 +16,28 @@
 #include "heart_rate_source.h"
 
 // Destroy function for graph source
-// void destroy_graph_source(void *data)
-// {
-// 	obs_log(LOG_INFO, "Graph source destroyed");
-// 	struct graph_source *graph = reinterpret_cast<struct graph_source *>(data);
+void destroy_graph_source(void *data)
+{
+	obs_log(LOG_INFO, "Graph source destroyed");
+	struct graph_source *graph = reinterpret_cast<struct graph_source *>(data);
 
-// 	if (graph) {
-// 		obs_enter_graphics();
+	if (graph) {
 
-// 		// Destroy vertex buffer
-// 		if (graph->vertex_buffer) {
-// 			gs_vertexbuffer_destroy(graph->vertex_buffer);
-// 			graph->vertex_buffer = nullptr;
-// 		}
+		// // Release the OBS source
+		// if (graph->source) {
+		// 	obs_source_release(graph->source);
+		// 	graph->source = nullptr;
+		// };
 
-// 		// Destroy effect
-// 		if (graph->effect) {
-// 			gs_effect_destroy(graph->effect);
-// 			graph->effect = nullptr;
-// 		}
+		// 		// Clear buffer (only applicable in C++)
+		// #ifdef __cplusplus
+		// 		graph->buffer.clear();
+		// #endif
 
-// 		// Release the OBS source
-// 		if (graph->source) {
-// 			obs_source_release(graph->source);
-// 			graph->source = nullptr;
-// 		}
-
-// 		obs_leave_graphics();
-
-// 		// Clear buffer (only applicable in C++)
-// #ifdef __cplusplus
-// 		graph->buffer.clear();
-// #endif
-
-// 		// Free memory
-// 		bfree(graph);
-// 	}
-// }
+		// 		// Free memory
+		// 		bfree(graph);
+	}
+}
 
 static bool find_heart_rate_monitor_filter(void *param, obs_source_t *source)
 {
@@ -60,7 +45,7 @@ static bool find_heart_rate_monitor_filter(void *param, obs_source_t *source)
 
 	// Try to get the filter from the current source
 	obs_source_t *filter = obs_source_get_filter_by_name(source, filter_name);
-	obs_log(LOG_INFO, "Source: %s", obs_source_get_name(source));
+	// obs_log(LOG_INFO, "Source: %s", obs_source_get_name(source));
 
 	if (filter) {
 		// Store the filter reference in param
@@ -111,42 +96,121 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	obs_log(LOG_INFO, "Graph rendering completed!");
 }
 
+// void draw_graph(struct graph_source *graph_source, int curHeartRate)
+// {
+// 	obs_log(LOG_INFO, "checking for null graph source");
+
+// 	if (!graph_source)
+// 		return; // Null check to avoid crashes
+
+// 	// Maintain a buffer size of 10
+// 	while (graph_source->buffer.size() >= 10) {
+// 		graph_source->buffer.erase(graph_source->buffer.begin());
+// 	}
+// 	graph_source->buffer.push_back(curHeartRate);
+// 	obs_log(LOG_INFO, "[obs heart rate]: %s", std::to_string(curHeartRate));
+
+// 	// obs_log(LOG_INFO, "Updating heart rate buffer...");
+
+// 	// Start rendering
+// 	obs_enter_graphics();
+// 	gs_effect_t *active_effect = gs_get_effect();
+// 	if (active_effect) {
+// 		gs_technique_t *active_technique = gs_effect_get_current_technique(active_effect);
+// 		gs_technique_end(active_technique);
+// 		gs_effect_destroy(active_effect);
+// 	}
+
+// 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+// 	while (gs_effect_loop(effect, "Solid")) {
+// 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF0000FF);
+
+// 		gs_render_start(true); // Use GS_LINESTRIP to connect the points
+
+// 		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
+
+// 		for (size_t i = 0; i < graph_source->buffer.size(); i++) {
+
+// 			gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(graph_source->buffer[i]));
+// 		}
+
+// 		gs_render_stop(GS_LINESTRIP);
+// 	}
+// 	obs_leave_graphics();
+// }
+
 void draw_graph(struct graph_source *graph_source, int curHeartRate)
 {
-	obs_log(LOG_INFO, "checking for null graph source");
-
-	if (!graph_source)
+	obs_log(LOG_INFO, "Checking for null graph source");
+	if (!graph_source || !graph_source->source)
 		return; // Null check to avoid crashes
-	graph_source->buffer.push_back(60);
+
+	// Retrieve source width and height
+	uint32_t width = obs_source_get_width(graph_source->source);
+	uint32_t height = obs_source_get_height(graph_source->source);
+
+	obs_log(LOG_INFO, "Graph source dimensions: Width = %u, Height = %u", width, height);
+
+	if (width == 0 || height == 0)
+		return; // Avoid division by zero
 
 	// Maintain a buffer size of 10
 	while (graph_source->buffer.size() >= 10) {
 		graph_source->buffer.erase(graph_source->buffer.begin());
 	}
-	//graph_source->buffer.push_back(curHeartRate);
+	graph_source->buffer.push_back(curHeartRate);
 
-	obs_log(LOG_INFO, "Updating heart rate buffer...");
+	obs_log(LOG_INFO, "[OBS Heart Rate]: %d", curHeartRate);
 
-	// Start rendering
-	if (!graph_source->effect) {
-		obs_log(LOG_ERROR, "Failed to get solid effect for rendering");
-		return;
+	obs_enter_graphics();
+
+	// Ensure no conflicting active effects
+	gs_effect_t *active_effect = gs_get_effect();
+	if (active_effect) {
+		gs_technique_t *active_technique = gs_effect_get_current_technique(active_effect);
+		gs_technique_end(active_technique);
+		gs_effect_destroy(active_effect);
 	}
 
-	while (gs_effect_loop(graph_source->effect, "Solid")) {
-		gs_effect_set_color(gs_effect_get_param_by_name(graph_source->effect, "color"), 0xFF0000FF);
+	// Get base effect
+	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
+	while (gs_effect_loop(effect, "Solid")) {
+		// Set color for the graph (Red)
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF0000FF);
 
 		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
-
 		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
+		// Normalize and scale values to fit within the source box
 		for (size_t i = 0; i < graph_source->buffer.size(); i++) {
+			float x = (static_cast<float>(i) / 9.0f) * width; // Scale X across width
+			float y = height -
+				  (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height; // Scale Y to fit
 
-			gs_vertex2f(static_cast<float>(i * 10), static_cast<float>(graph_source->buffer[i]));
+			gs_vertex2f(x, y);
 		}
 
 		gs_render_stop(GS_LINESTRIP);
+
+		// **Draw X-Axis (Horizontal Line)**
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF); // White
+		gs_render_start(GS_LINES);
+
+		gs_vertex2f(0.0f, height / 2.0f); // Midpoint of the height
+		gs_vertex2f(width, height / 2.0f);
+
+		gs_render_stop(GS_LINES);
+
+		// **Draw Y-Axis (Vertical Line)**
+		gs_render_start(GS_LINES);
+
+		gs_vertex2f(width / 10.0f, 0.0f); // Small offset from the left
+		gs_vertex2f(width / 10.0f, height);
+
+		gs_render_stop(GS_LINES);
 	}
+
+	obs_leave_graphics();
 }
 
 const char *get_graph_source_name(void *)
@@ -167,63 +231,15 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 	std::vector<int> buffer;
 	graph_src->buffer = buffer;
 
-	graph_src->effect = obs_get_base_effect(OBS_EFFECT_SOLID);
-	if (!graph_src->effect) {
-		destroy_graph_source_info(graph_src);
-		graph_src = NULL;
-	}
 	return graph_src;
 }
-void destroy_graph_source_info(void *data)
-{
-	struct graph_source *graph_src = (struct graph_source *)data;
-	obs_enter_graphics();
-	gs_effect_destroy(graph_src->effect);
-	obs_leave_graphics();
-	graph_src->~graph_source();
-	bfree(graph_src);
-}
-// void graph_source_info_render(void *data, gs_effect_t *effect) {
-//     UNUSED_PARAMETER(effect);
-// 		UNUSED_PARAMETER(data);
-// 		obs_log(LOG_INFO, "start graph_source_render");
-//     struct graph_source *graphSource = reinterpret_cast<struct graph_source *>(data);
-//     if (!graphSource || !graphSource->source) {
-//         return;  // Ensure graphSource is valid
-//     }
-
-//     // obs_log(LOG_INFO, "Rendering graph source...");
-// 		obs_source_t *source = graphSource->source;
-
-//     // // Retrieve OBS settings for the heart rate monitor source
-//     // obs_source_t *heart_rate_source = obs_get_source_by_name("Video Capture Device");
-//     if (!source) {
-//         obs_log(LOG_ERROR, "Graph source not found");
-// 		// skip_video_filter_if_safe(heart_rate_source);
-//         return;
-//     } else {
-// 			obs_log(LOG_INFO, "found graohp source");
-// 		}
-// 		obs_log(LOG_INFO, "end graph_source_render");
-//     // obs_data_t *settings = obs_source_get_settings(heart_rate_source);
-//     // int curHeartRate = static_cast<int>(obs_data_get_int(settings, "heart rate"));  // Retrieve heart rate
-//     // obs_data_release(settings);
-//     // obs_source_release(heart_rate_source);
-
-//     // obs_log(LOG_INFO, "Current heart rate: %d", curHeartRate);
-
-//     // // Draw the graph using the retrieved heart rate
-//     // draw_graph(graphSource, curHeartRate);
-
-//     // obs_log(LOG_INFO, "Graph rendering completed!");
-// }
 uint32_t graph_source_info_get_width(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 400;
+	return 100;
 }
 uint32_t graph_source_info_get_height(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 200;
+	return 100;
 }

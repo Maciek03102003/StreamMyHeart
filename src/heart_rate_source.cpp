@@ -42,13 +42,13 @@ static void create_graph_source(obs_scene_t *scene)
 	obs_transform_info transform_info;
 	transform_info.pos.x = 100.0f;
 	transform_info.pos.y = 300.0f;
-	transform_info.bounds.x = 600.0f;
-	transform_info.bounds.y = 400.0f;
+	transform_info.bounds.x = 100.0f;
+	transform_info.bounds.y = 100.0f;
 	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
 	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
 	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 2.0f;
-	transform_info.scale.y = 2.0f;
+	transform_info.scale.x = 1.0f;
+	transform_info.scale.y = 1.0f;
 	transform_info.rot = 0.0f;
 	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, graph_source);
 	if (source_sceneitem != NULL) {
@@ -187,7 +187,7 @@ static void createMoodSource(obs_scene_t *scene)
 
 		// Set transform settings
 		obs_transform_info transformInfo;
-		transformInfo.pos.x = 800.0;  // Position it elsewhere
+		transformInfo.pos.x = 800.0; // Position it elsewhere
 		transformInfo.pos.y = 800.0;
 		transformInfo.bounds.x = 400.0; // Resize bounds
 		transformInfo.bounds.y = 100.0;
@@ -207,7 +207,6 @@ static void createMoodSource(obs_scene_t *scene)
 		obs_source_release(source);
 	}
 }
-
 
 static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 {
@@ -272,7 +271,6 @@ void heartRateSourceDestroy(void *data)
 	removeSource(GRAPH_SOURCE_NAME);
 	removeSource(IMAGE_SOURCE_NAME);
 	removeSource(MOOD_SOURCE_NAME);
-
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -367,7 +365,7 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		createMoodSource(scene);
 	}
 
-  obs_source_release(sceneAsSource);
+	obs_source_release(sceneAsSource);
 
 	return true; // Forces the UI to refresh
 }
@@ -434,7 +432,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(enableGraph, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
-
 
 	obs_data_release(settings);
 
@@ -629,7 +626,8 @@ static gs_texture_t *drawRectangle(struct heartRateSource *hrs, uint32_t width, 
 	return blurredTexture;
 }
 
-std::string getMood(int heart_rate) {
+std::string getMood(int heart_rate)
+{
 	std::string mood;
 	if (heart_rate > 150) {
 		mood = "Extremely hyped";
@@ -655,7 +653,7 @@ std::string getMood(int heart_rate) {
 void heartRateSourceRender(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
-	obs_log(LOG_INFO, "START RENDERING");
+	// obs_log(LOG_INFO, "START RENDERING");
 
 	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
@@ -679,7 +677,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		skipVideoFilterIfSafe(hrs->source);
 		return;
 	}
-	obs_log(LOG_INFO, "[heart_rate_source_render] START FACE DETECTION");
+	// obs_log(LOG_INFO, "[heart_rate_source_render] START FACE DETECTION");
 	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(hrsSettings, "face detection algorithm");
@@ -702,7 +700,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		avg = hrs->faceDetection->detectFace(hrs->bgraData, faceCoordinates, enableDebugBoxes, enableTracker,
 						     frameUpdateInterval);
 	}
-	obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
+	// obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
 	// Get the selected PPG algorithm
 	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
@@ -710,18 +708,18 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	double heartRate = movingAvg.calculateHeartRate(avg, 0, selectedPpgAlgorithm, 0);
 
 	// std::string result = "Heart Rate: " + std::to_string(static_cast<int>(std::round(heartRate)));
-	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
-
-	std::string textFormat = obs_data_get_string(hrsSettings, "heart rate text");
-	size_t pos = textFormat.find("{hr}");
-	if (pos != std::string::npos) {
-		textFormat.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
-	}
-
-	obs_data_release(hrsSettings); // possibly cause of crash
 
 	if (heartRate != 0.0) {
-		// Updating heart rate text source 
+		obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
+
+		std::string textFormat = obs_data_get_string(hrsSettings, "heart rate text");
+		size_t pos = textFormat.find("{hr}");
+		if (pos != std::string::npos) {
+			textFormat.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
+		}
+
+		obs_data_release(hrsSettings); // possibly cause of crash
+		// Updating heart rate text source
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
@@ -743,10 +741,6 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 			obs_source_release(source);
 		}
 	}
-
-	// if (obs_data_get_bool(hrsSettings, "enable graph source")) {
-
-	// }
 
 	if (enableDebugBoxes) {
 		gs_texture_t *testingTexture =
