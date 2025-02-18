@@ -1,6 +1,6 @@
 #include "filter_util.h"
-#include "plugin-support.h"
 
+#include "plugin-support.h"
 #include <obs-module.h>
 
 using namespace std;

@@ -1,9 +1,6 @@
 #include "pre_filters.h"
 #include "filter_util.h"
 
-#include <obs-module.h>
-#include "plugin-support.h"
-
 using namespace std;
 using namespace Eigen;
 
