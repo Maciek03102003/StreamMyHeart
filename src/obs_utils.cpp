@@ -11,16 +11,12 @@ void removeSource(const char *source_name)
 {
 	obs_source_t *source = obs_get_source_by_name(source_name);
 	if (source) {
-		obs_log(LOG_INFO, "[remove_source] found text source");
 		obs_source_t *scene_as_source = obs_frontend_get_current_scene();
 		if (scene_as_source) {
-			obs_log(LOG_INFO, "[remove_source] found scene source");
 			obs_scene_t *scene = obs_scene_from_source(scene_as_source);
 			if (scene) {
-				obs_log(LOG_INFO, "[remove_source] found scene");
 				obs_sceneitem_t *scene_item = getSceneItemFromSource(scene, source);
 				if (scene_item) {
-					obs_log(LOG_INFO, "[remove_source] found scene item");
 					obs_sceneitem_remove(scene_item);  // Remove from scene
 					obs_sceneitem_release(scene_item); // Release scene item reference
 				}
@@ -29,7 +25,7 @@ void removeSource(const char *source_name)
 		}
 		obs_source_release(source); // Release the source reference
 	}
-	obs_log(LOG_INFO, "[remove_source] done removing text source");
+	obs_log(LOG_INFO, "[remove_source] done removing %s source", source_name);
 }
 
 void skipVideoFilterIfSafe(obs_source_t *source)

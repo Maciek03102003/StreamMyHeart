@@ -203,6 +203,9 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		}
 	}
 
+	obs_data_release(hrsSettings);
+	obs_source_release(heartRateSource);
+
 	obs_leave_graphics();
 }
 
