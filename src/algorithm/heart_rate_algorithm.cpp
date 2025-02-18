@@ -239,9 +239,14 @@ double MovingAvg::welch(vector<double_t> bvps)
 	int nyquistLimitBPM = min(min(numFrames / 2, nyquistLimit), static_cast<int>(200 / frequencyResolution));
 
 	double lowerLimit = 50;
+	double threshold = 70;
+	double sf = 0.7;
 	for (int k = 0; k <= nyquistLimitBPM; ++k) {
 		if (k * frequencyResolution < lowerLimit) {
 			psd[k] = 0;
+		}
+		if (k * frequencyResolution < threshold) {
+			psd[k] *= sf;
 		}
 	}
 
@@ -272,26 +277,18 @@ double MovingAvg::smoothHeartRate(double hr)
 {
 	double meanHr = accumulate(heartRates.begin(), heartRates.end(), 0.0) / heartRates.size();
 
-	double varianceHr = 0.0;
-	cout << "Heart Rates:";
-	for (double hr : heartRates) {
-		cout << hr << ", ";
-		varianceHr += pow(hr - meanHr, 2);
+	double offset = 20.0;
+
+	heartRates.erase(heartRates.begin());
+	heartRates.push_back(hr);
+
+	if (hr > meanHr + offset) {
+		return meanHr + offset;
+	} else if (hr < meanHr - offset) {
+		return meanHr - offset;
 	}
-	varianceHr /= heartRates.size();
 
-	cout << endl << "Mean: " << meanHr << endl << "Var: " << varianceHr << endl;
-
-	double maxHr = meanHr + 3 * sqrt(varianceHr);
-	double minHr = meanHr - 3 * sqrt(varianceHr);
-
-	if (hr > maxHr) {
-		return maxHr;
-	} else if (hr < minHr) {
-		return minHr;
-	} else {
-		return hr;
-	}
+	return hr;
 }
 
 double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps,
@@ -327,22 +324,17 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 
 		vector<double_t> filtered_ppg = applyPostFilter(ppgSignal, postFilter, fps);
 
-		double unsmoothedHeartRate = welch(filtered_ppg);
+		double heartRate = welch(filtered_ppg);
 
 		if (smooth) {
 			if (static_cast<int>(heartRates.size()) < numHeartRates) {
-				heartRates.push_back(unsmoothedHeartRate);
-				return unsmoothedHeartRate;
+				heartRates.push_back(heartRate);
 			} else {
-				double heartRate = smoothHeartRate(unsmoothedHeartRate);
-				heartRates.erase(heartRates.begin());
-				heartRates.push_back(unsmoothedHeartRate);
-
-				return heartRate;
+				heartRate = smoothHeartRate(heartRate);
 			}
 		}
 
-		return unsmoothedHeartRate;
+		return heartRate;
 
 	} else {
 		if (static_cast<int>(windows.size()) < calibrationTime) {

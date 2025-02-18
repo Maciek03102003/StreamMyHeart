@@ -45,6 +45,6 @@ private:
 
 public:
 	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 1, int ppgAlgorithm = 1,
-				  int postFilter = 0, int Fps = 30, int sampleRate = 1, bool smooth = false);
+				  int postFilter = 0, int Fps = 30, int sampleRate = 1, bool smooth = true);
 };
 #endif
