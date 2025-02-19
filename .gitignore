@@ -17,6 +17,7 @@
 !LICENSE
 !README.md
 !/3rdparty
+!/Graphs
 
 # Exclude lock files
 *.lock.json

@@ -41,5 +41,8 @@
     "version": "1.0.0",
     "author": "Maciej Rytlewski, Charlie Campbell, Elizabeth Chan, Zihan Pan, Ge Gao, Andras Tremmel",
     "email": "pulseobs@gmail.com",
-    "website": "https://github.com/Maciek03102003/PulseOBS"
+    "website": "https://github.com/Maciek03102003/PulseOBS",
+    "uuids": {
+        "windowsApp": "732ff785-6ef6-4d81-b831-4a8c653b4bf0"
+    }
 }
