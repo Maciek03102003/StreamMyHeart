@@ -41,5 +41,8 @@
     "version": "1.0.0",
     "author": "Maciej Rytlewski",
     "email": "maciekrytlewski@gmail.com",
-    "website": "https://github.com/Maciek03102003/PulseOBS"
+    "website": "https://github.com/Maciek03102003/PulseOBS",
+    "uuids": {
+        "windowsApp": "00000000-0000-0000-0000-000000000000"
+    }
 }
