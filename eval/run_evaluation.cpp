@@ -173,7 +173,7 @@ double calculateRMSE(const std::vector<double> &actual, const std::vector<double
 
 std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect,
 					       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg,
-					       PostFilteringAlgorithm postFilter)
+					       PostFilteringAlgorithm postFilter, bool smooth)
 {
 	cv::VideoCapture cap(videoData.videoPath);
 	if (!cap.isOpened()) {
@@ -205,7 +205,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceD
 
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, static_cast<int>(preFilter), static_cast<int>(ppg),
-								static_cast<int>(postFilter), fps, 1, false);
+								static_cast<int>(postFilter), fps, 1, smooth);
 
 		if (heartRate != 0 && heartRate != -1) {
 			predicted.push_back(heartRate);
@@ -231,9 +231,10 @@ std::string centerAlign(const std::string &text, int width)
 }
 
 void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect, PreFilteringAlgorithm preFilter,
-		  PPGAlgorithm ppg, PostFilteringAlgorithm postFilter, std::ofstream &outFile)
+		  PPGAlgorithm ppg, PostFilteringAlgorithm postFilter, bool smooth, std::ofstream &outFile)
 {
-	std::vector<double> predicted = calculateHeartRateForVideo(videoData, faceDetect, preFilter, ppg, postFilter);
+	std::vector<double> predicted =
+		calculateHeartRateForVideo(videoData, faceDetect, preFilter, ppg, postFilter, smooth);
 	double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
 	double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
 
@@ -265,13 +266,15 @@ void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect,
 }
 
 void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm faceDetect,
-		       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg, PostFilteringAlgorithm postFilter)
+		       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg, PostFilteringAlgorithm postFilter,
+		       bool smooth)
 {
 	std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
 	// Construct the results filename based on the parameters
-	std::string resultsFilename = "../../../../../eval/results/" + toString(faceDetect) + "_" +
-				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + ".csv";
+	std::string resultsFilename = "../../../../../eval/new_results/" + toString(faceDetect) + "_" +
+				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + "_" +
+				      (smooth ? "SMOOTHING_ON" : "SMOOTHING_OFF") + ".csv";
 
 	// Print the table header
 	std::cout
@@ -289,7 +292,7 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 	for (const auto &videoData : videoDataList) {
 		// Create a future for each video evaluation
 		futures.push_back(std::async(std::launch::async, processVideo, std::ref(videoData), faceDetect,
-					     preFilter, ppg, postFilter, std::ref(outFile)));
+					     preFilter, ppg, postFilter, smooth, std::ref(outFile)));
 	}
 
 	// Wait for all threads to complete
@@ -308,13 +311,26 @@ int main()
 								     PreFilteringAlgorithm::BUTTERWORTH_BANDPASS,
 								     PreFilteringAlgorithm::DETREND,
 								     PreFilteringAlgorithm::ZERO_MEAN};
+
+	std::vector<PPGAlgorithm> ppgAlgorithms = {
+		PPGAlgorithm::PCA,
+		PPGAlgorithm::CHROM,
+	};
+
 	std::vector<PostFilteringAlgorithm> postFilteringAlgorithms = {PostFilteringAlgorithm::NONE,
 								       PostFilteringAlgorithm::BUTTERWORTH_BANDPASS};
 
-	for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
-		for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
-			evaluateHeartRate(csvFilePath, FaceDetectionAlgorithm::DLIB, preFilteringAlgorithm,
-					  PPGAlgorithm::CHROM, postFilteringAlgorithm);
+	std::vector<bool> smoothingOptions = {false, true};
+
+	for (PPGAlgorithm ppgAlgorithm : ppgAlgorithms) {
+		for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
+			for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
+				for (bool smoothing : smoothingOptions) {
+					evaluateHeartRate(csvFilePath, FaceDetectionAlgorithm::DLIB,
+							  preFilteringAlgorithm, ppgAlgorithm, postFilteringAlgorithm,
+							  smoothing);
+				}
+			}
 		}
 	}
 
