@@ -10,14 +10,13 @@ PulseOBS is designed to help live streamers monitor their heart rate without the
 > **Warning:** This plugin consumes significant CPU resources.
 
 ## Download
+Download the latest installation packages from [here](https://github.com/Maciek03102003/PulseOBS/releases).
 
 ### Windows
 (TODO: Add download link and instructions)
 
 ### MacOs
-Download the installation package from (TODO: Add link).
-
-1. Double-click PACKAGE_NAME.pkg to open the installer.
+1. Double-click `.pkg` file to open the installer.
 
 2. Follow the on-screen instructions to complete the installation.
 
