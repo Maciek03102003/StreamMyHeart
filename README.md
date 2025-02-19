@@ -13,7 +13,11 @@ PulseOBS is designed to help live streamers monitor their heart rate without the
 Download the latest installation packages from [here](https://github.com/Maciek03102003/PulseOBS/releases).
 
 ### Windows
-(TODO: Add download link and instructions)
+1. Double-click `.exe` file to open the installer.
+
+2. Follow the instructions to complete installation.
+
+3. To uninstall the plugin, use the uninstaller located in the OBS application folder.
 
 ### MacOs
 1. Double-click `.pkg` file to open the installer.
