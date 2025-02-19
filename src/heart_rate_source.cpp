@@ -96,12 +96,12 @@ static void create_image_source(obs_scene_t *scene)
 
 static void createTextSource(obs_scene_t *scene)
 {
-	obs_source_t *source = obs_get_source_by_name(obs_module_text("HeartRateDisplay"));
+	obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 	if (source) {
 		obs_source_release(source); // source already exists, release it
 		return;
 	}
-	source = obs_source_create("text_ft2_source_v2", obs_module_text("HeartRateDisplay"), nullptr, nullptr);
+	source = obs_source_create("text_ft2_source_v2", obs_module_text(TEXT_SOURCE_NAME), nullptr, nullptr);
 	if (source) {
 		// add source to the current scene
 		obs_scene_add(scene, source);
@@ -397,14 +397,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	// Allow user to disable face detection boxes drawing
 	obs_properties_add_bool(props, "face detection debug boxes", obs_module_text("FaceDetectionDebugBoxes"));
 
-	// Allow user to disable face detection boxes drawing
-	obs_properties_add_bool(props, "face detection debug boxes",
-				obs_module_text("See Face Detection/Tracking result"));
-
-	// Allow user to disable face detection boxes drawing
-	obs_properties_add_bool(props, "face detection debug boxes",
-				obs_module_text("See Face Detection/Tracking result"));
-
 	// Set if enable face tracking
 	obs_property_t *enableTracker =
 		obs_properties_add_bool(props, "enable face tracking", obs_module_text("FaceTrackerEnable"));
@@ -423,51 +415,49 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	// Add dropdown for pre-filtering methods
 	obs_property_t *preFilterDropdown = obs_properties_add_list(props, "pre-filtering method",
-								    obs_module_text("Pre-Filtering Method:"),
+								    obs_module_text("PreFilteringAlgorithm"),
 								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(preFilterDropdown, "None", 0);
-	obs_property_list_add_int(preFilterDropdown, "Bandpass", 1);
-	obs_property_list_add_int(preFilterDropdown, "Detrend", 2);
-	obs_property_list_add_int(preFilterDropdown, "Zero Mean", 3);
+	obs_property_list_add_int(preFilterDropdown, obs_module_text("None"), 0);
+	obs_property_list_add_int(preFilterDropdown, obs_module_text("Bandpass"), 1);
+	obs_property_list_add_int(preFilterDropdown, obs_module_text("Detrend"), 2);
+	obs_property_list_add_int(preFilterDropdown, obs_module_text("ZeroMean"), 3);
 
 	// Add boolean tick box for post-filtering
-	obs_properties_add_bool(props, "post-filtering", obs_module_text("Enable Post-Filtering"));
+	obs_properties_add_bool(props, "post-filtering", obs_module_text("PostFilteringAlgorithm"));
 
 	// Allow user to customise heart rate display text
-	obs_property_t *heartRateText = obs_properties_add_text(props, "heart rate text",
-								obs_module_text("Heart Rate Text:"), OBS_TEXT_DEFAULT);
-	obs_properties_add_text(
-		props, "heart rate text explain",
-		obs_module_text("Enter display text with {hr} representing the heart rate we calculated: "),
-		OBS_TEXT_INFO);
+	obs_property_t *heartRateText =
+		obs_properties_add_text(props, "heart rate text", obs_module_text("HeartRateText"), OBS_TEXT_DEFAULT);
+	obs_properties_add_text(props, "heart rate text explain", obs_module_text("HeartRateTextExplain"),
+				OBS_TEXT_INFO);
 
 	obs_property_t *enableText =
-		obs_properties_add_bool(props, "enable text source", obs_module_text("Enable text source"));
+		obs_properties_add_bool(props, "enable text source", obs_module_text("TextSourceEnable"));
 	obs_property_t *enableImage =
-		obs_properties_add_bool(props, "enable image source", obs_module_text("Enable image source"));
+		obs_properties_add_bool(props, "enable image source", obs_module_text("ImageSourceEnable"));
 	obs_property_t *enableMood =
-		obs_properties_add_bool(props, "enable mood source", obs_module_text("Enable mood source"));
+		obs_properties_add_bool(props, "enable mood source", obs_module_text("MoodSourceEnable"));
 
 	obs_property_t *enableGraph =
-		obs_properties_add_bool(props, "enable graph source", obs_module_text("Enable graph source"));
+		obs_properties_add_bool(props, "enable graph source", obs_module_text("GraphSourceEnable"));
 
 	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graphPlaneDropdown",
-								     obs_module_text("Graph plane color:"),
+								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(graphPlaneDropdown, "White", 0);
-	obs_property_list_add_int(graphPlaneDropdown, "Red", 1);
-	obs_property_list_add_int(graphPlaneDropdown, "Yellow", 2);
-	obs_property_list_add_int(graphPlaneDropdown, "Green", 3);
-	obs_property_list_add_int(graphPlaneDropdown, "Blue", 4);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("White"), 0);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Red"), 1);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Yellow"), 2);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Green"), 3);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Blue"), 4);
 
 	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown",
-								    obs_module_text("Graph line color:"),
+								    obs_module_text("GraphLineDropdown"),
 								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(graphLineDropdown, "White", 0);
-	obs_property_list_add_int(graphLineDropdown, "Red", 1);
-	obs_property_list_add_int(graphLineDropdown, "Yellow", 2);
-	obs_property_list_add_int(graphLineDropdown, "Green", 3);
-	obs_property_list_add_int(graphLineDropdown, "Blue", 4);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("White"), 0);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Red"), 1);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Yellow"), 2);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Green"), 3);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 4);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
@@ -779,7 +769,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 		obs_data_release(hrsSettings); // possibly cause of crash
 		// Updating heart rate text source
-		obs_source_t *source = obs_get_source_by_name(obs_module_text("HeartRateDisplay"));
+		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
 			obs_data_set_string(sourceSettings, "text", textFormat.c_str());
