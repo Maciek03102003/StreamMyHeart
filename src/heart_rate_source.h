@@ -14,10 +14,11 @@
 extern "C" {
 #endif
 
-#define TEXT_SOURCE_NAME "Heart Rate Display"
-#define GRAPH_SOURCE_NAME "Heart Rate Graph"
-#define IMAGE_SOURCE_NAME "Heart Rate Icon"
-#define MOOD_SOURCE_NAME "Heart Rate Mood"
+#define MONITOR_SOURCE_NAME obs_module_text("HeartRateMonitor")
+#define TEXT_SOURCE_NAME obs_module_text("HeartRateDisplay")
+#define GRAPH_SOURCE_NAME obs_module_text("HeartRateGraph")
+#define IMAGE_SOURCE_NAME obs_module_text("HeartRateIcon")
+#define MOOD_SOURCE_NAME obs_module_text("HeartRateMood")
 
 struct input_BGRA_data {
 	uint8_t *data;

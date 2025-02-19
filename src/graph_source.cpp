@@ -42,7 +42,7 @@ void destroy_graph_source(void *data)
 
 static bool find_heart_rate_monitor_filter(void *param, obs_source_t *source)
 {
-	const char *filter_name = "Heart Rate Monitor";
+	const char *filter_name = MONITOR_SOURCE_NAME;
 
 	// Try to get the filter from the current source
 	obs_source_t *filter = obs_source_get_filter_by_name(source, filter_name);
