@@ -19,7 +19,6 @@ extern "C" {
 #define IMAGE_SOURCE_NAME "Heart Rate Icon"
 #define MOOD_SOURCE_NAME "Heart Rate Mood"
 
-
 struct input_BGRA_data {
 	uint8_t *data;
 	uint32_t width;

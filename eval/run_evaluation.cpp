@@ -1,22 +1,96 @@
-#include "algorithm/face_detection/opencv_haarcascade.h"
+#include <opencv2/opencv.hpp>
+#include "algorithm/face_detection/face_detection.h"
 #include "../src/algorithm/heart_rate_algorithm.h"
 
+#include <thread>
+#include <mutex>
+#include <future>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
-#include <opencv2/opencv.hpp>
+
+std::mutex outputMutex;
+
+enum class PreFilteringAlgorithm { NONE, BUTTERWORTH_BANDPASS, DETREND, ZERO_MEAN, LAST };
+
+enum class PPGAlgorithm {
+	GREEN,
+	PCA,
+	CHROM,
+};
+
+enum class PostFilteringAlgorithm { NONE, BUTTERWORTH_BANDPASS, LAST };
+
+enum class Smoothing { OFF, ON };
+
+std::string toString(FaceDetectionAlgorithm algo)
+{
+	switch (algo) {
+	case FaceDetectionAlgorithm::HAAR_CASCADE:
+		return "HAAR_CASCADE";
+	case FaceDetectionAlgorithm::DLIB:
+		return "DLIB";
+	default:
+		return "UNKNOWN";
+	}
+}
+
+std::string toString(PreFilteringAlgorithm algo)
+{
+	switch (algo) {
+	case PreFilteringAlgorithm::NONE:
+		return "NONE";
+	case PreFilteringAlgorithm::BUTTERWORTH_BANDPASS:
+		return "BUTTERWORTH_BANDPASS";
+	case PreFilteringAlgorithm::DETREND:
+		return "DETREND";
+	case PreFilteringAlgorithm::ZERO_MEAN:
+		return "ZERO_MEAN";
+	default:
+		return "UNKNOWN";
+	}
+}
+
+std::string toString(PPGAlgorithm algo)
+{
+	switch (algo) {
+	case PPGAlgorithm::GREEN:
+		return "GREEN";
+	case PPGAlgorithm::PCA:
+		return "PCA";
+	case PPGAlgorithm::CHROM:
+		return "CHROM";
+	default:
+		return "UNKNOWN";
+	}
+}
+
+std::string toString(PostFilteringAlgorithm algo)
+{
+	switch (algo) {
+	case PostFilteringAlgorithm::NONE:
+		return "NONE";
+	case PostFilteringAlgorithm::BUTTERWORTH_BANDPASS:
+		return "BUTTERWORTH_BANDPASS";
+	default:
+		return "UNKNOWN";
+	}
+}
 
 struct VideoData {
 	std::string videoPath;
 	std::vector<double> groundTruthHeartRate;
-	double otherAlgorithmRMSE;
-	double otherAlgorithmMAE;
+	double pcaRMSE;
+	double pcaMAE;
+	double chromRMSE;
+	double chromMAE;
 };
 
 std::vector<VideoData> readCSV(const std::string &csvFilePath)
 {
+	static int calibrationTime = 5;
 	std::vector<VideoData> videoDataList;
 	std::ifstream file(csvFilePath);
 	std::string line;
@@ -32,19 +106,31 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath)
 
 		// Read the ground truth heart rates
 		std::getline(ss, token, ','); // Skip the initial '['
+		int count = 0;
 		while (std::getline(ss, token, ',')) {
 			if (token == "]")
 				break;
-			groundTruthHeartRates.push_back(std::stod(token));
+			if (count >= calibrationTime) { // Skip the first few heart rates for calibration
+				groundTruthHeartRates.push_back(std::stod(token));
+			}
+			count++;
 		}
 
-		// Read the other algorithm's RMSE and MAE
-		double otherAlgorithmRMSE, otherAlgorithmMAE;
-		ss >> otherAlgorithmRMSE;
+		// Read the PCA RMSE and MAE
+		double pcaRMSE, pcaMAE;
+		ss >> pcaRMSE;
 		ss.ignore(1); // Ignore the comma
-		ss >> otherAlgorithmMAE;
+		ss >> pcaMAE;
+		ss.ignore(1); // Ignore the comma
 
-		videoDataList.push_back({videoPath, groundTruthHeartRates, otherAlgorithmRMSE, otherAlgorithmMAE});
+		// Read the Chrom RMSE and MAE
+		double chromRMSE, chromMAE;
+		ss >> chromRMSE;
+		ss.ignore(1); // Ignore the comma
+		ss >> chromMAE;
+
+		videoDataList.push_back({videoPath, groundTruthHeartRates, pcaRMSE, pcaMAE, chromRMSE, chromMAE});
+		;
 	}
 	return videoDataList;
 }
@@ -63,24 +149,32 @@ input_BGRA_data extractBGRAData(const cv::Mat &frame)
 
 double calculateMAE(const std::vector<double> &actual, const std::vector<double> &predicted)
 {
+	// Use the smaller length of the two vectors
+	size_t length = std::min(actual.size(), predicted.size());
+
 	double mae = 0.0;
-	for (size_t i = 0; i < actual.size(); ++i) {
+	for (size_t i = 0; i < length; ++i) {
 		mae += std::fabs(actual[i] - predicted[i]); // Absolute error
 	}
-	return mae / actual.size();
+	return mae / length;
 }
 
 double calculateRMSE(const std::vector<double> &actual, const std::vector<double> &predicted)
 {
+	// Use the smaller length of the two vectors
+	size_t length = std::min(actual.size(), predicted.size());
+
 	double rmse = 0.0;
-	for (size_t i = 0; i < actual.size(); ++i) {
+	for (size_t i = 0; i < length; ++i) {
 		rmse += std::pow(actual[i] - predicted[i], 2); // Squared error
 	}
-	return std::sqrt(rmse / actual.size());
+	return std::sqrt(rmse / length);
 }
 
-std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
-{ // {MAE, RMSE}
+std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect,
+					       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg,
+					       PostFilteringAlgorithm postFilter)
+{
 	cv::VideoCapture cap(videoData.videoPath);
 	if (!cap.isOpened()) {
 		std::cerr << "Error: Could not open video file " << videoData.videoPath << std::endl;
@@ -88,7 +182,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 	}
 
 	MovingAvg movingAvg;
-	HaarCascadeFaceDetection faceDetection;
+	std::unique_ptr<FaceDetection> faceDetection = FaceDetection::create(faceDetect);
 	cv::Mat frame;
 
 	int fps = static_cast<int>(cap.get(cv::CAP_PROP_FPS));
@@ -106,11 +200,14 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData)
 		input_BGRA_data bgraData = extractBGRAData(bgraFrame);
 
 		// Perform face detection
-		std::vector<double_t> avg = faceDetection.detectFace(&bgraData, faceCoordinates, false, true, 60, true);
+		std::vector<double_t> avg =
+			faceDetection->detectFace(&bgraData, faceCoordinates, false, true, 60, true);
 
 		// Calculate heart rate using your algorithm
-		double heartRate = movingAvg.calculateHeartRate(avg, 0, 1, 0, fps);
-		if (heartRate != 0) {
+		double heartRate = movingAvg.calculateHeartRate(avg, static_cast<int>(preFilter), static_cast<int>(ppg),
+								static_cast<int>(postFilter), fps, 1, false);
+
+		if (heartRate != 0 && heartRate != -1) {
 			predicted.push_back(heartRate);
 		}
 
@@ -133,9 +230,48 @@ std::string centerAlign(const std::string &text, int width)
 	return std::string(padLeft, ' ') + text + std::string(padRight, ' ');
 }
 
-void evaluateHeartRate(const std::string &csvFilePath)
+void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect, PreFilteringAlgorithm preFilter,
+		  PPGAlgorithm ppg, PostFilteringAlgorithm postFilter, std::ofstream &outFile)
+{
+	std::vector<double> predicted = calculateHeartRateForVideo(videoData, faceDetect, preFilter, ppg, postFilter);
+	double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
+	double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
+
+	// Extract the subject name from the video path
+	std::string subjectName = videoData.videoPath.substr(videoData.videoPath.find_last_of("/") + 1);
+	subjectName = subjectName.substr(0, subjectName.find("."));
+
+	// Convert numbers to strings with fixed precision
+	std::string ourAlgorithmMAEStr = std::to_string(ourAlgorithmMAE);
+	std::string otherAlgorithmMAEStr = (ppg == PPGAlgorithm::CHROM) ? std::to_string(videoData.chromMAE)
+									: std::to_string(videoData.pcaMAE);
+	std::string ourAlgorithmRMSEStr = std::to_string(ourAlgorithmRMSE);
+	std::string otherAlgorithmRMSEStr = (ppg == PPGAlgorithm::CHROM) ? std::to_string(videoData.chromRMSE)
+									 : std::to_string(videoData.pcaRMSE);
+
+	// Lock the mutex before writing to the console and file
+	std::lock_guard<std::mutex> lock(outputMutex);
+
+	// Center-align the text and numbers
+	std::cout << "| " << std::setw(12) << std::left << centerAlign(subjectName, 12) << " | " << std::setw(17)
+		  << std::left << centerAlign(ourAlgorithmMAEStr, 17) << " | " << std::setw(19) << std::left
+		  << centerAlign(otherAlgorithmMAEStr, 19) << " | " << std::setw(18) << std::left
+		  << centerAlign(ourAlgorithmRMSEStr, 18) << " | " << std::setw(20) << std::left
+		  << centerAlign(otherAlgorithmRMSEStr, 20) << " |\n";
+
+	// Write the results to the CSV file
+	outFile << subjectName << "," << ourAlgorithmMAEStr << "," << otherAlgorithmMAEStr << "," << ourAlgorithmRMSEStr
+		<< "," << otherAlgorithmRMSEStr << "\n";
+}
+
+void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm faceDetect,
+		       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg, PostFilteringAlgorithm postFilter)
 {
 	std::vector<VideoData> videoDataList = readCSV(csvFilePath);
+
+	// Construct the results filename based on the parameters
+	std::string resultsFilename = "../../../../../eval/results/" + toString(faceDetect) + "_" +
+				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + ".csv";
 
 	// Print the table header
 	std::cout
@@ -144,34 +280,21 @@ void evaluateHeartRate(const std::string &csvFilePath)
 		<< "|--------------|-------------------|---------------------|--------------------|----------------------|\n";
 
 	// Open the CSV file for writing
-	std::ofstream outFile("evaluation_results.csv");
+	std::ofstream outFile(resultsFilename);
 	outFile << "Test Subject,Our Algorithm MAE,Other Algorithm MAE,Our Algorithm RMSE,Other Algorithm RMSE\n";
 
+	// Vector to hold futures for each thread
+	std::vector<std::future<void>> futures;
+
 	for (const auto &videoData : videoDataList) {
-		std::vector<double> predicted = calculateHeartRateForVideo(videoData);
-		double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
-		double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
+		// Create a future for each video evaluation
+		futures.push_back(std::async(std::launch::async, processVideo, std::ref(videoData), faceDetect,
+					     preFilter, ppg, postFilter, std::ref(outFile)));
+	}
 
-		// Extract the subject name from the video path
-		std::string subjectName = videoData.videoPath.substr(videoData.videoPath.find_last_of("/") + 1);
-		subjectName = subjectName.substr(0, subjectName.find("."));
-
-		// Convert numbers to strings with fixed precision
-		std::string ourAlgorithmMAEStr = std::to_string(ourAlgorithmMAE);
-		std::string otherAlgorithmMAEStr = std::to_string(videoData.otherAlgorithmMAE);
-		std::string ourAlgorithmRMSEStr = std::to_string(ourAlgorithmRMSE);
-		std::string otherAlgorithmRMSEStr = std::to_string(videoData.otherAlgorithmRMSE);
-
-		// Center-align the text and numbers
-		std::cout << "| " << std::setw(12) << std::left << centerAlign(subjectName, 12) << " | "
-			  << std::setw(17) << std::left << centerAlign(ourAlgorithmMAEStr, 17) << " | " << std::setw(19)
-			  << std::left << centerAlign(otherAlgorithmMAEStr, 19) << " | " << std::setw(18) << std::left
-			  << centerAlign(ourAlgorithmRMSEStr, 18) << " | " << std::setw(20) << std::left
-			  << centerAlign(otherAlgorithmRMSEStr, 20) << " |\n";
-
-		// Write the results to the CSV file
-		outFile << subjectName << "," << ourAlgorithmMAEStr << "," << otherAlgorithmMAEStr << ","
-			<< ourAlgorithmRMSEStr << "," << otherAlgorithmRMSEStr << "\n";
+	// Wait for all threads to complete
+	for (auto &future : futures) {
+		future.get();
 	}
 
 	// Close the CSV file
@@ -181,8 +304,19 @@ void evaluateHeartRate(const std::string &csvFilePath)
 int main()
 {
 	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
+	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::NONE,
+								     PreFilteringAlgorithm::BUTTERWORTH_BANDPASS,
+								     PreFilteringAlgorithm::DETREND,
+								     PreFilteringAlgorithm::ZERO_MEAN};
+	std::vector<PostFilteringAlgorithm> postFilteringAlgorithms = {PostFilteringAlgorithm::NONE,
+								       PostFilteringAlgorithm::BUTTERWORTH_BANDPASS};
 
-	evaluateHeartRate(csvFilePath);
+	for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
+		for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
+			evaluateHeartRate(csvFilePath, FaceDetectionAlgorithm::DLIB, preFilteringAlgorithm,
+					  PPGAlgorithm::CHROM, postFilteringAlgorithm);
+		}
+	}
 
 	std::cout << "Press Enter to exit..." << std::endl;
 	std::cin.get(); // Wait for user input before closing

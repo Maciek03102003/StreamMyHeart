@@ -300,6 +300,8 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable mood source", true);
 	obs_data_set_default_int(settings, "graphPlaneDropdown", 1);
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
+	obs_data_set_default_int(settings, "pre-filtering method", 1);
+	obs_data_set_default_bool(settings, "post-filtering", true);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -412,6 +414,18 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(ppgDropdown, "Green Channel", 0);
 	obs_property_list_add_int(ppgDropdown, "PCA", 1);
 	obs_property_list_add_int(ppgDropdown, "Chrom", 2);
+
+	// Add dropdown for pre-filtering methods
+	obs_property_t *preFilterDropdown = obs_properties_add_list(props, "pre-filtering method",
+								    obs_module_text("Pre-Filtering Method:"),
+								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	obs_property_list_add_int(preFilterDropdown, "None", 0);
+	obs_property_list_add_int(preFilterDropdown, "Bandpass", 1);
+	obs_property_list_add_int(preFilterDropdown, "Detrend", 2);
+	obs_property_list_add_int(preFilterDropdown, "Zero Mean", 3);
+
+	// Add boolean tick box for post-filtering
+	obs_properties_add_bool(props, "post-filtering", obs_module_text("Enable Post-Filtering"));
 
 	// Allow user to customise heart rate display text
 	obs_property_t *heartRateText = obs_properties_add_text(props, "heart rate text",
@@ -731,12 +745,22 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	}
 	// obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
-	// Get the selected PPG algorithm
+	// Get the settings for calculating the heart rate
 	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
+	int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
+	bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
+	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
 
-	double heartRate = movingAvg.calculateHeartRate(avg, 0, selectedPpgAlgorithm, 0);
+	double heartRate =
+		movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm, selectedPostFiltering);
 
-	// std::string result = "Heart Rate: " + std::to_string(static_cast<int>(std::round(heartRate)));
+	std::string result;
+
+	if (heartRate == -1.0) {
+		result = "Calibrating...";
+	} else {
+		result = "Heart Rate: " + std::to_string((int)heartRate);
+	}
 
 	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 	if (heartRate != 0.0) {
