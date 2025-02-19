@@ -386,7 +386,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	// obs_log(LOG_INFO, "heartRateSourceProperties");
 	obs_properties_t *props = obs_properties_create();
 
-
 	// Set the face detection algorithm
 	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
 							   obs_module_text("FaceDetectionAlgorithm"),
