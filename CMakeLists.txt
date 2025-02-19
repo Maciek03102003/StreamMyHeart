@@ -150,7 +150,6 @@ if(ENABLE_QT)
   )
 endif()
 
-
 target_sources(
   ${CMAKE_PROJECT_NAME}
   PRIVATE
