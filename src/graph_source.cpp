@@ -167,18 +167,18 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
 		// **Simulate thicker lines by drawing multiple parallel lines**
-        for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 1.0f) {
-            gs_render_start(GS_LINESTRIP);
+		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 1.0f) {
+			gs_render_start(GS_LINESTRIP);
 
-            for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-                float x = (static_cast<float>(i) / 9.0f) * width;
-                float y = height - (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
+			for (size_t i = 0; i < graph_source->buffer.size(); i++) {
+				float x = (static_cast<float>(i) / 9.0f) * width;
+				float y = height - (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
 
-                gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
-            }
+				gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+			}
 
-            gs_render_stop(GS_LINESTRIP);
-        }
+			gs_render_stop(GS_LINESTRIP);
+		}
 
 		// **Draw X-Axis (Horizontal Line)**
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
