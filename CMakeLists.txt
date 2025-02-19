@@ -1,3 +1,6 @@
+set(PLUGIN_AUTHOR "PulseOBS")
+set(PLUGIN_URL "https://github.com/Maciek03102003/PulseOBS")
+
 cmake_minimum_required(VERSION 3.28...3.30)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/bootstrap.cmake" NO_POLICY_SCOPE)
@@ -146,6 +149,7 @@ if(ENABLE_QT)
     PROPERTIES AUTOMOC ON AUTOUIC ON AUTORCC ON
   )
 endif()
+
 
 target_sources(
   ${CMAKE_PROJECT_NAME}
