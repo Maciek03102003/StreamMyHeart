@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 
+#define MONITOR_SOURCE_NAME obs_module_text("HeartRateMonitor")
 #define TEXT_SOURCE_NAME obs_module_text("HeartRateDisplay")
 #define GRAPH_SOURCE_NAME obs_module_text("HeartRateGraph")
 #define IMAGE_SOURCE_NAME obs_module_text("HeartRateIcon")

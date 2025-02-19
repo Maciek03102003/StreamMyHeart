@@ -409,7 +409,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	// Add dropdown for selecting PPG algorithm
 	obs_property_t *ppgDropdown = obs_properties_add_list(props, "ppg algorithm", obs_module_text("PPGAlgorithm"),
 							      OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(ppgDropdown, obs_module_text("Green"), 0);
+	obs_property_list_add_int(ppgDropdown, obs_module_text("GreenChannel"), 0);
 	obs_property_list_add_int(ppgDropdown, obs_module_text("PCA"), 1);
 	obs_property_list_add_int(ppgDropdown, obs_module_text("Chrom"), 2);
 
