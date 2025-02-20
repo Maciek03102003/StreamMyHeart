@@ -23,8 +23,6 @@ enum class PPGAlgorithm {
 
 enum class PostFilteringAlgorithm { NONE, BUTTERWORTH_BANDPASS, LAST };
 
-enum class Smoothing { OFF, ON };
-
 std::string toString(FaceDetectionAlgorithm algo)
 {
 	switch (algo) {
@@ -307,28 +305,29 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 int main()
 {
 	std::string csvFilePath = "../../../../../eval/ground_truth.csv";
-	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::NONE,
-								     PreFilteringAlgorithm::BUTTERWORTH_BANDPASS,
-								     PreFilteringAlgorithm::DETREND,
+
+	std::vector<FaceDetectionAlgorithm> faceDetectionAlgorithms = {FaceDetectionAlgorithm::DLIB,
+								       FaceDetectionAlgorithm::HAAR_CASCADE};
+
+	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::DETREND,
 								     PreFilteringAlgorithm::ZERO_MEAN};
 
-	std::vector<PPGAlgorithm> ppgAlgorithms = {
-		PPGAlgorithm::PCA,
-		PPGAlgorithm::CHROM,
-	};
+	std::vector<PPGAlgorithm> ppgAlgorithms = {PPGAlgorithm::PCA, PPGAlgorithm::CHROM, PPGAlgorithm::GREEN};
 
 	std::vector<PostFilteringAlgorithm> postFilteringAlgorithms = {PostFilteringAlgorithm::NONE,
 								       PostFilteringAlgorithm::BUTTERWORTH_BANDPASS};
 
 	std::vector<bool> smoothingOptions = {false, true};
 
-	for (PPGAlgorithm ppgAlgorithm : ppgAlgorithms) {
-		for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
-			for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
-				for (bool smoothing : smoothingOptions) {
-					evaluateHeartRate(csvFilePath, FaceDetectionAlgorithm::DLIB,
-							  preFilteringAlgorithm, ppgAlgorithm, postFilteringAlgorithm,
-							  smoothing);
+	for (FaceDetectionAlgorithm faceDetectionAlgorithm : faceDetectionAlgorithms) {
+		for (PPGAlgorithm ppgAlgorithm : ppgAlgorithms) {
+			for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
+				for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
+					for (bool smoothing : smoothingOptions) {
+						evaluateHeartRate(csvFilePath, faceDetectionAlgorithm,
+								  preFilteringAlgorithm, ppgAlgorithm,
+								  postFilteringAlgorithm, smoothing);
+					}
 				}
 			}
 		}
