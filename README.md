@@ -1,65 +1,101 @@
-# PulseOBS
-
-make - Compiles the plugin
-make docker-build - Builds the docker image
-make docker-run - Runs the docker container
-
-# OBS Plugin Template
+# OBS Plugin: PulseOBS - Webcam Based Heart Rate Monitoring for Live Streamers
+PulseOBS is a plugin that measures your heart rate directly using your webcam and facial detection. It supports both macOS and Windows.
 
 ## Introduction
 
-The plugin template is meant to be used as a starting point for OBS Studio plugin development. It includes:
+PulseOBS is designed to help live streamers monitor their heart rate without the need for wearable devices. Currently, it supports heart rate measurement for a single person visible in the webcam feed.
 
-* Boilerplate plugin source code
-* A CMake project file
-* GitHub Actions workflows and repository actions
+> **Note:** This plugin should not be used for medical purposes and does not provide any medical advice.
 
-## Supported Build Environments
+> **Warning:** This plugin consumes significant CPU resources.
 
-| Platform  | Tool   |
-|-----------|--------|
-| Windows   | Visal Studio 17 2022 |
-| macOS     | XCode 16.0 |
-| Windows, macOS  | CMake 3.30.5 |
-| Ubuntu 24.04 | CMake 3.28.3 |
-| Ubuntu 24.04 | `ninja-build` |
-| Ubuntu 24.04 | `pkg-config`
-| Ubuntu 24.04 | `build-essential` |
+## Download
+Download the latest installation packages from [here](https://github.com/Maciek03102003/PulseOBS/releases).
+
+### Windows
+1. Double-click `.exe` file to open the installer.
+
+2. Follow the instructions to complete installation.
+
+3. To uninstall the plugin, use the uninstaller located in the OBS application folder.
+
+### MacOs
+1. Double-click `.pkg` file to open the installer.
+
+2. Follow the on-screen instructions to complete the installation.
+
+3. The plugin will be installed in:
+    ```
+    /Users/<user_name>/Library/Application\ Support/obs-studio/plugins
+    ```
+
+### OBS Version Support and Compatibility
+PulseOBS supports the latest OBS version 31.0.1.
 
 ## Quick Start
 
-An absolute bare-bones [Quick Start Guide](https://github.com/obsproject/obs-plugintemplate/wiki/Quick-Start-Guide) is available in the wiki.
+1. Add a `Video Capture Device` as a source in OBS Studio.
 
-## Documentation
+2. Select `Video Capture Device` and click `Filters`.
 
-All documentation can be found in the [Plugin Template Wiki](https://github.com/obsproject/obs-plugintemplate/wiki).
+3. Under `Effect Filters`, select `Heart Rate Monitor`.
 
-Suggested reading to get up and running:
+4. Click `Heart Rate Monitor` to configure settings.
 
-* [Getting started](https://github.com/obsproject/obs-plugintemplate/wiki/Getting-Started)
-* [Build system requirements](https://github.com/obsproject/obs-plugintemplate/wiki/Build-System-Requirements)
-* [Build system options](https://github.com/obsproject/obs-plugintemplate/wiki/CMake-Build-System-Options)
+5. The heart rate can be displayed as a text source or a graph source.
 
-## GitHub Actions & CI
+## Suggested Setting Combination
+Optimal Accuracy: We shall see
 
-Default GitHub Actions workflows are available for the following repository actions:
+Low Resource Consumption:  Advanced Algorithm (with face tracking) and PCA
 
-* `push`: Run for commits or tags pushed to `master` or `main` branches.
-* `pr-pull`: Run when a Pull Request has been pushed or synchronized.
-* `dispatch`: Run when triggered by the workflow dispatch in GitHub's user interface.
-* `build-project`: Builds the actual project and is triggered by other workflows.
-* `check-format`: Checks CMake and plugin source code formatting and is triggered by other workflows.
+## Support and Feedback
 
-The workflows make use of GitHub repository actions (contained in `.github/actions`) and build scripts (contained in `.github/scripts`) which are not needed for local development, but might need to be adjusted if additional/different steps are required to build the plugin.
+For assistance, please contact: pulseobs@gmail.com
 
-### Retrieving build artifacts
+To report bugs or suggest features, open an issue at [here](https://github.com/Maciek03102003/PulseOBS/issues).
 
-Successful builds on GitHub Actions will produce build artifacts that can be downloaded for testing. These artifacts are commonly simple archives and will not contain package installers or installation programs.
+## Technical Details
 
-### Building a Release
+### Heart Rate Calculation
+PulseOBS provides multiple algorithms to calculate heart rate:
+| Method name    |  Reference paper |
+| ------------ | ---------------------------------------------------------------------- |
+|Green    | Verkruysse, W., Svaasand, L. O., & Nelson, J. S. (2008). Remote plethysmographic imaging using ambient light. Optics express, 16(26), 21434-21445.|
+|CHROM    | De Haan, G., & Jeanne, V. (2013). Robust pulse rate from chrominance-based rPPG. IEEE Transactions on Biomedical Engineering, 60(10), 2878-2886.|
+|PCA      | Lewandowska, M., Rumiński, J., Kocejko, T., & Nowak, J. (2011, September). Measuring pulse rate with a webcam—a non-contact method for evaluating cardiac activity. In 2011 federated conference on computer science and information systems (FedCSIS) (pp. 405-410). IEEE.|
 
-To create a release, an appropriately named tag needs to be pushed to the `main`/`master` branch using semantic versioning (e.g., `12.3.4`, `23.4.5-beta2`). A draft release will be created on the associated repository with generated installer packages or installation programs attached as release artifacts.
+### Filtering
+Pre and Post Filtering methods are used to improve accuracy:
 
-## Signing and Notarizing on macOS
+Pre-Filtering:
+- Bandpass
+- Detrending
+- Zero Mean
 
-Basic concepts of codesigning and notarization on macOS are explained in the correspodning [Wiki article](https://github.com/obsproject/obs-plugintemplate/wiki/Codesigning-On-macOS) which has a specific section for the [GitHub Actions setup](https://github.com/obsproject/obs-plugintemplate/wiki/Codesigning-On-macOS#setting-up-code-signing-for-github-actions).
+Post-Filtering:
+- Bandpass
+
+### Face Detection and Tracking
+PulseOBS uses face detection and tracking to optimize processing speed and improve accuracy. Available face detection methods:
+
+- Basic Algorithm
+    - Uses OpenCV Haar Cascade
+
+- Advanced Algorithm
+    - Uses dlib HoG (with and without face tracking)
+    - Face detection is performed every 60 frames.
+    - Face tracking is used between detections to enhance performance.
+
+## Evaluation
+All PPG, filtering and face detection combinations were tested on the UBFC2 dataset [2], comparing to the ground truth and values generated by the python library pyVHR [1], a library for studying methods of pulse rate estimation from videos. Our PCA algorithm achieved consistently better performance, with and without filtering, compared to the implementation in pyVHR, which can be seen here:
+
+![Detrend_PCA_None](eval/graphs/Detrend_PCA_None/HR_Line.png)
+
+## References
+```
+[1] Boccignone, G., Conte, D., Cuculo, V., D’Amelio, A., Grossi, G. and Lanzarotti, R., 2025. Enhancing rPPG pulse-signal recovery by facial sampling and PSD Clustering. Biomedical Signal Processing and Control, 101, p.107158.
+```
+```
+[2] S. Bobbia, R. Macwan, Y. Benezeth, A. Mansouri, J. Dubois, "Unsupervised skin tissue segmentation for remote photoplethysmography", Pattern Recognition Letters, 2017.
+```

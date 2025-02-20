@@ -15,6 +15,8 @@
 #include "graph_source_info.h"
 #include "heart_rate_source.h"
 
+#define LINE_THICKNESS 3.0f
+
 // Destroy function for graph source
 void destroy_graph_source(void *data)
 {
@@ -40,7 +42,7 @@ void destroy_graph_source(void *data)
 
 static bool find_heart_rate_monitor_filter(void *param, obs_source_t *source)
 {
-	const char *filter_name = "Heart Rate Monitor";
+	const char *filter_name = MONITOR_SOURCE_NAME;
 
 	// Try to get the filter from the current source
 	obs_source_t *filter = obs_source_get_filter_by_name(source, filter_name);
@@ -162,19 +164,21 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
 				    get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
 
-		gs_render_start(GS_LINESTRIP); // Use GS_LINESTRIP to connect the points
-		// obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
+		obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
-		// Normalize and scale values to fit within the source box
-		for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-			float x = (static_cast<float>(i) / 9.0f) * width; // Scale X across width
-			float y = height -
-				  (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height; // Scale Y to fit
+		// **Simulate thicker lines by drawing multiple parallel lines**
+		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 1.0f) {
+			gs_render_start(GS_LINESTRIP);
 
-			gs_vertex2f(x, y);
+			for (size_t i = 0; i < graph_source->buffer.size(); i++) {
+				float x = (static_cast<float>(i) / 9.0f) * width;
+				float y = height - (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
+
+				gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+			}
+
+			gs_render_stop(GS_LINESTRIP);
 		}
-
-		gs_render_stop(GS_LINESTRIP);
 
 		// **Draw X-Axis (Horizontal Line)**
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
