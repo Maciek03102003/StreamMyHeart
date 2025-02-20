@@ -309,7 +309,9 @@ int main()
 	std::vector<FaceDetectionAlgorithm> faceDetectionAlgorithms = {FaceDetectionAlgorithm::DLIB,
 								       FaceDetectionAlgorithm::HAAR_CASCADE};
 
-	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::DETREND,
+	std::vector<PreFilteringAlgorithm> preFilteringAlgorithms = {PreFilteringAlgorithm::NONE,
+								     PreFilteringAlgorithm::BUTTERWORTH_BANDPASS,
+								     PreFilteringAlgorithm::DETREND,
 								     PreFilteringAlgorithm::ZERO_MEAN};
 
 	std::vector<PPGAlgorithm> ppgAlgorithms = {PPGAlgorithm::PCA, PPGAlgorithm::CHROM, PPGAlgorithm::GREEN};
