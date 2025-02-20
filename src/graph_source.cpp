@@ -17,7 +17,7 @@
 
 #define LINE_THICKNESS 3.0f
 #define BUFFER_SIZE 100    // Store more data for stable min/max
-#define PLOT_SIZE 50      // Only plot the last 50 points
+#define PLOT_SIZE 50       // Only plot the last 50 points
 #define SMOOTHING_WINDOW 5 // Moving average window
 
 // Destroy function for graph source
@@ -192,7 +192,7 @@ void draw_graph(struct graph_source *graph_source, double data)
 	// Maintain a buffer size of 10
 	if (data > 0) {
 		size_t bufferSize;
-		if(strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
+		if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
 			bufferSize = 10;
 		} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
 			bufferSize = BUFFER_SIZE;
@@ -261,7 +261,6 @@ void draw_graph(struct graph_source *graph_source, double data)
 				}
 				gs_render_stop(GS_LINESTRIP);
 			}
-			
 		}
 
 		// **Draw X-Axis (Horizontal Line)**

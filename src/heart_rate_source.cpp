@@ -259,7 +259,7 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	if (obs_data_get_bool(settings, "enable mood source")) {
 		createMoodSource(scene);
 	}
-	if(obs_data_get_bool(settings, "enable signal source")) {
+	if (obs_data_get_bool(settings, "enable signal source")) {
 		createSignalSource(scene);
 	}
 
