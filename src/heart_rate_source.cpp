@@ -18,6 +18,7 @@
 #include "plugin-support.h"
 #include "obs_utils.h"
 #include "heart_rate_source.h"
+#include <cmath>
 
 MovingAvg movingAvg;
 
@@ -208,6 +209,38 @@ static void createMoodSource(obs_scene_t *scene)
 	}
 }
 
+static void createSignalSource(obs_scene_t *scene)
+{
+	obs_source_t *graph_source = obs_get_source_by_name(SIGNAL_SOURCE_NAME);
+	if (graph_source) {
+		obs_source_release(graph_source); // source already exists, release it
+		return;
+	}
+	graph_source = obs_source_create("signal_graph", SIGNAL_SOURCE_NAME, nullptr, nullptr);
+	if (!graph_source) {
+		return;
+	}
+
+	obs_scene_add(scene, graph_source);
+	obs_transform_info transform_info;
+	transform_info.pos.x = 260.0f;
+	transform_info.pos.y = 700.0f;
+	transform_info.bounds.x = 250.0f;
+	transform_info.bounds.y = 250.0f;
+	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
+	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
+	transform_info.alignment = OBS_ALIGN_CENTER;
+	transform_info.scale.x = 1.0f;
+	transform_info.scale.y = 1.0f;
+	transform_info.rot = 0.0f;
+	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, graph_source);
+	if (source_sceneitem != NULL) {
+		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
+		obs_sceneitem_release(source_sceneitem);
+	}
+	obs_source_release(graph_source);
+}
+
 static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 {
 	// create a new OBS text source called TEXT_SOURCE_NAME
@@ -225,6 +258,9 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	}
 	if (obs_data_get_bool(settings, "enable mood source")) {
 		createMoodSource(scene);
+	}
+	if(obs_data_get_bool(settings, "enable signal source")) {
+		createSignalSource(scene);
 	}
 
 	obs_source_release(sceneAsSource);
@@ -292,12 +328,13 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
 	obs_data_set_default_int(settings, "ppg algorithm", 1);
-	obs_data_set_default_int(settings, "heart rate", -1);
+	obs_data_set_default_double(settings, "heart rate", -1);
 	obs_data_set_default_string(settings, "heart rate text", "Heart rate: {hr} BPM");
 	obs_data_set_default_bool(settings, "enable text source", true);
-	obs_data_set_default_bool(settings, "enable graph source", true);
+	obs_data_set_default_bool(settings, "enable graph source", false);
 	obs_data_set_default_bool(settings, "enable image source", false);
-	obs_data_set_default_bool(settings, "enable mood source", true);
+	obs_data_set_default_bool(settings, "enable mood source", false);
+	obs_data_set_default_bool(settings, "enable signal source", false);
 	obs_data_set_default_int(settings, "graphPlaneDropdown", 1);
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
@@ -324,7 +361,7 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	if (text_source) {
 		obs_data_t *text_settings = obs_source_get_settings(text_source);
 		if (text_settings) {
-			int heartRate = obs_data_get_int(settings, "heart rate");
+			int heartRate = std::round(obs_data_get_double(settings, "heart rate"));
 			if (heartRate > 0.0) {
 				std::string textFormat = obs_data_get_string(settings, "heart rate text");
 				size_t pos = textFormat.find("{hr}");
@@ -370,6 +407,12 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		removeSource(MOOD_SOURCE_NAME);
 	} else {
 		createMoodSource(scene);
+	}
+
+	if (!obs_data_get_bool(settings, "enable signal source")) {
+		removeSource(SIGNAL_SOURCE_NAME);
+	} else {
+		createSignalSource(scene);
 	}
 
 	obs_property_t *graphPlaneDropdown = obs_properties_get(props, "graphPlaneDropdown");
@@ -443,6 +486,9 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("GraphSourceEnable"));
 
+	obs_property_t *enableSignal =
+		obs_properties_add_bool(props, "enable signal source", obs_module_text("SignalSourceEnable"));
+
 	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graphPlaneDropdown",
 								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
@@ -473,6 +519,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(graphLineDropdown, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
+	obs_property_set_modified_callback(enableSignal, updateProperties);
 
 	obs_data_release(settings);
 
@@ -740,6 +787,8 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	if (hrs->faceDetection) {
 		avg = hrs->faceDetection->detectFace(hrs->bgraData, faceCoordinates, enableDebugBoxes, enableTracker,
 						     frameUpdateInterval);
+		obs_data_set_double(hrsSettings, "average green", avg[1]);
+		obs_log(LOG_INFO, ("Green: " + std::to_string(avg[1])).c_str());
 	}
 	// obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
@@ -756,11 +805,12 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	std::string moodText;
 
 	if (heartRate > 0.0) {
-		obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
+		obs_data_set_double(hrsSettings, "heart rate", heartRate);
 		heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
 		size_t pos = heartRateText.find("{hr}");
 		if (pos != std::string::npos) {
-			heartRateText.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
+			// double heartRate = obs_data_get_double(hrsSettings, "heart rate");
+			heartRateText.replace(pos, 4, std::to_string(static_cast<int>(std::round(heartRate))));
 		}
 
 		moodText = "Mood: " + getMood(heartRate);

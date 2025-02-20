@@ -12,3 +12,15 @@ struct obs_source_info graph_source_info = {
 	.get_width = graph_source_info_get_width,
 	.get_height = graph_source_info_get_height,
 };
+
+struct obs_source_info signal_source_info = {
+	.id = "signal_graph",
+	.type = OBS_SOURCE_TYPE_INPUT,
+	.output_flags = OBS_SOURCE_VIDEO,
+	.get_name = get_signal_source_name,
+	.create = create_graph_source_info,
+	.destroy = destroy_graph_source,
+	.video_render = graph_source_render,
+	.get_width = graph_source_info_get_width,
+	.get_height = graph_source_info_get_height,
+};

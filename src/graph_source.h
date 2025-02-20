@@ -16,7 +16,7 @@ extern "C" {
 struct graph_source {
 	obs_source_t *source;
 #ifdef __cplusplus
-	std::vector<int> buffer;
+	std::vector<double> buffer;
 #endif
 };
 
@@ -27,7 +27,9 @@ void graph_source_render(void *data, gs_effect_t *effect);
 uint32_t graph_source_info_get_width(void *data);
 uint32_t graph_source_info_get_height(void *data);
 
-void draw_graph(struct graph_source *source, int curHeartRate);
+const char *get_signal_source_name(void *);
+
+void draw_graph(struct graph_source *source, double data);
 
 #ifdef __cplusplus
 }

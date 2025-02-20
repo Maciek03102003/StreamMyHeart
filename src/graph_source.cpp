@@ -16,6 +16,9 @@
 #include "heart_rate_source.h"
 
 #define LINE_THICKNESS 3.0f
+#define BUFFER_SIZE 100    // Store more data for stable min/max
+#define PLOT_SIZE 50      // Only plot the last 50 points
+#define SMOOTHING_WINDOW 5 // Moving average window
 
 // Destroy function for graph source
 void destroy_graph_source(void *data)
@@ -67,6 +70,50 @@ obs_source_t *get_heart_rate_monitor_filter()
 	return found_filter; // Return the filter reference (must be released later)
 }
 
+static std::vector<double> getSmoothedY(std::vector<double> &graph_buffer, uint32_t height)
+{
+	// Extract the most recent PLOT_SIZE values for rendering
+	std::vector<double> plotBuffer;
+	size_t startIdx = (graph_buffer.size() > PLOT_SIZE) ? graph_buffer.size() - PLOT_SIZE : 0;
+	plotBuffer.insert(plotBuffer.end(), graph_buffer.begin() + startIdx, graph_buffer.end());
+
+	// Apply Moving Average Smoothing
+	std::vector<double> smoothedBuffer;
+	for (size_t i = 0; i < plotBuffer.size(); i++) {
+		double sum = 0, count = 0;
+		for (size_t j = std::max(0, (int)i - SMOOTHING_WINDOW + 1); j <= i; j++) {
+			sum += plotBuffer[j];
+			count++;
+		}
+		smoothedBuffer.push_back(sum / count);
+	}
+
+	// Compute min/max from the entire BUFFER_SIZE history (not just what’s plotted)
+	double minGreen;
+	double maxGreen;
+
+	if (!graph_buffer.empty()) {
+		minGreen = *std::min_element(graph_buffer.begin(), graph_buffer.end());
+		maxGreen = *std::max_element(graph_buffer.begin(), graph_buffer.end());
+	} else {
+		obs_log(LOG_INFO, "Buffer is empty! Setting default min/max values.");
+		minGreen = 0.0; // Default value
+		maxGreen = 1.0; // Default value
+	}
+
+	// Prevent zero range issue
+	if (minGreen == maxGreen) {
+		minGreen -= 1;
+		maxGreen += 1;
+	}
+
+	std::vector<double> smoothedY(smoothedBuffer.size());
+	for (size_t i = 0; i < smoothedBuffer.size(); i++) {
+		smoothedY[i] = height - (smoothedBuffer[i] - minGreen) / (maxGreen - minGreen) * height;
+	}
+	return smoothedY;
+}
+
 void graph_source_render(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
@@ -76,7 +123,7 @@ void graph_source_render(void *data, gs_effect_t *effect)
 		return; // Ensure graphSource is valid
 	}
 
-	// obs_log(LOG_INFO, "Rendering graph source...");
+	obs_log(LOG_INFO, "Rendering graph/signal source...");
 
 	// Retrieve OBS settings for the heart rate monitor source
 	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
@@ -85,12 +132,24 @@ void graph_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
-	int curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
-	obs_data_release(hrsSettings);
-	obs_source_release(heartRateSource);
-
-	// Draw the graph using the retrieved heart rate
-	draw_graph(graphSource, curHeartRate);
+	const char *sourceName = obs_source_get_name(graphSource->source);
+	obs_log(LOG_INFO, "Source Name: %s", sourceName);
+	if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
+		double curHeartRate = obs_data_get_double(hrsSettings, "heart rate"); // Retrieve heart rate
+		obs_data_release(hrsSettings);
+		obs_source_release(heartRateSource);
+		draw_graph(graphSource, curHeartRate);
+	} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
+		double avgGreen = obs_data_get_double(hrsSettings, "average green");
+		obs_log(LOG_INFO, ("Average Green: " + std::to_string(avgGreen)).c_str());
+		obs_data_release(hrsSettings);
+		obs_source_release(heartRateSource);
+		draw_graph(graphSource, avgGreen);
+		obs_log(LOG_INFO, std::to_string(avgGreen).c_str());
+	} else {
+		obs_data_release(hrsSettings);
+		obs_source_release(heartRateSource);
+	}
 
 	// obs_log(LOG_INFO, "Graph rendering completed!");
 }
@@ -113,12 +172,13 @@ uint32_t get_color_code(int color_option)
 	}
 }
 
-void draw_graph(struct graph_source *graph_source, int curHeartRate)
+void draw_graph(struct graph_source *graph_source, double data)
 {
-	// obs_log(LOG_INFO, "Checking for null graph source");
-	if (!graph_source || !graph_source->source)
-		return; // Null check to avoid crashes
 
+	if (!graph_source || !graph_source->source) {
+		obs_log(LOG_INFO, "graph source is null");
+		return; // Null check to avoid crashes
+	}
 	// Retrieve source width and height
 	uint32_t width = obs_source_get_width(graph_source->source);
 	uint32_t height = obs_source_get_height(graph_source->source);
@@ -128,12 +188,26 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	if (width == 0 || height == 0)
 		return; // Avoid division by zero
 
+	const char *sourceName = obs_source_get_name(graph_source->source);
 	// Maintain a buffer size of 10
-	if (curHeartRate > 0) {
-		while (graph_source->buffer.size() >= 10) {
+	if (data > 0) {
+		size_t bufferSize;
+		if(strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
+			bufferSize = 10;
+		} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
+			bufferSize = BUFFER_SIZE;
+		} else {
+			bufferSize = 0;
+		}
+		while (graph_source->buffer.size() >= bufferSize) {
 			graph_source->buffer.erase(graph_source->buffer.begin());
 		}
-		graph_source->buffer.push_back(curHeartRate);
+		graph_source->buffer.push_back(data);
+	}
+
+	std::vector<double> smoothedY;
+	if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
+		smoothedY = getSmoothedY(graph_source->buffer, height);
 	}
 
 	obs_enter_graphics();
@@ -168,16 +242,26 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		// **Simulate thicker lines by drawing multiple parallel lines**
 		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 1.0f) {
-			gs_render_start(GS_LINESTRIP);
-
-			for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-				float x = (static_cast<float>(i) / 9.0f) * width;
-				float y = height - (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
-
-				gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+			if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
+				gs_render_start(GS_LINESTRIP);
+				for (size_t i = 0; i < graph_source->buffer.size(); i++) {
+					float x = (static_cast<float>(i) / 9.0f) * width;
+					float y = height -
+						  (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
+					gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+				}
+				gs_render_stop(GS_LINESTRIP);
+			} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
+				gs_render_start(GS_LINESTRIP);
+				for (size_t i = 0; i < smoothedY.size(); i++) {
+					float x = (static_cast<float>(i) / PLOT_SIZE) * width;
+					float y = smoothedY[i];
+					obs_log(LOG_INFO, ("Normalized y: " + std::to_string(y)).c_str());
+					gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+				}
+				gs_render_stop(GS_LINESTRIP);
 			}
-
-			gs_render_stop(GS_LINESTRIP);
+			
 		}
 
 		// **Draw X-Axis (Horizontal Line)**
@@ -221,6 +305,11 @@ const char *get_graph_source_name(void *)
 	return GRAPH_SOURCE_NAME;
 }
 
+const char *get_signal_source_name(void *)
+{
+	return SIGNAL_SOURCE_NAME;
+}
+
 void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 {
 	void *data = bmalloc(sizeof(struct graph_source));
@@ -231,7 +320,7 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 		return nullptr;
 	}
 
-	std::vector<int> buffer;
+	std::vector<double> buffer;
 	graph_src->buffer = buffer;
 
 	return graph_src;

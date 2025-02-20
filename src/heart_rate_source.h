@@ -19,6 +19,7 @@ extern "C" {
 #define GRAPH_SOURCE_NAME obs_module_text("HeartRateGraph")
 #define IMAGE_SOURCE_NAME obs_module_text("HeartRateIcon")
 #define MOOD_SOURCE_NAME obs_module_text("HeartRateMood")
+#define SIGNAL_SOURCE_NAME obs_module_text("HeartRateSignal")
 
 struct input_BGRA_data {
 	uint8_t *data;
