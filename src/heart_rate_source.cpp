@@ -122,7 +122,7 @@ static void createTextSource(obs_scene_t *scene)
 		obs_data_set_obj(sourceSettings, "font", fontData);
 		obs_data_release(fontData);
 
-		std::string heartRateText = "Heart Rate: 0 BPM";
+		std::string heartRateText = "Calibrating...";
 		obs_data_set_string(sourceSettings, "text", heartRateText.c_str());
 		obs_source_update(source, sourceSettings);
 		obs_data_release(sourceSettings);
@@ -180,7 +180,7 @@ static void createMoodSource(obs_scene_t *scene)
 		obs_data_release(fontData);
 
 		// Set the default text
-		std::string moodText = "Mood: Normal";
+		std::string moodText = "Calibrating...";
 		obs_data_set_string(sourceSettings, "text", moodText.c_str());
 		obs_source_update(source, sourceSettings);
 		obs_data_release(sourceSettings);
@@ -292,7 +292,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
 	obs_data_set_default_int(settings, "ppg algorithm", 1);
-	obs_data_set_default_int(settings, "heart rate", 1);
+	obs_data_set_default_int(settings, "heart rate", -1);
 	obs_data_set_default_string(settings, "heart rate text", "Heart rate: {hr} BPM");
 	obs_data_set_default_bool(settings, "enable text source", true);
 	obs_data_set_default_bool(settings, "enable graph source", true);
@@ -324,13 +324,16 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	if (text_source) {
 		obs_data_t *text_settings = obs_source_get_settings(text_source);
 		if (text_settings) {
-			std::string textFormat = obs_data_get_string(settings, "heart rate text");
-			size_t pos = textFormat.find("{hr}");
-			if (pos != std::string::npos) {
-				textFormat.replace(pos, 4, std::to_string(obs_data_get_int(settings, "heart rate")));
+			int heartRate = obs_data_get_int(settings, "heart rate");
+			if (heartRate > 0.0) {
+				std::string textFormat = obs_data_get_string(settings, "heart rate text");
+				size_t pos = textFormat.find("{hr}");
+				if (pos != std::string::npos) {
+					textFormat.replace(pos, 4, std::to_string(heartRate));
+				}
+				obs_data_set_string(text_settings, "text", textFormat.c_str());
+				obs_source_update(text_source, text_settings);
 			}
-			obs_data_set_string(text_settings, "text", textFormat.c_str());
-			obs_source_update(text_source, text_settings);
 			obs_data_release(text_settings);
 		}
 		obs_source_release(text_source);
@@ -749,48 +752,41 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	double heartRate =
 		movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm, selectedPostFiltering);
 
-	std::string result;
+	std::string heartRateText;
+	std::string moodText;
 
-	if (heartRate == -1.0) {
-		result = "Calibrating...";
-	} else {
-		result = "Heart Rate: " + std::to_string((int)heartRate);
-	}
-
-	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
-	if (heartRate != 0.0) {
-
-		std::string textFormat = obs_data_get_string(hrsSettings, "heart rate text");
-		size_t pos = textFormat.find("{hr}");
+	if (heartRate > 0.0) {
+		obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
+		heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
+		size_t pos = heartRateText.find("{hr}");
 		if (pos != std::string::npos) {
-			textFormat.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
+			heartRateText.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
 		}
 
-		obs_data_release(hrsSettings); // possibly cause of crash
+		moodText = "Mood: " + getMood(heartRate);
+
 		// Updating heart rate text source
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
-			obs_data_set_string(sourceSettings, "text", textFormat.c_str());
-			// obs_data_set_string(sourceSettings, "text", result.c_str());
+			obs_data_set_string(sourceSettings, "text", heartRateText.c_str());
 			obs_source_update(source, sourceSettings);
 			obs_data_release(sourceSettings);
 			obs_source_release(source);
 		}
+
 		// Updating mood source
 		source = obs_get_source_by_name(MOOD_SOURCE_NAME);
 		if (source) {
 			obs_data_t *sourceSettings = obs_source_get_settings(source);
-			std::string moodText = "Mood: " + getMood(heartRate);
 			obs_data_set_string(sourceSettings, "text", moodText.c_str());
-			// obs_data_set_string(sourceSettings, "text", result.c_str());
 			obs_source_update(source, sourceSettings);
 			obs_data_release(sourceSettings);
 			obs_source_release(source);
 		}
-	} else {
-		obs_data_release(hrsSettings);
 	}
+
+	obs_data_release(hrsSettings);
 
 	if (enableDebugBoxes) {
 		gs_texture_t *testingTexture =
