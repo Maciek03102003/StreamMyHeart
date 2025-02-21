@@ -193,7 +193,7 @@ void draw_graph(struct graph_source *graph_source, double data)
 	size_t bufferSize;
 	if (data > 0) {
 		if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
-			bufferSize = 10;
+			bufferSize = 4;
 		} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
 			bufferSize = BUFFER_SIZE;
 		} else {
@@ -245,21 +245,30 @@ void draw_graph(struct graph_source *graph_source, double data)
 			if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
 				gs_render_start(GS_LINESTRIP);
 				for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-					float x_start = (static_cast<float>(i) / (float)graph_source->buffer.size()) * width;
-					float x_end = (static_cast<float>(i + 1) / (float)graph_source->buffer.size()) * width;
+					float hr_start = (static_cast<float>(i) / (float)graph_source->buffer.size()) * width;
+					float hr_end = (static_cast<float>(i+1) / (float)(graph_source->buffer.size())) * width;
+					float hr_width = hr_start - hr_end;
+
 					double normalizedHR = (graph_source->buffer[i] - 50) / (180 - 50);
 					double peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
+					size_t numPeaks =
+						std::ceil((graph_source->buffer[i] - 50) / (180 - 50) * 10) + 1;
+					for (size_t j = 0; j < numPeaks; j++) {
+						float x_start = hr_start + (static_cast<float>(j) / (float)numPeaks) * hr_width;
+						float x_end = hr_start + (static_cast<float>(j + 1) / (float)numPeaks) * hr_width;
 
-					// Horizontal start
-					gs_vertex2f(x_start, height / 2);
-					// Slope start
-					gs_vertex2f(x_start + (x_end - x_start) / 6 * 2, height / 2);
-					// Positive peak
-					gs_vertex2f(x_start + (x_end - x_start) / 6 * 3, height / 2 - peakHeight);
-					// Negative peak
-					gs_vertex2f(x_end - (x_end - x_start) / 6, height / 2 + peakHeight);
-					// Slope end 
-					gs_vertex2f(x_end, height / 2);
+						// Horizontal start
+						gs_vertex2f(x_start, height / 2);
+						// Slope start
+						gs_vertex2f(x_start + (x_end - x_start) / 6 * 2, height / 2);
+						// Positive peak
+						gs_vertex2f(x_start + (x_end - x_start) / 6 * 3,
+							    height / 2 - peakHeight);
+						// Negative peak
+						gs_vertex2f(x_end - (x_end - x_start) / 6, height / 2 + peakHeight);
+						// Slope end
+						gs_vertex2f(x_end, height / 2);
+					}
 				}
 				gs_render_stop(GS_LINESTRIP);
 			} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
@@ -338,10 +347,10 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 uint32_t graph_source_info_get_width(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 250;
+	return 500;
 }
 uint32_t graph_source_info_get_height(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 250;
+	return 125;
 }
