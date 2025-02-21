@@ -190,8 +190,8 @@ void draw_graph(struct graph_source *graph_source, double data)
 
 	const char *sourceName = obs_source_get_name(graph_source->source);
 	// Maintain a buffer size of 10
+	size_t bufferSize;
 	if (data > 0) {
-		size_t bufferSize;
 		if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
 			bufferSize = 10;
 		} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
@@ -245,10 +245,21 @@ void draw_graph(struct graph_source *graph_source, double data)
 			if (strcmp(sourceName, GRAPH_SOURCE_NAME) == 0) {
 				gs_render_start(GS_LINESTRIP);
 				for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-					float x = (static_cast<float>(i) / 9.0f) * width;
-					float y = height -
-						  (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
-					gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+					float x_start = (static_cast<float>(i) / (float)graph_source->buffer.size()) * width;
+					float x_end = (static_cast<float>(i + 1) / (float)graph_source->buffer.size()) * width;
+					double normalizedHR = (graph_source->buffer[i] - 50) / (180 - 50);
+					double peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
+
+					// Horizontal start
+					gs_vertex2f(x_start, height / 2);
+					// Slope start
+					gs_vertex2f(x_start + (x_end - x_start) / 6 * 2, height / 2);
+					// Positive peak
+					gs_vertex2f(x_start + (x_end - x_start) / 6 * 3, height / 2 - peakHeight);
+					// Negative peak
+					gs_vertex2f(x_end - (x_end - x_start) / 6, height / 2 + peakHeight);
+					// Slope end 
+					gs_vertex2f(x_end, height / 2);
 				}
 				gs_render_stop(GS_LINESTRIP);
 			} else if (strcmp(sourceName, SIGNAL_SOURCE_NAME) == 0) {
