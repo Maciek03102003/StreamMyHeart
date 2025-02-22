@@ -228,9 +228,9 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 	graph_src->source = source;
 	if (!source) {
 		obs_log(LOG_INFO, "current source in create graph source is null");
-    if (graph_src) {
-      bfree(graph_src);
-    }
+		if (graph_src) {
+			bfree(graph_src);
+		}
 		return nullptr;
 	}
 
