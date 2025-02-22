@@ -51,7 +51,7 @@ Low Resource Consumption:  Advanced Algorithm (with face tracking) and PCA
 
 ## Support and Feedback
 
-For assistance, please contact: pulseobs@gmail.com
+For assistance, please contact: streammyheart.team@gmail.com
 
 To report bugs or suggest features, open an issue at [here](https://github.com/Maciek03102003/StreamMyHeart/issues).
 
