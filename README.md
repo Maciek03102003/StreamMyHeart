@@ -1,16 +1,16 @@
-# OBS Plugin: PulseOBS - Webcam Based Heart Rate Monitoring for Live Streamers
-PulseOBS is a plugin that measures your heart rate directly using your webcam and facial detection. It supports both macOS and Windows.
+# OBS Plugin: StreamMyHeart - Webcam Based Heart Rate Monitoring for Live Streamers
+StreamMyHeart is a plugin that measures your heart rate directly using your webcam and facial detection. It supports both MacOS and Windows.
 
 ## Introduction
 
-PulseOBS is designed to help live streamers monitor their heart rate without the need for wearable devices. Currently, it supports heart rate measurement for a single person visible in the webcam feed.
+StreamMyHeart is designed to help live streamers monitor their heart rate without the need for wearable devices. Currently, it supports heart rate measurement for a single person visible in the webcam feed.
 
 > **Note:** This plugin should not be used for medical purposes and does not provide any medical advice.
 
 > **Warning:** This plugin consumes significant CPU resources.
 
 ## Download
-Download the latest installation packages from [here](https://github.com/Maciek03102003/PulseOBS/releases).
+Download the latest installation packages from [here](https://github.com/Maciek03102003/StreamMyHeart/releases).
 
 ### Windows
 1. Double-click `.exe` file to open the installer.
@@ -19,7 +19,7 @@ Download the latest installation packages from [here](https://github.com/Maciek0
 
 3. To uninstall the plugin, use the uninstaller located in the OBS application folder.
 
-### MacOs
+### MacOS
 1. Double-click `.pkg` file to open the installer.
 
 2. Follow the on-screen instructions to complete the installation.
@@ -30,7 +30,7 @@ Download the latest installation packages from [here](https://github.com/Maciek0
     ```
 
 ### OBS Version Support and Compatibility
-PulseOBS supports the latest OBS version 31.0.1.
+StreamMyHeart supports the latest OBS version 31.0.1.
 
 ## Quick Start
 
@@ -51,14 +51,14 @@ Low Resource Consumption:  Advanced Algorithm (with face tracking) and PCA
 
 ## Support and Feedback
 
-For assistance, please contact: pulseobs@gmail.com
+For assistance, please contact: streammyheart.team@gmail.com
 
-To report bugs or suggest features, open an issue at [here](https://github.com/Maciek03102003/PulseOBS/issues).
+To report bugs or suggest features, open an issue at [here](https://github.com/Maciek03102003/StreamMyHeart/issues).
 
 ## Technical Details
 
 ### Heart Rate Calculation
-PulseOBS provides multiple algorithms to calculate heart rate:
+StreamMyHeart provides multiple algorithms to calculate heart rate:
 | Method name    |  Reference paper |
 | ------------ | ---------------------------------------------------------------------- |
 |Green    | Verkruysse, W., Svaasand, L. O., & Nelson, J. S. (2008). Remote plethysmographic imaging using ambient light. Optics express, 16(26), 21434-21445.|
@@ -77,7 +77,7 @@ Post-Filtering:
 - Bandpass
 
 ### Face Detection and Tracking
-PulseOBS uses face detection and tracking to optimize processing speed and improve accuracy. Available face detection methods:
+StreamMyHeart uses face detection and tracking to optimize processing speed and improve accuracy. Available face detection methods:
 
 - Basic Algorithm
     - Uses OpenCV Haar Cascade

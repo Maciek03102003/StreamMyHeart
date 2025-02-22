@@ -1,5 +1,5 @@
-set(PLUGIN_AUTHOR "PulseOBS")
-set(PLUGIN_URL "https://github.com/Maciek03102003/PulseOBS")
+set(PLUGIN_AUTHOR "StreamMyHeart")
+set(PLUGIN_URL "https://github.com/Maciek03102003/StreamMyHeart")
 
 cmake_minimum_required(VERSION 3.28...3.30)
 

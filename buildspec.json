@@ -36,12 +36,12 @@
             "bundleId": "com.example.plugintemplate-for-obs"
         }
     },
-    "name": "pulse-obs",
-    "displayName": "PulseOBS",
+    "name": "stream-my-heart",
+    "displayName": "StreamMyHeart",
     "version": "1.0.0",
     "author": "Maciej Rytlewski, Charlie Campbell, Elizabeth Chan, Zihan Pan, Ge Gao, Andras Tremmel",
-    "email": "pulseobs@gmail.com",
-    "website": "https://github.com/Maciek03102003/PulseOBS",
+    "email": "streammyheart.team@gmail.com",
+    "website": "https://github.com/Maciek03102003/StreamMyHeart",
     "uuids": {
         "windowsApp": "732ff785-6ef6-4d81-b831-4a8c653b4bf0"
     }

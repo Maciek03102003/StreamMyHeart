@@ -30,10 +30,10 @@ void HaarCascadeFaceDetection::initializeFaceCascade(bool evaluation)
 			rightEyeCascade.load("./haarcascade_righteye_2splits.xml");
 			cascadeLoaded = true;
 		} else {
-			loadCascade(faceCascade, "pulse-obs", "haarcascade_frontalface_default.xml");
-			loadCascade(mouthCascade, "pulse-obs", "haarcascade_mcs_mouth.xml");
-			loadCascade(leftEyeCascade, "pulse-obs", "haarcascade_lefteye_2splits.xml");
-			loadCascade(rightEyeCascade, "pulse-obs", "haarcascade_righteye_2splits.xml");
+			loadCascade(faceCascade, "stream-my-heart", "haarcascade_frontalface_default.xml");
+			loadCascade(mouthCascade, "stream-my-heart", "haarcascade_mcs_mouth.xml");
+			loadCascade(leftEyeCascade, "stream-my-heart", "haarcascade_lefteye_2splits.xml");
+			loadCascade(rightEyeCascade, "stream-my-heart", "haarcascade_righteye_2splits.xml");
 			cascadeLoaded = true;
 		}
 	}
