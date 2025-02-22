@@ -620,7 +620,13 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 
 	{
 		std::lock_guard<std::mutex> lock(hrs->bgraDataMutex);
-		struct input_BGRA_data *bgraData = (struct input_BGRA_data *)bzalloc(sizeof(struct input_BGRA_data));
+		std::shared_ptr<input_BGRA_data> bgraData(
+      static_cast<input_BGRA_data *>(bzalloc(sizeof(input_BGRA_data))),
+      [](input_BGRA_data *p) { 
+          if (p) bfree(p);
+      }
+    );
+  
 		bgraData->width = width;
 		bgraData->height = height;
 		bgraData->linesize = linesize;

@@ -56,7 +56,7 @@ void DlibFaceDetection::loadFiles(bool evaluation)
 }
 
 // Function to detect face on the first frame and track in subsequent frames
-std::vector<double_t> DlibFaceDetection::detectFace(struct input_BGRA_data *frame,
+std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input_BGRA_data> frame,
 						    std::vector<struct vec4> &faceCoordinates, bool enableDebugBoxes,
 						    bool enableTracker, int frameUpdateInterval, bool evaluation)
 {

@@ -12,7 +12,7 @@
 
 class DlibFaceDetection : public FaceDetection {
 public:
-	std::vector<double_t> detectFace(struct input_BGRA_data *frame, std::vector<struct vec4> &faceCoordinates,
+	std::vector<double_t> detectFace(std::shared_ptr<struct input_BGRA_data> frame, std::vector<struct vec4> &faceCoordinates,
 					 bool enableDebugBoxes, bool enableTracker, int frameUpdateInterval,
 					 bool evaluation = false);
 
