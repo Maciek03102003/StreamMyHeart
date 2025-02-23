@@ -53,7 +53,7 @@ static struct vec4 getNormalisedRect(const cv::Rect &region, uint32_t width, uin
 }
 
 // Function to detect faces and create a mask
-std::vector<double_t> HaarCascadeFaceDetection::detectFace(struct input_BGRA_data *frame,
+std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struct input_BGRA_data> frame,
 							   std::vector<struct vec4> &faceCoordinates,
 							   bool enableDebugBoxes, bool enableTracker,
 							   int frameUpdateInterval, bool evaluation)

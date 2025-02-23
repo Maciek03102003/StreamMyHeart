@@ -26,72 +26,72 @@ const char *getHeartRateSourceName(void *)
 	return obs_module_text("HeartRateMonitor");
 }
 
-static void create_graph_source(obs_scene_t *scene)
+static void createGraphSource(obs_scene_t *scene)
 {
-	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
-	if (graph_source) {
-		obs_source_release(graph_source); // source already exists, release it
+	obs_source_t *graphSource = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	if (graphSource) {
+		obs_source_release(graphSource); // source already exists, release it
 		return;
 	}
-	graph_source = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
-	if (!graph_source) {
+	graphSource = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
+	if (!graphSource) {
 		return;
 	}
 
-	obs_scene_add(scene, graph_source);
-	obs_transform_info transform_info;
-	transform_info.pos.x = 260.0f;
-	transform_info.pos.y = 700.0f;
-	transform_info.bounds.x = 250.0f;
-	transform_info.bounds.y = 250.0f;
-	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
-	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 1.0f;
-	transform_info.scale.y = 1.0f;
-	transform_info.rot = 0.0f;
-	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, graph_source);
-	if (source_sceneitem != NULL) {
-		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
-		obs_sceneitem_release(source_sceneitem);
+	obs_scene_add(scene, graphSource);
+	obs_transform_info transformInfo;
+	transformInfo.pos.x = 260.0f;
+	transformInfo.pos.y = 700.0f;
+	transformInfo.bounds.x = 250.0f;
+	transformInfo.bounds.y = 250.0f;
+	transformInfo.bounds_type = OBS_BOUNDS_SCALE_INNER;
+	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
+	transformInfo.alignment = OBS_ALIGN_CENTER;
+	transformInfo.scale.x = 1.0f;
+	transformInfo.scale.y = 1.0f;
+	transformInfo.rot = 0.0f;
+	obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, graphSource);
+	if (sourceSceneItem != NULL) {
+		obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+		obs_sceneitem_release(sourceSceneItem);
 	}
-	obs_source_release(graph_source);
+	obs_source_release(graphSource);
 }
 
-static void create_image_source(obs_scene_t *scene)
+static void createImageSource(obs_scene_t *scene)
 {
-	obs_source_t *image_source = obs_get_source_by_name(IMAGE_SOURCE_NAME);
-	if (image_source) {
-		obs_source_release(image_source); // source already exists, release it
+	obs_source_t *imageSource = obs_get_source_by_name(IMAGE_SOURCE_NAME);
+	if (imageSource) {
+		obs_source_release(imageSource); // source already exists, release it
 		return;
 	}
 	// Create the heart rate image source (assuming a file path)
-	obs_data_t *image_settings = obs_data_create();
-	obs_data_set_string(image_settings, "file", obs_module_file("heart_rate.gif"));
-	image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
-	obs_data_release(image_settings);
+	obs_data_t *imageSettings = obs_data_create();
+	obs_data_set_string(imageSettings, "file", obs_module_file("heart_rate.gif"));
+	imageSource = obs_source_create("image_source", IMAGE_SOURCE_NAME, imageSettings, nullptr);
+	obs_data_release(imageSettings);
 
-	obs_scene_add(scene, image_source);
+	obs_scene_add(scene, imageSource);
 
 	// set transform settings
-	obs_transform_info transform_info;
-	transform_info.pos.x = 260.0;
-	transform_info.pos.y = 700.0;
-	transform_info.bounds.x = 300.0;
-	transform_info.bounds.y = 400.0;
-	transform_info.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
-	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 0.1;
-	transform_info.scale.y = 0.1;
-	transform_info.rot = 0.0;
-	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, image_source);
-	if (source_sceneitem != NULL) {
-		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
-		obs_sceneitem_release(source_sceneitem);
+	obs_transform_info transformInfo;
+	transformInfo.pos.x = 260.0;
+	transformInfo.pos.y = 700.0;
+	transformInfo.bounds.x = 300.0;
+	transformInfo.bounds.y = 400.0;
+	transformInfo.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
+	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
+	transformInfo.alignment = OBS_ALIGN_CENTER;
+	transformInfo.scale.x = 0.1;
+	transformInfo.scale.y = 0.1;
+	transformInfo.rot = 0.0;
+	obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, imageSource);
+	if (sourceSceneItem != NULL) {
+		obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+		obs_sceneitem_release(sourceSceneItem);
 	}
 
-	obs_source_release(image_source);
+	obs_source_release(imageSource);
 }
 
 static void createTextSource(obs_scene_t *scene)
@@ -215,10 +215,10 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
 
 	if (obs_data_get_bool(settings, "enable graph source")) {
-		create_graph_source(scene);
+		createGraphSource(scene);
 	}
 	if (obs_data_get_bool(settings, "enable image source")) {
-		create_image_source(scene);
+		createImageSource(scene);
 	}
 	if (obs_data_get_bool(settings, "enable text source")) {
 		createTextSource(scene);
@@ -357,13 +357,13 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	if (!obs_data_get_bool(settings, "enable graph source")) {
 		removeSource(GRAPH_SOURCE_NAME);
 	} else {
-		create_graph_source(scene);
+		createGraphSource(scene);
 	}
 
 	if (!obs_data_get_bool(settings, "enable image source")) {
 		removeSource(IMAGE_SOURCE_NAME);
 	} else {
-		create_image_source(scene);
+		createImageSource(scene);
 	}
 
 	if (!obs_data_get_bool(settings, "enable mood source")) {
@@ -620,7 +620,12 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 
 	{
 		std::lock_guard<std::mutex> lock(hrs->bgraDataMutex);
-		struct input_BGRA_data *bgraData = (struct input_BGRA_data *)bzalloc(sizeof(struct input_BGRA_data));
+		std::shared_ptr<input_BGRA_data> bgraData(
+			static_cast<input_BGRA_data *>(bzalloc(sizeof(input_BGRA_data))), [](input_BGRA_data *p) {
+				if (p)
+					bfree(p);
+			});
+
 		bgraData->width = width;
 		bgraData->height = height;
 		bgraData->linesize = linesize;

@@ -13,7 +13,7 @@ enum class FaceDetectionAlgorithm { HAAR_CASCADE, DLIB };
 class FaceDetection {
 public:
 	virtual ~FaceDetection() = default;
-	virtual std::vector<double_t> detectFace(struct input_BGRA_data *bgraData,
+	virtual std::vector<double_t> detectFace(std::shared_ptr<struct input_BGRA_data> bgraData,
 						 std::vector<struct vec4> &faceCoordinates, bool enableDebugBoxes,
 						 bool enableTracker, int frameUpdateInterval,
 						 bool evaluation = false) = 0;
