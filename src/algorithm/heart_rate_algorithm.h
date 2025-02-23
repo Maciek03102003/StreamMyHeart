@@ -34,6 +34,12 @@ private:
 	std::vector<double_t> heartRates;
 	int numHeartRates = 8;
 
+	double uiHeartRate = -1.0;
+	int uiUpdateInterval;
+	double uiUpdateAmount = 0.0;
+	int framesSincePPG = 0;
+	int NUM_UPDATES = 10;
+
 	std::vector<double_t> averageRGB(std::vector<std::vector<std::vector<uint8_t>>> rgb,
 					 std::vector<std::vector<bool>> skinKey = {});
 

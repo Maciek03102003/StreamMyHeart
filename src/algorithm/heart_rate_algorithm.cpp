@@ -292,6 +292,7 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 
 	fps = Fps;
 	windowSize = sampleRate * fps;
+	uiUpdateInterval = static_cast<int>(windowSize / NUM_UPDATES);
 
 	updateWindows(avg);
 
@@ -329,12 +330,24 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 			}
 		}
 
-		return heartRate;
+		framesSincePPG = 0;
+
+		if (uiHeartRate == -1.0) {
+			uiHeartRate = heartRate;
+		} else {
+			uiUpdateAmount = min((heartRate - uiHeartRate) / NUM_UPDATES, 3.0);
+		}
+
+		return uiHeartRate;
 
 	} else {
 		if (static_cast<int>(windows.size()) < calibrationTime) {
 			return -1.0;
 		}
-		return 0.0;
+		if (!heartRates.empty() && framesSincePPG % uiUpdateInterval == 0) {
+			uiHeartRate += uiUpdateAmount;
+		}
+
+		return uiHeartRate;
 	}
 }
