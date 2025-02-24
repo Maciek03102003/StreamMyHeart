@@ -128,6 +128,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	if (width == 0 || height == 0)
 		return; // Avoid division by zero
 
+
 	// Maintain a buffer size of 10
 	if (curHeartRate > 0) {
 		while (graph_source->buffer.size() >= 10) {

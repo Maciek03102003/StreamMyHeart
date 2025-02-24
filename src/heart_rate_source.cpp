@@ -759,9 +759,11 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 	std::string heartRateText;
 	std::string moodText;
+	
+
+	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 
 	if (heartRate > 0.0) {
-		obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 		heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
 		size_t pos = heartRateText.find("{hr}");
 		if (pos != std::string::npos) {
