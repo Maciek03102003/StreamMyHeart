@@ -278,7 +278,6 @@ double MovingAvg::smoothHeartRate(double hr)
 	if (hr != 0) {
 		heartRates.push_back(hr);
 	}
-	
 
 	if (hr > meanHr + offset) {
 		return meanHr + offset;
@@ -332,7 +331,6 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 				heartRate = smoothHeartRate(heartRate);
 			}
 		}
-		
 
 		if (uiHeartRate == -1.0) {
 			uiHeartRate = heartRate;
