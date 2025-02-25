@@ -289,6 +289,7 @@ void heartRateSourceDestroy(void *data)
 
 void heartRateSourceDefaults(obs_data_t *settings)
 {
+	obs_data_set_default_int(settings, "fps", 30);
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
@@ -390,6 +391,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	UNUSED_PARAMETER(data);
 	// obs_log(LOG_INFO, "heartRateSourceProperties");
 	obs_properties_t *props = obs_properties_create();
+
+	obs_properties_add_int(props, "fps", obs_module_text("fps"), 1, 120, 1);
 
 	// Set the face detection algorithm
 	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
@@ -761,9 +764,10 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
 	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
 	bool enableSmoothing = obs_data_get_bool(hrsSettings, "smoothing");
+	int64_t fps = obs_data_get_int(hrsSettings, "fps");
 
 	double heartRate = movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm,
-							selectedPostFiltering, enableSmoothing);
+							selectedPostFiltering, enableSmoothing, fps);
 
 	std::string heartRateText;
 	std::string moodText;
