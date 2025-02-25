@@ -42,8 +42,8 @@ static void createGraphSource(obs_scene_t *scene)
 	obs_transform_info transformInfo;
 	transformInfo.pos.x = 260.0f;
 	transformInfo.pos.y = 700.0f;
-	transformInfo.bounds.x = 250.0f;
-	transformInfo.bounds.y = 250.0f;
+	transformInfo.bounds.x = 260.0f;
+	transformInfo.bounds.y = 260.0f;
 	transformInfo.bounds_type = OBS_BOUNDS_SCALE_INNER;
 	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
 	transformInfo.alignment = OBS_ALIGN_CENTER;
@@ -447,19 +447,16 @@ obs_properties_t *heartRateSourceProperties(void *data)
 								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Red"), 1);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Yellow"), 2);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Green"), 3);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Blue"), 4);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Clear"), 1);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Coloured tiers"), 2);
 
 	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown",
 								    obs_module_text("GraphLineDropdown"),
 								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphLineDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Red"), 1);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Yellow"), 2);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Green"), 3);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 4);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Black"), 1);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Purple"), 2);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 3);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
