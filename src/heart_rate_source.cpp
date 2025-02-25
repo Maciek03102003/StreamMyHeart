@@ -42,8 +42,8 @@ static void createGraphSource(obs_scene_t *scene)
 	obs_transform_info transformInfo;
 	transformInfo.pos.x = 260.0f;
 	transformInfo.pos.y = 700.0f;
-	transformInfo.bounds.x = 250.0f;
-	transformInfo.bounds.y = 250.0f;
+	transformInfo.bounds.x = 260.0f;
+	transformInfo.bounds.y = 260.0f;
 	transformInfo.bounds_type = OBS_BOUNDS_SCALE_INNER;
 	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
 	transformInfo.alignment = OBS_ALIGN_CENTER;
@@ -302,6 +302,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
+	obs_data_set_default_bool(settings, "is disabled", false);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -447,19 +448,16 @@ obs_properties_t *heartRateSourceProperties(void *data)
 								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Red"), 1);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Yellow"), 2);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Green"), 3);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Blue"), 4);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Clear"), 1);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Coloured tiers"), 2);
 
 	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown",
 								    obs_module_text("GraphLineDropdown"),
 								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphLineDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Red"), 1);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Yellow"), 2);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Green"), 3);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 4);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Black"), 1);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Purple"), 2);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 3);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
@@ -483,12 +481,18 @@ void heartRateSourceActivate(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = false;
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
+	obs_data_set_bool(settings, "is disabled", false);
+	obs_data_release(settings);
 }
 
 void heartRateSourceDeactivate(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = true;
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
+	obs_data_set_bool(settings, "is disabled", true);
+	obs_data_release(settings);
 }
 
 // Tick function
@@ -677,18 +681,12 @@ std::string getMood(int heart_rate)
 	std::string mood;
 	if (heart_rate > 150) {
 		mood = "Extremely hyped";
-	} else if (heart_rate > 130) {
+	} else if (heart_rate > 120) {
 		mood = "Very Intense";
-	} else if (heart_rate > 110) {
-		mood = "Highly excited";
 	} else if (heart_rate > 90) {
-		mood = "Moderately excited";
-	} else if (heart_rate > 75) {
-		mood = "Slightly excited";
+		mood = "Excited";
 	} else if (heart_rate > 60) {
 		mood = "Normal";
-	} else if (heart_rate > 50) {
-		mood = "Very Calm";
 	} else {
 		mood = "Extremely calm";
 	}
@@ -760,8 +758,9 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	std::string heartRateText;
 	std::string moodText;
 
+	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
+
 	if (heartRate > 0.0) {
-		obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 		heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
 		size_t pos = heartRateText.find("{hr}");
 		if (pos != std::string::npos) {
