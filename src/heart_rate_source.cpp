@@ -302,6 +302,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
+	obs_data_set_default_bool(settings, "is disabled", false);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -480,12 +481,18 @@ void heartRateSourceActivate(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = false;
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
+	obs_data_set_bool(settings, "is disabled", false);
+	obs_data_release(settings);
 }
 
 void heartRateSourceDeactivate(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = true;
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
+	obs_data_set_bool(settings, "is disabled", true);
+	obs_data_release(settings);
 }
 
 // Tick function
@@ -674,18 +681,12 @@ std::string getMood(int heart_rate)
 	std::string mood;
 	if (heart_rate > 150) {
 		mood = "Extremely hyped";
-	} else if (heart_rate > 130) {
+	} else if (heart_rate > 120) {
 		mood = "Very Intense";
-	} else if (heart_rate > 110) {
-		mood = "Highly excited";
 	} else if (heart_rate > 90) {
-		mood = "Moderately excited";
-	} else if (heart_rate > 75) {
-		mood = "Slightly excited";
+		mood = "Excited";
 	} else if (heart_rate > 60) {
 		mood = "Normal";
-	} else if (heart_rate > 50) {
-		mood = "Very Calm";
 	} else {
 		mood = "Extremely calm";
 	}

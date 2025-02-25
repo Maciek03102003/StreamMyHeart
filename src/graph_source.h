@@ -18,6 +18,7 @@ struct graph_source {
 #ifdef __cplusplus
 	std::vector<int> buffer;
 #endif
+	bool isDisabled;
 };
 
 const char *get_graph_source_name(void *);
@@ -26,6 +27,8 @@ void destroy_graph_source(void *data);
 void graph_source_render(void *data, gs_effect_t *effect);
 uint32_t graph_source_info_get_width(void *data);
 uint32_t graph_source_info_get_height(void *data);
+void graphSourceActivate(void *data);
+void graphSourceDeactivate(void *data);
 
 void draw_graph(struct graph_source *source, int curHeartRate);
 

@@ -24,6 +24,7 @@ void destroy_graph_source(void *data)
 	struct graph_source *graph = reinterpret_cast<struct graph_source *>(data);
 
 	if (graph) {
+		graph->isDisabled = true; 
 		// Release the OBS source
 		if (graph->source) {
 			obs_source_release(graph->source);
@@ -72,7 +73,7 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	UNUSED_PARAMETER(effect);
 
 	struct graph_source *graphSource = reinterpret_cast<struct graph_source *>(data);
-	if (!graphSource || !graphSource->source) {
+	if (!graphSource || !graphSource->source || graphSource->isDisabled) {
 		return; // Ensure graphSource is valid
 	}
 
@@ -85,6 +86,10 @@ void graph_source_render(void *data, gs_effect_t *effect)
 		return;
 	}
 	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+
+	if (obs_data_get_bool(hrsSettings, "is disabled")) {
+		return;
+	}
 	int curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
 	obs_data_release(hrsSettings);
 	obs_source_release(heartRateSource);
@@ -275,4 +280,16 @@ uint32_t graph_source_info_get_height(void *data)
 {
 	UNUSED_PARAMETER(data);
 	return 260;
+}
+
+void graphSourceActivate(void *data)
+{
+	struct graph_source *graphSource = reinterpret_cast<graph_source *>(data);
+	graphSource->isDisabled = false;
+}
+
+void graphSourceDeactivate(void *data)
+{
+	struct graph_source *graphSource = reinterpret_cast<graph_source *>(data);
+	graphSource->isDisabled = true;
 }
