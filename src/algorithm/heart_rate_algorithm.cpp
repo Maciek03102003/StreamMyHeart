@@ -235,9 +235,9 @@ double MovingAvg::welch(vector<double_t> bvps)
 	// Adjust Nyquist limit for human heart rates
 	int nyquistLimitBPM = min(min(numFrames / 2, nyquistLimit), static_cast<int>(200 / frequencyResolution));
 
-	double lowerLimit = 50;
+	double lowerLimit = 55;
 	double threshold = 70;
-	double sf = 0.7;
+	double sf = 0.6;
 	for (int k = 0; k <= nyquistLimitBPM; ++k) {
 		if (k * frequencyResolution < lowerLimit) {
 			psd[k] = 0;
@@ -247,7 +247,6 @@ double MovingAvg::welch(vector<double_t> bvps)
 		}
 	}
 
-	// Find dominant frequency in BPM
 	int maxIndex;
 	psd.head(nyquistLimitBPM + 1).maxCoeff(&maxIndex);
 	double dominantFrequency = maxIndex * frequencyResolution;
@@ -275,7 +274,11 @@ double MovingAvg::smoothHeartRate(double hr)
 	double offset = 20.0;
 
 	heartRates.erase(heartRates.begin());
-	heartRates.push_back(hr);
+
+	if (hr != 0) {
+		heartRates.push_back(hr);
+	}
+	
 
 	if (hr > meanHr + offset) {
 		return meanHr + offset;
@@ -292,7 +295,7 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 
 	fps = Fps;
 	windowSize = sampleRate * fps;
-	uiUpdateInterval = static_cast<int>(windowSize / NUM_UPDATES);
+	uiUpdateInterval = fps / 2;
 
 	updateWindows(avg);
 
@@ -329,13 +332,16 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 				heartRate = smoothHeartRate(heartRate);
 			}
 		}
-
-		framesSincePPG = 0;
+		
 
 		if (uiHeartRate == -1.0) {
 			uiHeartRate = heartRate;
+			prevHr = heartRate;
 		} else {
-			uiUpdateAmount = min((heartRate - uiHeartRate) / NUM_UPDATES, 3.0);
+			if (heartRates[heartRates.size() - 2] - heartRate <= 30) {
+				uiUpdateAmount = min((heartRate - uiHeartRate) / NUM_UPDATES, 5.0);
+				prevHr = heartRate;
+			}
 		}
 
 		return uiHeartRate;
@@ -344,7 +350,10 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 		if (static_cast<int>(windows.size()) < calibrationTime) {
 			return -1.0;
 		}
-		if (!heartRates.empty() && framesSincePPG % uiUpdateInterval == 0) {
+
+		framesSincePPG += 1;
+
+		if (!heartRates.empty() && framesSincePPG % uiUpdateInterval == 0 && uiHeartRate != prevHr) {
 			uiHeartRate += uiUpdateAmount;
 		}
 
