@@ -239,6 +239,7 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	struct heartRateSource *hrs = new (data) heartRateSource();
 
 	hrs->source = source;
+	hrs->selectedPpgAlgorithm = obs_data_get_int(settings, "ppg algorithm");
 
 	obs_enter_graphics();
 	char *effectFile = obs_module_file("test.effect");
@@ -748,6 +749,12 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
 	bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
 	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
+
+	// Check if the ppg algorithm has changed
+	if (selectedPpgAlgorithm != hrs->selectedPpgAlgorithm) {
+		movingAvg = MovingAvg(); // Create a new instance of MovingAvg
+    hrs->selectedPpgAlgorithm = selectedPpgAlgorithm; 
+	}
 
 	double heartRate =
 		movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm, selectedPostFiltering);
