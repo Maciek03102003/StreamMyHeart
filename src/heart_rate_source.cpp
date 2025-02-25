@@ -20,6 +20,7 @@
 #include "heart_rate_source.h"
 
 MovingAvg movingAvg;
+bool enableTiming = false;
 
 const char *getHeartRateSourceName(void *)
 {
@@ -302,6 +303,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
+	obs_data_set_default_bool(settings, "smoothing", true);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -426,6 +428,9 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	// Add boolean tick box for post-filtering
 	obs_properties_add_bool(props, "post-filtering", obs_module_text("PostFilteringAlgorithm"));
+
+	// Add boolean tick box for smoothing
+	obs_properties_add_bool(props, "smoothing", obs_module_text("SmoothAlgorithm"));
 
 	// Allow user to customise heart rate display text
 	obs_property_t *heartRateText =
@@ -718,7 +723,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		skipVideoFilterIfSafe(hrs->source);
 		return;
 	}
-	// obs_log(LOG_INFO, "[heart_rate_source_render] START FACE DETECTION");
+
 	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(hrsSettings, "face detection algorithm");
@@ -738,19 +743,27 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	}
 
 	if (hrs->faceDetection) {
+		uint64_t start_face_detection, end_face_detection;
+		if (enableTiming) {
+			start_face_detection = os_gettime_ns();
+		}
 		avg = hrs->faceDetection->detectFace(hrs->bgraData, faceCoordinates, enableDebugBoxes, enableTracker,
 						     frameUpdateInterval);
+		if (enableTiming) {
+			end_face_detection = os_gettime_ns();
+			obs_log(LOG_INFO, "Face detection took: %lu ns", end_face_detection - start_face_detection);
+		}
 	}
-	// obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
 	// Get the settings for calculating the heart rate
 	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
 	int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
 	bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
 	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
+	bool enableSmoothing = obs_data_get_bool(hrsSettings, "smoothing");
 
-	double heartRate =
-		movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm, selectedPostFiltering);
+	double heartRate = movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm,
+							selectedPostFiltering, enableSmoothing);
 
 	std::string heartRateText;
 	std::string moodText;
