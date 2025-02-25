@@ -757,7 +757,6 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 	std::string heartRateText;
 	std::string moodText;
-	
 
 	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 
