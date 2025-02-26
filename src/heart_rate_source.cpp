@@ -760,7 +760,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	std::string moodText;
 
 	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
-	
+
 	if (heartRate != 0.0) {
 		if (heartRate > 0.0) {
 			heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
