@@ -125,15 +125,23 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	// Retrieve source width and height
 	uint32_t width = obs_source_get_width(graph_source->source);
 	uint32_t height = obs_source_get_height(graph_source->source);
+	obs_source_t *hrs = get_heart_rate_monitor_filter();
+	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
+	if (!heartRateSource) {
+		obs_log(LOG_INFO, "Failed to get heart rate source");
+		return;
+	}
+	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+	int graphSize = obs_data_get_int(hrsSettings, "heartRateGraphSize");
 
 	// obs_log(LOG_INFO, "Graph source dimensions: Width = %u, Height = %u", width, height);
 
-	if (width == 0 || height == 0)
+	if (width == 0 || height == 0 || graphSize == 0)
 		return; // Avoid division by zero
 
 	// Maintain a buffer size of 10
 	if (curHeartRate > 0) {
-		while (graph_source->buffer.size() >= 10) {
+		while (graph_source->buffer.size() >= graphSize) {
 			graph_source->buffer.erase(graph_source->buffer.begin());
 		}
 		graph_source->buffer.push_back(curHeartRate);
@@ -148,13 +156,6 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		gs_technique_end(active_technique);
 		gs_effect_destroy(active_effect);
 	}
-
-	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
-	if (!heartRateSource) {
-		obs_log(LOG_INFO, "Failed to get heart rate source");
-		return;
-	}
-	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
 
 	// Get base effect
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
@@ -200,11 +201,12 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		// obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
 		// **Simulate thicker lines by drawing multiple parallel lines**
+		// float interval = width / (graphSize - 1);
 		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.01f) {
 			gs_render_start(GS_LINESTRIP);
 
 			for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-				float x = (static_cast<float>(i) / 9.0f) * width;
+				float x = (static_cast<float>(i) / (graphSize - 1)) * width;
 				float y = height - (static_cast<float>(graph_source->buffer[i] - 50)) * 2;
 
 				gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
@@ -275,7 +277,21 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 uint32_t graph_source_info_get_width(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 260;
+	obs_source_t *hrs = get_heart_rate_monitor_filter();
+	if (!hrs) {
+		obs_log(LOG_INFO, "fail to get heart rate source");
+		return 0;
+	}
+	obs_data_t *settings = obs_source_get_settings(hrs);
+	int size = obs_data_get_int(settings, "heartRateGraphSize");
+	obs_data_release(settings);
+	if (size < 20) {
+		return 260;
+	} else if (size < 30) {
+		return 520;
+	} else {
+		return 780;
+	}
 }
 uint32_t graph_source_info_get_height(void *data)
 {
