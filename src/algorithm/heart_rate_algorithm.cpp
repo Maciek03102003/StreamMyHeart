@@ -288,7 +288,7 @@ double MovingAvg::smoothHeartRate(double hr)
 
 double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps,
 				     int sampleRate, bool smooth)
-{ // Assume frame in YUV format: struct obs_source_frame *source
+{
 
 	fps = Fps;
 	windowSize = sampleRate * fps;

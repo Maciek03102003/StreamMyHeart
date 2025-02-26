@@ -233,12 +233,11 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 // Create function
 void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 {
-	// UNUSED_PARAMETER(settings);
-
 	void *data = bmalloc(sizeof(struct heartRateSource));
 	struct heartRateSource *hrs = new (data) heartRateSource();
 
 	hrs->source = source;
+	hrs->currentPpgAlgorithm = obs_data_get_int(settings, "ppg algorithm");
 
 	obs_enter_graphics();
 	char *effectFile = obs_module_file("test.effect");
@@ -256,7 +255,6 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	createOBSHeartDisplaySourceIfNeeded(settings);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
-	// obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
 	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
 
 	return hrs;
@@ -697,7 +695,6 @@ std::string getMood(int heart_rate)
 void heartRateSourceRender(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
-	// obs_log(LOG_INFO, "START RENDERING");
 
 	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
@@ -721,7 +718,6 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		skipVideoFilterIfSafe(hrs->source);
 		return;
 	}
-	// obs_log(LOG_INFO, "[heart_rate_source_render] START FACE DETECTION");
 	obs_data_t *hrsSettings = obs_source_get_settings(hrs->source);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(hrsSettings, "face detection algorithm");
@@ -744,13 +740,18 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		avg = hrs->faceDetection->detectFace(hrs->bgraData, faceCoordinates, enableDebugBoxes, enableTracker,
 						     frameUpdateInterval);
 	}
-	// obs_log(LOG_INFO, "[heart_rate_source_render] END FACE DETECTION");
 
 	// Get the settings for calculating the heart rate
 	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
 	int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
 	bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
 	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
+
+	// Check if the ppg algorithm has changed
+	if (selectedPpgAlgorithm != hrs->currentPpgAlgorithm) {
+		movingAvg = MovingAvg(); // Create a new instance of MovingAvg
+		hrs->currentPpgAlgorithm = selectedPpgAlgorithm;
+	}
 
 	double heartRate =
 		movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm, selectedPostFiltering);
@@ -760,14 +761,21 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 
 	obs_data_set_int(hrsSettings, "heart rate", static_cast<int>(std::round(heartRate)));
 
-	if (heartRate > 0.0) {
-		heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
-		size_t pos = heartRateText.find("{hr}");
-		if (pos != std::string::npos) {
-			heartRateText.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
-		}
+	if (heartRate != 0.0) {
+		if (heartRate > 0.0) {
+			heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
+			size_t pos = heartRateText.find("{hr}");
 
-		moodText = "Mood: " + getMood(heartRate);
+			if (pos != std::string::npos) {
+				heartRateText.replace(pos, 4,
+						      std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
+			}
+
+			moodText = "Mood: " + getMood(heartRate);
+		} else if (heartRate == -1.0) {
+			heartRateText = "Calibrating...";
+			moodText = "Calibrating...";
+		}
 
 		// Updating heart rate text source
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
@@ -818,5 +826,4 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	} else {
 		skipVideoFilterIfSafe(hrs->source);
 	}
-	// obs_log(LOG_INFO, "FINISH RENDERING");
 }
