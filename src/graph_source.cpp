@@ -82,12 +82,13 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	// Retrieve OBS settings for the heart rate monitor source
 	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
 	if (!heartRateSource) {
-		obs_log(LOG_INFO, "Failed to get heart rate source");
 		return;
 	}
 	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
 
 	if (obs_data_get_bool(hrsSettings, "is disabled")) {
+		obs_data_release(hrsSettings);
+		obs_source_release(heartRateSource);
 		return;
 	}
 	int curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
@@ -125,7 +126,6 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	// Retrieve source width and height
 	uint32_t width = obs_source_get_width(graph_source->source);
 	uint32_t height = obs_source_get_height(graph_source->source);
-	obs_source_t *hrs = get_heart_rate_monitor_filter();
 	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
 	if (!heartRateSource) {
 		obs_log(LOG_INFO, "Failed to get heart rate source");
@@ -272,6 +272,8 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 	std::vector<int> buffer;
 	graph_src->buffer = buffer;
 
+	graph_src->isDisabled = false;
+
 	return graph_src;
 }
 uint32_t graph_source_info_get_width(void *data)
@@ -279,12 +281,12 @@ uint32_t graph_source_info_get_width(void *data)
 	UNUSED_PARAMETER(data);
 	obs_source_t *hrs = get_heart_rate_monitor_filter();
 	if (!hrs) {
-		obs_log(LOG_INFO, "fail to get heart rate source");
 		return 0;
 	}
 	obs_data_t *settings = obs_source_get_settings(hrs);
 	int size = obs_data_get_int(settings, "heartRateGraphSize");
 	obs_data_release(settings);
+	obs_source_release(hrs);
 	if (size < 20) {
 		return 260;
 	} else if (size < 30) {
