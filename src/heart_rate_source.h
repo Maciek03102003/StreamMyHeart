@@ -41,7 +41,7 @@ struct heartRateSource {
 	void *bgraDataMutex; // Placeholder for C compatibility
 	void *faceDetection;
 #endif
-	int64_t selectedPpgAlgorithm;
+	int64_t currentPpgAlgorithm;
 	bool isDisabled;
 };
 
