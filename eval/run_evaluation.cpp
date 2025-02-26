@@ -136,14 +136,18 @@ std::vector<VideoData> readCSV(const std::string &csvFilePath)
 }
 
 // Function to extract BGRA data from a video frame
-input_BGRA_data extractBGRAData(const cv::Mat &frame)
+std::shared_ptr<input_BGRA_data> extractBGRAData(const cv::Mat &frame)
 {
-	input_BGRA_data bgraData;
-	bgraData.width = frame.cols;
-	bgraData.height = frame.rows;
-	bgraData.linesize = static_cast<uint32_t>(frame.step);
-	bgraData.data = new uint8_t[frame.total() * frame.elemSize()];
-	std::memcpy(bgraData.data, frame.data, frame.total() * frame.elemSize());
+	std::shared_ptr<input_BGRA_data> bgraData(static_cast<input_BGRA_data *>(bzalloc(sizeof(input_BGRA_data))),
+						  [](input_BGRA_data *p) {
+							  if (p)
+								  bfree(p);
+						  });
+	bgraData->width = frame.cols;
+	bgraData->height = frame.rows;
+	bgraData->linesize = static_cast<uint32_t>(frame.step);
+	bgraData->data = new uint8_t[frame.total() * frame.elemSize()];
+	std::memcpy(bgraData->data, frame.data, frame.total() * frame.elemSize());
 	return bgraData;
 }
 
@@ -197,11 +201,10 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceD
 		cv::cvtColor(frame, bgraFrame, cv::COLOR_BGR2BGRA);
 
 		// Extract BGRA data
-		input_BGRA_data bgraData = extractBGRAData(bgraFrame);
+		std::shared_ptr<input_BGRA_data> bgraData = extractBGRAData(bgraFrame);
 
 		// Perform face detection
-		std::vector<double_t> avg =
-			faceDetection->detectFace(&bgraData, faceCoordinates, false, true, 60, true);
+		std::vector<double_t> avg = faceDetection->detectFace(bgraData, faceCoordinates, false, true, 60, true);
 
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, static_cast<int>(preFilter), static_cast<int>(ppg),
@@ -212,7 +215,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceD
 		}
 
 		// Clean up
-		delete[] bgraData.data;
+		delete[] bgraData->data;
 	}
 
 	cap.release();

@@ -126,7 +126,7 @@ void MovingAvg::updateWindows(vector<double_t> frameAvg)
 	}
 }
 
-FrameRGB extractRGB(struct input_BGRA_data *bgraData)
+FrameRGB extractRGB(std::shared_ptr<struct input_BGRA_data> bgraData)
 {
 	uint8_t *data = bgraData->data;
 	uint32_t width = bgraData->width;
