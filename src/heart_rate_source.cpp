@@ -301,6 +301,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
+	obs_data_set_default_int(settings, "heartRateGraphSize", 10);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -376,6 +377,9 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 
 	obs_property_t *graphLineDropdown = obs_properties_get(props, "graphLineDropdown");
 	obs_property_set_visible(graphLineDropdown, obs_data_get_bool(settings, "enable graph source"));
+
+	obs_property_t *heartRateGraphSize = obs_properties_get(props, "heartRateGraphSize");
+	obs_property_set_visible(heartRateGraphSize, obs_data_get_bool(settings, "enable graph source"));
 
 	obs_source_release(sceneAsSource);
 
@@ -457,6 +461,9 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(graphLineDropdown, obs_module_text("Purple"), 2);
 	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 3);
 
+	obs_property_t *heartRateGraphSize = obs_properties_add_int(
+		props, "heartRateGraphSize", "number of history hreat rate displayed", 10, 30, 1);
+
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
 	obs_property_set_modified_callback(dropdown, updateProperties);
@@ -469,6 +476,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(graphLineDropdown, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
+	obs_property_set_modified_callback(heartRateGraphSize, updateProperties);
 
 	obs_data_release(settings);
 
