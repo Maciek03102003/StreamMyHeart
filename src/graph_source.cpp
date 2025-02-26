@@ -141,7 +141,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 	// Maintain a buffer size of 10
 	if (curHeartRate > 0) {
-		while (graph_source->buffer.size() >= graphSize) {
+		while (graph_source->buffer.size() >= static_cast<size_t>(graphSize)) {
 			graph_source->buffer.erase(graph_source->buffer.begin());
 		}
 		graph_source->buffer.push_back(curHeartRate);
