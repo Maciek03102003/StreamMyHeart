@@ -49,9 +49,16 @@ StreamMyHeart supports the latest OBS version 31.0.1.
 5. The heart rate can be displayed as a text source or a graph source.
 
 ## Suggested Setting Combination
-Optimal Accuracy: We shall see
 
-Low Resource Consumption:  Advanced Algorithm (with face tracking) and PCA
+### Optimal Accuracy (Default)
+- Advanced Algorithm (with face tracking)
+- Zero Mean
+- Chrom
+- Post Filtering On
+
+### Low Resource Consumption
+- Advanced Algorithm (with face tracking)
+- PCA
 
 ## Support and Feedback
 

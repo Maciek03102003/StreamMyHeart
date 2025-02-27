@@ -291,7 +291,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "face detection algorithm", 1);
 	obs_data_set_default_bool(settings, "enable face tracking", true);
 	obs_data_set_default_int(settings, "frame update interval", 60);
-	obs_data_set_default_int(settings, "ppg algorithm", 1);
+	obs_data_set_default_int(settings, "ppg algorithm", 2);
 	obs_data_set_default_int(settings, "heart rate", -1);
 	obs_data_set_default_string(settings, "heart rate text", "Heart rate: {hr} BPM");
 	obs_data_set_default_bool(settings, "enable text source", true);
@@ -300,7 +300,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable mood source", true);
 	obs_data_set_default_int(settings, "graphPlaneDropdown", 1);
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
-	obs_data_set_default_int(settings, "pre-filtering method", 1);
+	obs_data_set_default_int(settings, "pre-filtering method", 3);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
 	obs_data_set_default_int(settings, "heartRateGraphSize", 10);
