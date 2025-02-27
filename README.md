@@ -19,6 +19,8 @@ Download the latest installation packages from [here](https://github.com/Maciek0
 
 3. To uninstall the plugin, use the uninstaller located in the OBS application folder.
 
+> **Note:** If OBS Studio was open during the installation, please restart it for the plugin to load.
+
 ### MacOS
 1. Double-click `.pkg` file to open the installer.
 
@@ -28,6 +30,8 @@ Download the latest installation packages from [here](https://github.com/Maciek0
     ```
     /Users/<user_name>/Library/Application\ Support/obs-studio/plugins
     ```
+
+> **Note:** If OBS Studio was open during the installation, please restart it for the plugin to load.
 
 ### OBS Version Support and Compatibility
 StreamMyHeart supports the latest OBS version 31.0.1.
