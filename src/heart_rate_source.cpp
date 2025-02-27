@@ -114,10 +114,12 @@ static void createTextSource(obs_scene_t *scene)
 		obs_data_set_int(sourceSettings, "outline_size", 7);
 		obs_data_set_int(sourceSettings, "extents_cx", 1500);
 		obs_data_set_int(sourceSettings, "extents_cy", 230);
+
+		// Set font properties
 		obs_data_t *fontData = obs_data_create();
-		obs_data_set_string(fontData, "face", "Arial");
-		obs_data_set_string(fontData, "style", "Regular");
-		obs_data_set_int(fontData, "size", 72);
+		obs_data_set_string(fontData, "face", "Verdana");
+		obs_data_set_string(fontData, "style", "Bold");
+		obs_data_set_int(fontData, "size", 64);
 		obs_data_set_int(fontData, "flags", 0);
 		obs_data_set_obj(sourceSettings, "font", fontData);
 		obs_data_release(fontData);
