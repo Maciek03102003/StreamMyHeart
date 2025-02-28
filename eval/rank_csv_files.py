@@ -112,6 +112,13 @@ def rank_csv_files(directory):
         meanRmseSmoothingOn = np.mean(smoothingOnRmse)
         print(f"\nMean RMSE with smoothing off: {meanRmseSmoothingOff:.4f}")
         print(f"Mean RMSE with smoothing on: {meanRmseSmoothingOn:.4f}")
+
+    # Write the results to a CSV file
+    with open('results/Iteration 4/mean_rmse_results.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Filename', 'Mean RMSE'])
+        for filename, meanRmse in rankedFiles:
+            writer.writerow([filename[:-4], meanRmse])
         
 if __name__ == "__main__":
-    rank_csv_files('new_results')
+    rank_csv_files('results/Iteration 3/')

@@ -270,7 +270,7 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 	std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
 	// Construct the results filename based on the parameters
-	std::string resultsFilename = "../../../../../eval/new_results/" + toString(faceDetect) + "_" +
+	std::string resultsFilename = "../../../../../eval/results/Iteration 3/" + toString(faceDetect) + "_" +
 				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + "_" +
 				      (smooth ? "SMOOTHING_ON" : "SMOOTHING_OFF") + ".csv";
 
