@@ -20,6 +20,7 @@ extern "C" {
 #define IMAGE_SOURCE_NAME obs_module_text("HeartRateIcon")
 #define MOOD_SOURCE_NAME obs_module_text("HeartRateMood")
 
+extern bool enableTiming;
 struct input_BGRA_data {
 	uint8_t *data;
 	uint32_t width;
@@ -43,6 +44,7 @@ struct heartRateSource {
 #endif
 	int64_t currentPpgAlgorithm;
 	bool isDisabled;
+	int frameCount;
 };
 
 // Function declarations

@@ -2,12 +2,14 @@
 #include "plugin-support.h"
 #include "filtering/pre_filters.h"
 #include "filtering/post_filters.h"
+#include "heart_rate_source.h"
 
 #include <obs-module.h>
 #include <fstream>
 #include <string>
 #include <cstdlib>
 #include <cmath>
+#include <util/platform.h>
 
 using namespace std;
 using namespace Eigen;
@@ -235,9 +237,9 @@ double MovingAvg::welch(vector<double_t> bvps)
 	// Adjust Nyquist limit for human heart rates
 	int nyquistLimitBPM = min(min(numFrames / 2, nyquistLimit), static_cast<int>(200 / frequencyResolution));
 
-	double lowerLimit = 50;
+	double lowerLimit = 55;
 	double threshold = 70;
-	double sf = 0.7;
+	double sf = 0.6;
 	for (int k = 0; k <= nyquistLimitBPM; ++k) {
 		if (k * frequencyResolution < lowerLimit) {
 			psd[k] = 0;
@@ -247,7 +249,6 @@ double MovingAvg::welch(vector<double_t> bvps)
 		}
 	}
 
-	// Find dominant frequency in BPM
 	int maxIndex;
 	psd.head(nyquistLimitBPM + 1).maxCoeff(&maxIndex);
 	double dominantFrequency = maxIndex * frequencyResolution;
@@ -275,7 +276,10 @@ double MovingAvg::smoothHeartRate(double hr)
 	double offset = 20.0;
 
 	heartRates.erase(heartRates.begin());
-	heartRates.push_back(hr);
+
+	if (hr != 0) {
+		heartRates.push_back(hr);
+	}
 
 	if (hr > meanHr + offset) {
 		return meanHr + offset;
@@ -286,12 +290,17 @@ double MovingAvg::smoothHeartRate(double hr)
 	return hr;
 }
 
-double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, int Fps,
-				     int sampleRate, bool smooth)
+double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, bool smooth, int Fps,
+				     int sampleRate)
 {
+	uint64_t start_heart_rate;
+	if (enableTiming) {
+		start_heart_rate = os_gettime_ns();
+	}
 
 	fps = Fps;
 	windowSize = sampleRate * fps;
+	uiUpdateInterval = fps / 2;
 
 	updateWindows(avg);
 
@@ -301,8 +310,20 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 	    static_cast<int>(windows.size()) >= calibrationTime) {
 		Window currentWindow = concatWindows(windows);
 
+		uint64_t start_pre_filter, end_pre_filter;
+		if (enableTiming) {
+			start_pre_filter = os_gettime_ns();
+		}
 		Window filteredWindow = applyPreFilter(currentWindow, preFilter, fps);
+		if (enableTiming) {
+			end_pre_filter = os_gettime_ns();
+			obs_log(LOG_INFO, "Pre-filtering took: %lu ns", end_pre_filter - start_pre_filter);
+		}
 
+		uint64_t start_ppg, end_ppg;
+		if (enableTiming) {
+			start_ppg = os_gettime_ns();
+		}
 		switch (ppg) {
 		case 0:
 			ppgSignal = green(filteredWindow);
@@ -316,25 +337,80 @@ double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int pp
 		default:
 			break;
 		}
+		if (enableTiming) {
+			end_ppg = os_gettime_ns();
+			obs_log(LOG_INFO, "PPG calculation took: %lu ns", end_ppg - start_ppg);
+		}
 
+		uint64_t start_post_filter, end_post_filter;
+		if (enableTiming) {
+			start_post_filter = os_gettime_ns();
+		}
 		vector<double_t> filtered_ppg = applyPostFilter(ppgSignal, postFilter, fps);
+		if (enableTiming) {
+			end_post_filter = os_gettime_ns();
+			obs_log(LOG_INFO, "Post-filtering took: %lu ns", end_post_filter - start_post_filter);
+		}
 
+		uint64_t start_welch, end_welch;
+		if (enableTiming) {
+			start_welch = os_gettime_ns();
+		}
 		double heartRate = welch(filtered_ppg);
+		if (enableTiming) {
+			end_welch = os_gettime_ns();
+			obs_log(LOG_INFO, "Welch took: %lu ns", end_welch - start_welch);
+		}
 
 		if (smooth) {
+			uint64_t start_smooth, end_smooth;
+			if (enableTiming) {
+				start_smooth = os_gettime_ns();
+			}
 			if (static_cast<int>(heartRates.size()) < numHeartRates) {
 				heartRates.push_back(heartRate);
 			} else {
 				heartRate = smoothHeartRate(heartRate);
 			}
+			if (enableTiming) {
+				end_smooth = os_gettime_ns();
+				obs_log(LOG_INFO, "Smoothing took: %lu ns", end_smooth - start_smooth);
+			}
 		}
 
-		return heartRate;
+		if (uiHeartRate == -1.0) {
+			uiHeartRate = heartRate;
+			prevHr = heartRate;
+		} else {
+			if (heartRates.size() >= 2 && heartRates[heartRates.size() - 2] - heartRate <= 30) {
+				uiUpdateAmount = min((heartRate - uiHeartRate) / NUM_UPDATES, 5.0);
+				prevHr = heartRate;
+			}
+		}
+
+		if (enableTiming) {
+			uint64_t end_heart_rate = os_gettime_ns();
+			obs_log(LOG_INFO, "Heart rate calculation took: %lu ns", end_heart_rate - start_heart_rate);
+		}
+
+		return uiHeartRate;
 
 	} else {
 		if (static_cast<int>(windows.size()) < calibrationTime) {
 			return -1.0;
 		}
-		return 0.0;
+
+		framesSincePPG += 1;
+
+		if (!heartRates.empty() && framesSincePPG % uiUpdateInterval == 0 && uiHeartRate != prevHr) {
+			uiHeartRate += uiUpdateAmount;
+		}
+
+		if (enableTiming) {
+			uint64_t end_heart_rate = os_gettime_ns();
+			obs_log(LOG_INFO, "Heart rate update took: %lu ns", end_heart_rate - start_heart_rate);
+		}
+
+		return uiHeartRate;
 	}
 }

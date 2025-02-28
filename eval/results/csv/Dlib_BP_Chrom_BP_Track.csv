@@ -1,0 +1,4532 @@
+Timestamp,Function,Duration (ns)
+20:37:23.381,Face detection,1115688840
+20:37:23.510,Face detection,97181958
+20:37:23.530,Face detection,12979479
+20:37:23.547,Face detection,13131012
+20:37:23.563,Face detection,12622454
+20:37:23.599,Face detection,13916238
+20:37:23.633,Face detection,14672769
+20:37:23.670,Face detection,17145427
+20:37:23.703,Face detection,14665585
+20:37:23.731,Face detection,12884354
+20:37:23.768,Face detection,15342583
+20:37:23.799,Face detection,14743152
+20:37:23.830,Face detection,12234091
+20:37:23.864,Face detection,12430518
+20:37:23.897,Face detection,12394658
+20:37:23.930,Face detection,12337150
+20:37:23.964,Face detection,12728492
+20:37:23.997,Face detection,12249702
+20:37:24.031,Face detection,13504463
+20:37:24.065,Face detection,13559405
+20:37:24.099,Face detection,14595425
+20:37:24.131,Face detection,12354489
+20:37:24.165,Face detection,13318194
+20:37:24.198,Face detection,12565391
+20:37:24.232,Face detection,12727714
+20:37:24.266,Face detection,14866874
+20:37:24.298,Face detection,13210409
+20:37:24.331,Face detection,13119380
+20:37:24.365,Face detection,13345225
+20:37:24.399,Face detection,13080828
+20:37:24.433,Face detection,14643646
+20:37:24.470,Face detection,17074494
+20:37:24.505,Face detection,19605009
+20:37:24.540,Face detection,18002244
+20:37:24.571,Face detection,19448351
+20:37:24.603,Face detection,16998737
+20:37:24.636,Face detection,18017626
+20:37:24.670,Face detection,17978615
+20:37:24.704,Face detection,17694885
+20:37:24.737,Face detection,17430812
+20:37:24.769,Face detection,17382617
+20:37:24.806,Face detection,19878425
+20:37:24.851,Face detection,18442181
+20:37:24.884,Face detection,15829748
+20:37:24.914,Face detection,16904026
+20:37:24.931,Face detection,12790906
+20:37:24.964,Face detection,12736865
+20:37:25.001,Face detection,16048713
+20:37:25.032,Face detection,13123350
+20:37:25.066,Face detection,14668848
+20:37:25.101,Face detection,15741377
+20:37:25.131,Face detection,13521660
+20:37:25.165,Face detection,14046536
+20:37:25.200,Face detection,14612614
+20:37:25.234,Face detection,15995020
+20:37:25.270,Face detection,18551738
+20:37:25.303,Face detection,16283356
+20:37:25.336,Face detection,17657699
+20:37:25.364,Face detection,12683856
+20:37:25.399,Face detection,14034246
+20:37:25.432,Face detection,13595481
+20:37:25.545,Face detection,93077424
+20:37:25.566,Face detection,15053644
+20:37:25.584,Face detection,13603180
+20:37:25.611,Face detection,13642418
+20:37:25.636,Face detection,18174426
+20:37:25.664,Face detection,12640793
+20:37:25.703,Face detection,17845676
+20:37:25.732,Face detection,13567993
+20:37:25.769,Face detection,14153020
+20:37:25.808,Face detection,17163280
+20:37:25.829,Face detection,16683638
+20:37:25.847,Face detection,15172958
+20:37:25.866,Face detection,13751104
+20:37:25.882,Face detection,14191817
+20:37:25.906,Face detection,15567951
+20:37:25.920,Face detection,12882420
+20:37:25.948,Face detection,15161754
+20:37:25.963,Face detection,13746810
+20:37:25.981,Face detection,13683697
+20:37:25.996,Face detection,13675451
+20:37:26.014,Face detection,12867244
+20:37:26.027,Face detection,11922693
+20:37:26.045,Face detection,14203203
+20:37:26.061,Face detection,13388643
+20:37:26.077,Face detection,12377626
+20:37:26.092,Face detection,13112348
+20:37:26.112,Face detection,13586124
+20:37:26.126,Face detection,12301083
+20:37:26.145,Face detection,14113843
+20:37:26.161,Face detection,13836445
+20:37:26.178,Face detection,12976419
+20:37:26.195,Face detection,15186914
+20:37:26.213,Face detection,13776308
+20:37:26.229,Face detection,13314025
+20:37:26.249,Face detection,15138366
+20:37:26.265,Face detection,13977790
+20:37:26.283,Face detection,14516859
+20:37:26.299,Face detection,14035571
+20:37:26.317,Face detection,13398911
+20:37:26.331,Face detection,12696656
+20:37:26.350,Face detection,15295643
+20:37:26.364,Face detection,12598967
+20:37:26.382,Face detection,12832333
+20:37:26.397,Face detection,13686104
+20:37:26.414,Face detection,13378599
+20:37:26.429,Face detection,13110158
+20:37:26.449,Face detection,16358410
+20:37:26.482,Face detection,13005469
+20:37:26.511,Face detection,13138864
+20:37:26.526,Face detection,12665464
+20:37:26.551,Face detection,14440751
+20:37:26.565,Face detection,12475710
+20:37:26.582,Face detection,13016237
+20:37:26.598,Face detection,13945163
+20:37:26.615,Face detection,13301139
+20:37:26.631,Face detection,14152803
+20:37:26.652,Face detection,16954829
+20:37:26.652,Heart rate update,4671
+20:37:26.667,Face detection,13748441
+20:37:26.667,Heart rate update,1638
+20:37:26.699,Face detection,15771783
+20:37:26.699,Heart rate update,1173
+20:37:26.714,Face detection,13394868
+20:37:26.714,Heart rate update,2112
+20:37:26.814,Face detection,95552230
+20:37:26.814,Heart rate update,1346
+20:37:26.828,Face detection,12118197
+20:37:26.828,Heart rate update,1623
+20:37:26.847,Face detection,14885298
+20:37:26.847,Heart rate update,2908
+20:37:26.862,Face detection,12889628
+20:37:26.862,Heart rate update,3065
+20:37:26.879,Face detection,12827623
+20:37:26.879,Heart rate update,1746
+20:37:26.896,Face detection,14594312
+20:37:26.896,Heart rate update,3056
+20:37:26.915,Face detection,13168180
+20:37:26.915,Heart rate update,1782
+20:37:26.929,Face detection,12805128
+20:37:26.929,Heart rate update,1624
+20:37:26.950,Face detection,16377259
+20:37:26.950,Heart rate update,2359
+20:37:26.964,Face detection,12416655
+20:37:26.964,Heart rate update,2190
+20:37:26.981,Face detection,13144216
+20:37:26.981,Heart rate update,1929
+20:37:26.996,Face detection,13468768
+20:37:26.996,Heart rate update,3709
+20:37:27.015,Face detection,13845951
+20:37:27.015,Heart rate update,2751
+20:37:27.029,Face detection,12180044
+20:37:27.029,Heart rate update,2596
+20:37:27.050,Face detection,17896227
+20:37:27.050,Heart rate update,3183
+20:37:27.065,Face detection,12275986
+20:37:27.065,Heart rate update,3301
+20:37:27.083,Face detection,14057927
+20:37:27.083,Heart rate update,2968
+20:37:27.103,Face detection,18551542
+20:37:27.103,Heart rate update,3368
+20:37:27.130,Face detection,12352349
+20:37:27.130,Heart rate update,3283
+20:37:27.146,Face detection,14440077
+20:37:27.146,Heart rate update,2915
+20:37:27.164,Face detection,13279023
+20:37:27.164,Heart rate update,4094
+20:37:27.178,Face detection,12734811
+20:37:27.178,Heart rate update,3845
+20:37:27.197,Face detection,13856054
+20:37:27.197,Heart rate update,3411
+20:37:27.213,Face detection,13895162
+20:37:27.213,Heart rate update,3192
+20:37:27.229,Face detection,12169899
+20:37:27.229,Pre-filtering,100870
+20:37:27.229,PPG calculation,12649
+20:37:27.230,Post-filtering,87157
+20:37:27.230,Welch,229306
+20:37:27.230,Smoothing,151
+20:37:27.230,Heart rate calculation,505269
+20:37:27.246,Face detection,14589490
+20:37:27.246,Heart rate update,5656
+20:37:27.264,Face detection,13491766
+20:37:27.264,Heart rate update,1533
+20:37:27.279,Face detection,12637502
+20:37:27.279,Heart rate update,1346
+20:37:27.299,Face detection,16131358
+20:37:27.299,Heart rate update,1970
+20:37:27.316,Face detection,14602695
+20:37:27.316,Heart rate update,1394
+20:37:27.336,Face detection,14626072
+20:37:27.336,Heart rate update,1506
+20:37:27.356,Face detection,18537470
+20:37:27.356,Heart rate update,2503
+20:37:27.382,Face detection,12838433
+20:37:27.382,Heart rate update,2096
+20:37:27.398,Face detection,14709454
+20:37:27.398,Heart rate update,1670
+20:37:27.415,Face detection,12277658
+20:37:27.415,Heart rate update,1666
+20:37:27.429,Face detection,12507156
+20:37:27.429,Heart rate update,2032
+20:37:27.448,Face detection,14525252
+20:37:27.448,Heart rate update,2058
+20:37:27.463,Face detection,13752752
+20:37:27.463,Heart rate update,2205
+20:37:27.480,Face detection,12644949
+20:37:27.480,Heart rate update,2032
+20:37:27.496,Face detection,14367910
+20:37:27.496,Heart rate update,3194
+20:37:27.513,Face detection,13639997
+20:37:27.513,Heart rate update,3605
+20:37:27.529,Face detection,14529836
+20:37:27.529,Heart rate update,2585
+20:37:27.547,Face detection,13933521
+20:37:27.547,Heart rate update,3112
+20:37:27.563,Face detection,13744713
+20:37:27.563,Heart rate update,2654
+20:37:27.583,Face detection,13422847
+20:37:27.583,Heart rate update,3334
+20:37:27.598,Face detection,13555959
+20:37:27.598,Heart rate update,3337
+20:37:27.614,Face detection,12516808
+20:37:27.614,Heart rate update,3957
+20:37:27.628,Face detection,12539038
+20:37:27.628,Heart rate update,2450
+20:37:27.646,Face detection,13791863
+20:37:27.646,Heart rate update,3483
+20:37:27.661,Face detection,13097092
+20:37:27.661,Heart rate update,2507
+20:37:27.678,Face detection,13481847
+20:37:27.678,Heart rate update,3431
+20:37:27.693,Face detection,13569214
+20:37:27.693,Heart rate update,4244
+20:37:27.711,Face detection,13690898
+20:37:27.711,Heart rate update,3767
+20:37:27.725,Face detection,12085382
+20:37:27.725,Pre-filtering,181038
+20:37:27.725,PPG calculation,14184
+20:37:27.725,Post-filtering,105167
+20:37:27.726,Welch,336796
+20:37:27.726,Smoothing,168
+20:37:27.726,Heart rate calculation,734570
+20:37:27.745,Face detection,14183432
+20:37:27.745,Heart rate update,4128
+20:37:27.760,Face detection,13418893
+20:37:27.760,Heart rate update,1968
+20:37:27.778,Face detection,12853784
+20:37:27.778,Heart rate update,1138
+20:37:27.793,Face detection,13439533
+20:37:27.793,Heart rate update,1655
+20:37:27.812,Face detection,13994944
+20:37:27.812,Heart rate update,1596
+20:37:27.827,Face detection,13298927
+20:37:27.827,Heart rate update,1753
+20:37:27.926,Face detection,95312150
+20:37:27.926,Heart rate update,1798
+20:37:27.944,Face detection,15637951
+20:37:27.944,Heart rate update,2681
+20:37:27.966,Face detection,13521853
+20:37:27.966,Heart rate update,2235
+20:37:27.982,Face detection,14364919
+20:37:27.982,Heart rate update,1751
+20:37:28.001,Face detection,13634467
+20:37:28.001,Heart rate update,2207
+20:37:28.017,Face detection,14323451
+20:37:28.017,Heart rate update,2147
+20:37:28.033,Face detection,12117546
+20:37:28.033,Heart rate update,2420
+20:37:28.050,Face detection,15457978
+20:37:28.050,Heart rate update,2507
+20:37:28.066,Face detection,12295892
+20:37:28.066,Heart rate update,3219
+20:37:28.081,Face detection,13251280
+20:37:28.081,Heart rate update,3149
+20:37:28.099,Face detection,13797505
+20:37:28.099,Heart rate update,2336
+20:37:28.114,Face detection,13537961
+20:37:28.114,Heart rate update,2581
+20:37:28.131,Face detection,13456755
+20:37:28.131,Heart rate update,2546
+20:37:28.147,Face detection,14676876
+20:37:28.148,Heart rate update,2855
+20:37:28.165,Face detection,13003182
+20:37:28.165,Heart rate update,2724
+20:37:28.180,Face detection,13435033
+20:37:28.180,Heart rate update,2740
+20:37:28.198,Face detection,13485703
+20:37:28.198,Heart rate update,3364
+20:37:28.212,Face detection,12470828
+20:37:28.212,Heart rate update,2545
+20:37:28.231,Face detection,13116728
+20:37:28.231,Heart rate update,3395
+20:37:28.249,Face detection,15994450
+20:37:28.249,Heart rate update,3120
+20:37:28.267,Face detection,13391268
+20:37:28.267,Heart rate update,3764
+20:37:28.282,Face detection,13750858
+20:37:28.282,Heart rate update,3651
+20:37:28.300,Face detection,13199867
+20:37:28.300,Pre-filtering,127803
+20:37:28.300,PPG calculation,12381
+20:37:28.300,Post-filtering,123494
+20:37:28.301,Welch,446931
+20:37:28.301,Smoothing,194
+20:37:28.301,Heart rate calculation,790393
+20:37:28.317,Face detection,14575892
+20:37:28.317,Heart rate update,4858
+20:37:28.335,Face detection,13557075
+20:37:28.335,Heart rate update,1171
+20:37:28.351,Face detection,14248152
+20:37:28.351,Heart rate update,970
+20:37:28.377,Face detection,13691566
+20:37:28.377,Heart rate update,1696
+20:37:28.394,Face detection,14619065
+20:37:28.394,Heart rate update,1756
+20:37:28.412,Face detection,13288462
+20:37:28.412,Heart rate update,1936
+20:37:28.426,Face detection,12801109
+20:37:28.426,Heart rate update,1808
+20:37:28.445,Face detection,13943784
+20:37:28.445,Heart rate update,2295
+20:37:28.460,Face detection,13399108
+20:37:28.460,Heart rate update,1742
+20:37:28.478,Face detection,13976267
+20:37:28.478,Heart rate update,2280
+20:37:28.493,Face detection,13684129
+20:37:28.493,Heart rate update,2354
+20:37:28.511,Face detection,13865343
+20:37:28.512,Heart rate update,2826
+20:37:28.526,Face detection,13277796
+20:37:28.526,Heart rate update,2024
+20:37:28.545,Face detection,13547194
+20:37:28.545,Heart rate update,2564
+20:37:28.560,Face detection,13734367
+20:37:28.560,Heart rate update,2514
+20:37:28.578,Face detection,13714635
+20:37:28.578,Heart rate update,3034
+20:37:28.594,Face detection,14733360
+20:37:28.594,Heart rate update,2966
+20:37:28.612,Face detection,13438844
+20:37:28.612,Heart rate update,2823
+20:37:28.626,Face detection,12753195
+20:37:28.627,Heart rate update,2480
+20:37:28.645,Face detection,14375360
+20:37:28.645,Heart rate update,3015
+20:37:28.660,Face detection,13392701
+20:37:28.660,Heart rate update,2652
+20:37:28.677,Face detection,12661044
+20:37:28.677,Heart rate update,2716
+20:37:28.691,Face detection,12328756
+20:37:28.691,Heart rate update,2770
+20:37:28.711,Face detection,13750878
+20:37:28.711,Heart rate update,3724
+20:37:28.727,Face detection,14152774
+20:37:28.727,Heart rate update,3550
+20:37:28.746,Face detection,14920727
+20:37:28.746,Heart rate update,4442
+20:37:28.761,Face detection,13239161
+20:37:28.761,Heart rate update,2906
+20:37:28.779,Face detection,13713391
+20:37:28.779,Heart rate update,3565
+20:37:28.796,Face detection,15189612
+20:37:28.796,Pre-filtering,206173
+20:37:28.796,PPG calculation,32243
+20:37:28.797,Post-filtering,269707
+20:37:28.797,Welch,762975
+20:37:28.797,Smoothing,135
+20:37:28.797,Heart rate calculation,1388695
+20:37:28.814,Face detection,12389983
+20:37:28.814,Heart rate update,5997
+20:37:28.828,Face detection,12352094
+20:37:28.828,Heart rate update,1116
+20:37:28.847,Face detection,14431856
+20:37:28.847,Heart rate update,902
+20:37:28.861,Face detection,12764918
+20:37:28.861,Heart rate update,1732
+20:37:28.879,Face detection,13121559
+20:37:28.879,Heart rate update,1233
+20:37:28.896,Face detection,14554527
+20:37:28.896,Heart rate update,1544
+20:37:28.915,Face detection,14095770
+20:37:28.915,Heart rate update,2004
+20:37:28.929,Face detection,12610525
+20:37:28.930,Heart rate update,2371
+20:37:29.026,Face detection,92178383
+20:37:29.026,Heart rate update,1736
+20:37:29.044,Face detection,15854282
+20:37:29.044,Heart rate update,2203
+20:37:29.066,Face detection,12540289
+20:37:29.066,Heart rate update,2085
+20:37:29.080,Face detection,13005867
+20:37:29.080,Heart rate update,1847
+20:37:29.098,Face detection,13025126
+20:37:29.098,Heart rate update,2176
+20:37:29.113,Face detection,13489843
+20:37:29.113,Heart rate update,2836
+20:37:29.129,Face detection,12490102
+20:37:29.129,Heart rate update,2241
+20:37:29.147,Face detection,15631315
+20:37:29.147,Heart rate update,3122
+20:37:29.166,Face detection,13225852
+20:37:29.166,Heart rate update,2908
+20:37:29.181,Face detection,13795848
+20:37:29.181,Heart rate update,2550
+20:37:29.198,Face detection,13355362
+20:37:29.198,Heart rate update,3712
+20:37:29.213,Face detection,12581407
+20:37:29.213,Heart rate update,2881
+20:37:29.231,Face detection,12710459
+20:37:29.231,Heart rate update,2852
+20:37:29.248,Face detection,15065027
+20:37:29.248,Heart rate update,2900
+20:37:29.265,Face detection,12700822
+20:37:29.265,Heart rate update,2652
+20:37:29.279,Face detection,12414739
+20:37:29.279,Heart rate update,2464
+20:37:29.298,Face detection,13122617
+20:37:29.298,Heart rate update,3491
+20:37:29.312,Face detection,12600477
+20:37:29.312,Heart rate update,3630
+20:37:29.330,Face detection,12795591
+20:37:29.330,Heart rate update,3636
+20:37:29.348,Face detection,15987713
+20:37:29.348,Heart rate update,3891
+20:37:29.365,Face detection,12669125
+20:37:29.365,Pre-filtering,326198
+20:37:29.365,PPG calculation,19281
+20:37:29.365,Post-filtering,140658
+20:37:29.366,Welch,575362
+20:37:29.366,Smoothing,237
+20:37:29.366,Heart rate calculation,1145280
+20:37:29.382,Face detection,14216833
+20:37:29.382,Heart rate update,8698
+20:37:29.405,Face detection,17284620
+20:37:29.405,Heart rate update,1707
+20:37:29.424,Face detection,16069092
+20:37:29.424,Heart rate update,1138
+20:37:29.449,Face detection,17629329
+20:37:29.449,Heart rate update,2455
+20:37:29.465,Face detection,12938230
+20:37:29.465,Heart rate update,1608
+20:37:29.481,Face detection,12464847
+20:37:29.481,Heart rate update,1643
+20:37:29.501,Face detection,17548974
+20:37:29.501,Heart rate update,2050
+20:37:29.528,Face detection,13821575
+20:37:29.528,Heart rate update,2218
+20:37:29.545,Face detection,14853093
+20:37:29.545,Heart rate update,2267
+20:37:29.565,Face detection,13334245
+20:37:29.565,Heart rate update,2066
+20:37:29.579,Face detection,13111424
+20:37:29.580,Heart rate update,2451
+20:37:29.599,Face detection,14860849
+20:37:29.599,Heart rate update,3044
+20:37:29.613,Face detection,12439461
+20:37:29.613,Heart rate update,2548
+20:37:29.630,Face detection,12380252
+20:37:29.630,Heart rate update,2100
+20:37:29.647,Face detection,15414979
+20:37:29.647,Heart rate update,3599
+20:37:29.664,Face detection,12826350
+20:37:29.664,Heart rate update,3160
+20:37:29.678,Face detection,12769514
+20:37:29.678,Heart rate update,2472
+20:37:29.698,Face detection,15208646
+20:37:29.698,Heart rate update,2405
+20:37:29.712,Face detection,12970606
+20:37:29.712,Heart rate update,2999
+20:37:29.729,Face detection,12759533
+20:37:29.729,Heart rate update,2391
+20:37:29.744,Face detection,13107223
+20:37:29.744,Heart rate update,2810
+20:37:29.762,Face detection,13021923
+20:37:29.762,Heart rate update,2834
+20:37:29.776,Face detection,12806300
+20:37:29.776,Heart rate update,3462
+20:37:29.797,Face detection,14866845
+20:37:29.797,Heart rate update,2692
+20:37:29.814,Face detection,15570588
+20:37:29.815,Heart rate update,3191
+20:37:29.835,Face detection,15931737
+20:37:29.835,Heart rate update,3314
+20:37:29.852,Face detection,14294357
+20:37:29.852,Heart rate update,3242
+20:37:29.878,Face detection,13760104
+20:37:29.878,Heart rate update,3137
+20:37:29.896,Face detection,13677987
+20:37:29.896,Pre-filtering,145485
+20:37:29.896,PPG calculation,14098
+20:37:29.897,Post-filtering,181459
+20:37:29.897,Welch,730561
+20:37:29.897,Smoothing,166
+20:37:29.897,Heart rate calculation,1155465
+20:37:29.916,Face detection,14515848
+20:37:29.916,Heart rate update,6134
+20:37:29.932,Face detection,14642724
+20:37:29.932,Heart rate update,1254
+20:37:29.953,Face detection,14851652
+20:37:29.953,Heart rate update,1086
+20:37:29.968,Face detection,13601242
+20:37:29.968,Heart rate update,1464
+20:37:29.998,Face detection,14122172
+20:37:29.998,Heart rate update,1729
+20:37:30.012,Face detection,12978075
+20:37:30.012,Heart rate update,1702
+20:37:30.029,Face detection,12591138
+20:37:30.029,Heart rate update,4681
+20:37:30.045,Face detection,14134285
+20:37:30.045,Heart rate update,2504
+20:37:30.063,Face detection,13098042
+20:37:30.063,Heart rate update,1899
+20:37:30.078,Face detection,13350953
+20:37:30.078,Heart rate update,2467
+20:37:30.180,Face detection,97315106
+20:37:30.180,Heart rate update,1954
+20:37:30.196,Face detection,13758023
+20:37:30.196,Heart rate update,2473
+20:37:30.214,Face detection,12916921
+20:37:30.214,Heart rate update,2729
+20:37:30.229,Face detection,13258884
+20:37:30.229,Heart rate update,2832
+20:37:30.248,Face detection,15407472
+20:37:30.248,Heart rate update,4655
+20:37:30.263,Face detection,13528123
+20:37:30.263,Heart rate update,3029
+20:37:30.282,Face detection,14717713
+20:37:30.282,Heart rate update,2403
+20:37:30.297,Face detection,14141130
+20:37:30.297,Heart rate update,3698
+20:37:30.317,Face detection,14755044
+20:37:30.317,Heart rate update,2678
+20:37:30.332,Face detection,13693017
+20:37:30.332,Heart rate update,3079
+20:37:30.351,Face detection,15276174
+20:37:30.351,Heart rate update,4091
+20:37:30.366,Face detection,12934806
+20:37:30.366,Heart rate update,3050
+20:37:30.385,Face detection,14711322
+20:37:30.385,Heart rate update,4241
+20:37:30.402,Face detection,14674213
+20:37:30.402,Heart rate update,3725
+20:37:30.427,Face detection,14146469
+20:37:30.427,Heart rate update,3537
+20:37:30.445,Face detection,15123164
+20:37:30.445,Heart rate update,4106
+20:37:30.464,Face detection,13157700
+20:37:30.464,Heart rate update,3372
+20:37:30.479,Face detection,13194177
+20:37:30.479,Heart rate update,3961
+20:37:30.497,Face detection,14176734
+20:37:30.497,Pre-filtering,141370
+20:37:30.497,PPG calculation,13988
+20:37:30.497,Post-filtering,133215
+20:37:30.498,Welch,707372
+20:37:30.498,Smoothing,288
+20:37:30.498,Heart rate calculation,1075913
+20:37:30.513,Face detection,13149850
+20:37:30.513,Heart rate update,5802
+20:37:30.531,Face detection,13860996
+20:37:30.531,Heart rate update,1332
+20:37:30.546,Face detection,13715901
+20:37:30.546,Heart rate update,1544
+20:37:30.565,Face detection,12737563
+20:37:30.565,Heart rate update,1252
+20:37:30.579,Face detection,12690718
+20:37:30.579,Heart rate update,1289
+20:37:30.597,Face detection,14442871
+20:37:30.597,Heart rate update,1965
+20:37:30.613,Face detection,13369912
+20:37:30.613,Heart rate update,1447
+20:37:30.631,Face detection,13996334
+20:37:30.631,Heart rate update,2022
+20:37:30.646,Face detection,13513357
+20:37:30.646,Heart rate update,2050
+20:37:30.663,Face detection,13317249
+20:37:30.663,Heart rate update,1843
+20:37:30.677,Face detection,12707905
+20:37:30.678,Heart rate update,4087
+20:37:30.696,Face detection,14241583
+20:37:30.696,Heart rate update,2153
+20:37:30.711,Face detection,12932817
+20:37:30.711,Heart rate update,2615
+20:37:30.729,Face detection,13268647
+20:37:30.729,Heart rate update,2020
+20:37:30.743,Face detection,13005684
+20:37:30.743,Heart rate update,2871
+20:37:30.765,Face detection,14052670
+20:37:30.765,Heart rate update,2991
+20:37:30.780,Face detection,13325741
+20:37:30.780,Heart rate update,2320
+20:37:30.797,Face detection,13528184
+20:37:30.797,Heart rate update,2716
+20:37:30.813,Face detection,13789292
+20:37:30.813,Heart rate update,3353
+20:37:30.831,Face detection,14308500
+20:37:30.831,Heart rate update,2658
+20:37:30.847,Face detection,13683909
+20:37:30.847,Heart rate update,2976
+20:37:30.865,Face detection,14174486
+20:37:30.865,Heart rate update,3051
+20:37:30.880,Face detection,13212567
+20:37:30.880,Heart rate update,3387
+20:37:30.899,Face detection,14431916
+20:37:30.899,Heart rate update,2823
+20:37:30.914,Face detection,13279227
+20:37:30.914,Heart rate update,3007
+20:37:30.931,Face detection,13539017
+20:37:30.931,Heart rate update,3424
+20:37:30.946,Face detection,13361696
+20:37:30.946,Heart rate update,3371
+20:37:30.963,Face detection,13438431
+20:37:30.963,Heart rate update,3481
+20:37:30.978,Face detection,13094485
+20:37:30.978,Pre-filtering,139650
+20:37:30.978,PPG calculation,14338
+20:37:30.979,Post-filtering,132779
+20:37:30.979,Welch,597843
+20:37:30.979,Smoothing,124
+20:37:30.979,Heart rate calculation,961287
+20:37:30.997,Face detection,13998497
+20:37:30.997,Heart rate update,5724
+20:37:31.012,Face detection,13267460
+20:37:31.012,Heart rate update,1062
+20:37:31.029,Face detection,13452700
+20:37:31.029,Heart rate update,985
+20:37:31.045,Face detection,13959082
+20:37:31.045,Heart rate update,1746
+20:37:31.063,Face detection,13225022
+20:37:31.063,Heart rate update,1388
+20:37:31.078,Face detection,13611533
+20:37:31.078,Heart rate update,1308
+20:37:31.098,Face detection,14992594
+20:37:31.098,Heart rate update,1382
+20:37:31.114,Face detection,14872756
+20:37:31.114,Heart rate update,2759
+20:37:31.132,Face detection,13575625
+20:37:31.132,Heart rate update,1735
+20:37:31.149,Face detection,15408987
+20:37:31.149,Heart rate update,2831
+20:37:31.168,Face detection,13536130
+20:37:31.168,Heart rate update,2304
+20:37:31.184,Face detection,14606408
+20:37:31.184,Heart rate update,2517
+20:37:31.285,Face detection,92386323
+20:37:31.285,Heart rate update,2064
+20:37:31.300,Face detection,13583485
+20:37:31.300,Heart rate update,2292
+20:37:31.318,Face detection,13747691
+20:37:31.318,Heart rate update,3060
+20:37:31.334,Face detection,13830371
+20:37:31.334,Heart rate update,3419
+20:37:31.357,Face detection,14650617
+20:37:31.357,Heart rate update,3305
+20:37:31.388,Face detection,15854470
+20:37:31.388,Heart rate update,2772
+20:37:31.413,Face detection,14428867
+20:37:31.413,Heart rate update,18746
+20:37:31.429,Face detection,13693910
+20:37:31.429,Heart rate update,2967
+20:37:31.447,Face detection,13661616
+20:37:31.447,Heart rate update,6392
+20:37:31.464,Face detection,14861024
+20:37:31.464,Heart rate update,3558
+20:37:31.484,Face detection,15532804
+20:37:31.484,Heart rate update,2718
+20:37:31.504,Face detection,18575133
+20:37:31.504,Heart rate update,20546
+20:37:31.534,Face detection,15802215
+20:37:31.534,Heart rate update,5784
+20:37:31.551,Face detection,15314476
+20:37:31.551,Heart rate update,3666
+20:37:31.581,Face detection,14410850
+20:37:31.581,Heart rate update,3263
+20:37:31.598,Face detection,15023852
+20:37:31.598,Heart rate update,3910
+20:37:31.617,Face detection,14108489
+20:37:31.617,Pre-filtering,175892
+20:37:31.617,PPG calculation,18545
+20:37:31.617,Post-filtering,136360
+20:37:31.618,Welch,686315
+20:37:31.618,Smoothing,299
+20:37:31.618,Heart rate calculation,1103824
+20:37:31.633,Face detection,13651881
+20:37:31.633,Heart rate update,5999
+20:37:31.651,Face detection,14252416
+20:37:31.651,Heart rate update,1449
+20:37:31.667,Face detection,13743693
+20:37:31.667,Heart rate update,1358
+20:37:31.684,Face detection,12855159
+20:37:31.684,Heart rate update,1427
+20:37:31.698,Face detection,13046801
+20:37:31.698,Heart rate update,1333
+20:37:31.716,Face detection,13366834
+20:37:31.716,Heart rate update,1420
+20:37:31.732,Face detection,14640465
+20:37:31.732,Heart rate update,1792
+20:37:31.750,Face detection,13762090
+20:37:31.750,Heart rate update,2555
+20:37:31.765,Face detection,13246791
+20:37:31.765,Heart rate update,1988
+20:37:31.782,Face detection,13707048
+20:37:31.782,Heart rate update,2315
+20:37:31.798,Face detection,14302438
+20:37:31.798,Heart rate update,2326
+20:37:31.816,Face detection,13658380
+20:37:31.816,Heart rate update,2627
+20:37:31.832,Face detection,13941481
+20:37:31.832,Heart rate update,2152
+20:37:31.849,Face detection,13565607
+20:37:31.849,Heart rate update,2794
+20:37:31.865,Face detection,13731276
+20:37:31.865,Heart rate update,2436
+20:37:31.883,Face detection,14423532
+20:37:31.883,Heart rate update,3999
+20:37:31.900,Face detection,15367942
+20:37:31.900,Heart rate update,2511
+20:37:31.918,Face detection,13779292
+20:37:31.918,Heart rate update,3366
+20:37:31.933,Face detection,13778213
+20:37:31.933,Heart rate update,2473
+20:37:31.952,Face detection,14906763
+20:37:31.952,Heart rate update,3136
+20:37:31.973,Face detection,18835487
+20:37:31.973,Heart rate update,5429
+20:37:32.000,Face detection,21330511
+20:37:32.000,Heart rate update,4946
+20:37:32.028,Face detection,22134600
+20:37:32.028,Heart rate update,4277
+20:37:32.070,Face detection,18967918
+20:37:32.070,Heart rate update,3507
+20:37:32.089,Face detection,14813921
+20:37:32.089,Heart rate update,3833
+20:37:32.122,Face detection,17283994
+20:37:32.122,Heart rate update,4329
+20:37:32.139,Face detection,15704564
+20:37:32.140,Heart rate update,4501
+20:37:32.166,Face detection,14177561
+20:37:32.166,Heart rate update,4236
+20:37:32.182,Face detection,14451155
+20:37:32.182,Pre-filtering,152605
+20:37:32.182,PPG calculation,15107
+20:37:32.182,Post-filtering,143434
+20:37:32.183,Welch,654995
+20:37:32.183,Smoothing,217
+20:37:32.183,Heart rate calculation,1051999
+20:37:32.201,Face detection,13746386
+20:37:32.201,Heart rate update,7227
+20:37:32.217,Face detection,14113817
+20:37:32.217,Heart rate update,1154
+20:37:32.241,Face detection,13916083
+20:37:32.241,Heart rate update,1352
+20:37:32.257,Face detection,14389193
+20:37:32.257,Heart rate update,1821
+20:37:32.280,Face detection,14533970
+20:37:32.280,Heart rate update,1764
+20:37:32.295,Face detection,13486675
+20:37:32.295,Heart rate update,2166
+20:37:32.315,Face detection,15629046
+20:37:32.315,Heart rate update,2062
+20:37:32.332,Face detection,14848580
+20:37:32.332,Heart rate update,2775
+20:37:32.351,Face detection,14586052
+20:37:32.351,Heart rate update,2615
+20:37:32.367,Face detection,13881572
+20:37:32.367,Heart rate update,2185
+20:37:32.386,Face detection,14563913
+20:37:32.386,Heart rate update,2530
+20:37:32.403,Face detection,15161550
+20:37:32.403,Heart rate update,2362
+20:37:32.427,Face detection,14205807
+20:37:32.427,Heart rate update,2327
+20:37:32.444,Face detection,14773559
+20:37:32.444,Heart rate update,3883
+20:37:32.545,Face detection,94554341
+20:37:32.545,Heart rate update,2522
+20:37:32.561,Face detection,13820806
+20:37:32.561,Heart rate update,21930
+20:37:32.579,Face detection,13909120
+20:37:32.579,Heart rate update,3202
+20:37:32.595,Face detection,14374729
+20:37:32.595,Heart rate update,3006
+20:37:32.613,Face detection,13785016
+20:37:32.613,Heart rate update,4162
+20:37:32.629,Face detection,13940056
+20:37:32.629,Heart rate update,3081
+20:37:32.648,Face detection,14042667
+20:37:32.648,Heart rate update,3043
+20:37:32.663,Face detection,13813166
+20:37:32.663,Heart rate update,21089
+20:37:32.681,Face detection,14076301
+20:37:32.681,Heart rate update,2829
+20:37:32.698,Face detection,14733353
+20:37:32.698,Heart rate update,3775
+20:37:32.716,Face detection,13666541
+20:37:32.716,Heart rate update,2972
+20:37:32.732,Face detection,13958090
+20:37:32.732,Heart rate update,3808
+20:37:32.751,Face detection,14750234
+20:37:32.751,Heart rate update,3904
+20:37:32.766,Face detection,13109525
+20:37:32.766,Heart rate update,3419
+20:37:32.784,Face detection,13581002
+20:37:32.784,Pre-filtering,143894
+20:37:32.784,PPG calculation,14048
+20:37:32.784,Post-filtering,136228
+20:37:32.785,Welch,654548
+20:37:32.785,Smoothing,230
+20:37:32.785,Heart rate calculation,1032229
+20:37:32.802,Face detection,15086061
+20:37:32.802,Heart rate update,6028
+20:37:32.819,Face detection,12695221
+20:37:32.819,Heart rate update,1324
+20:37:32.852,Face detection,13759948
+20:37:32.852,Heart rate update,1850
+20:37:32.876,Face detection,13038822
+20:37:32.876,Heart rate update,2193
+20:37:32.893,Face detection,14603685
+20:37:32.893,Heart rate update,1989
+20:37:32.911,Face detection,13412046
+20:37:32.911,Heart rate update,2120
+20:37:32.925,Face detection,12933422
+20:37:32.925,Heart rate update,1933
+20:37:32.943,Face detection,13503397
+20:37:32.943,Heart rate update,2317
+20:37:32.958,Face detection,13236460
+20:37:32.958,Heart rate update,2480
+20:37:32.977,Face detection,13849307
+20:37:32.977,Heart rate update,3211
+20:37:32.992,Face detection,14077744
+20:37:32.992,Heart rate update,3109
+20:37:33.013,Face detection,13008993
+20:37:33.013,Heart rate update,2190
+20:37:33.030,Face detection,15105096
+20:37:33.030,Heart rate update,2673
+20:37:33.052,Face detection,16834785
+20:37:33.052,Heart rate update,2758
+20:37:33.069,Face detection,14651090
+20:37:33.069,Heart rate update,2462
+20:37:33.097,Face detection,16384051
+20:37:33.097,Heart rate update,3659
+20:37:33.115,Face detection,16005518
+20:37:33.115,Heart rate update,3267
+20:37:33.133,Face detection,13772068
+20:37:33.133,Heart rate update,21479
+20:37:33.152,Face detection,16378063
+20:37:33.152,Heart rate update,3177
+20:37:33.181,Face detection,14764761
+20:37:33.181,Heart rate update,2874
+20:37:33.197,Face detection,14475952
+20:37:33.197,Heart rate update,3513
+20:37:33.214,Face detection,12833111
+20:37:33.214,Heart rate update,3377
+20:37:33.228,Face detection,12775180
+20:37:33.228,Heart rate update,3440
+20:37:33.246,Face detection,14336424
+20:37:33.246,Heart rate update,3382
+20:37:33.262,Face detection,13625838
+20:37:33.262,Heart rate update,3463
+20:37:33.278,Face detection,12452140
+20:37:33.278,Heart rate update,3131
+20:37:33.293,Face detection,13169421
+20:37:33.293,Heart rate update,4286
+20:37:33.311,Face detection,13361826
+20:37:33.311,Heart rate update,3954
+20:37:33.326,Face detection,13438218
+20:37:33.326,Pre-filtering,140966
+20:37:33.326,PPG calculation,13859
+20:37:33.326,Post-filtering,133018
+20:37:33.327,Welch,598594
+20:37:33.327,Smoothing,330
+20:37:33.327,Heart rate calculation,968909
+20:37:33.345,Face detection,13582921
+20:37:33.345,Heart rate update,6106
+20:37:33.359,Face detection,12921528
+20:37:33.359,Heart rate update,1363
+20:37:33.377,Face detection,13040646
+20:37:33.377,Heart rate update,1068
+20:37:33.393,Face detection,14368429
+20:37:33.393,Heart rate update,1966
+20:37:33.412,Face detection,14358857
+20:37:33.412,Heart rate update,1362
+20:37:33.428,Face detection,13795355
+20:37:33.428,Heart rate update,1815
+20:37:33.446,Face detection,13691164
+20:37:33.446,Heart rate update,1559
+20:37:33.461,Face detection,13359614
+20:37:33.461,Heart rate update,2234
+20:37:33.478,Face detection,13325426
+20:37:33.478,Heart rate update,2366
+20:37:33.494,Face detection,14416840
+20:37:33.494,Heart rate update,2428
+20:37:33.513,Face detection,13631643
+20:37:33.513,Heart rate update,2162
+20:37:33.528,Face detection,13729612
+20:37:33.528,Heart rate update,2980
+20:37:33.549,Face detection,16508326
+20:37:33.549,Heart rate update,4146
+20:37:33.567,Face detection,15957457
+20:37:33.567,Heart rate update,20897
+20:37:33.591,Face detection,18401088
+20:37:33.591,Heart rate update,18950
+20:37:33.610,Face detection,16263723
+20:37:33.610,Heart rate update,4490
+20:37:33.710,Face detection,95274547
+20:37:33.710,Heart rate update,2705
+20:37:33.726,Face detection,14115780
+20:37:33.726,Heart rate update,2838
+20:37:33.751,Face detection,14247916
+20:37:33.751,Heart rate update,2827
+20:37:33.765,Face detection,12380174
+20:37:33.765,Heart rate update,2592
+20:37:33.782,Face detection,12563931
+20:37:33.811,Heart rate update,3340
+20:37:33.826,Face detection,13329908
+20:37:33.826,Heart rate update,2719
+20:37:33.845,Face detection,14671728
+20:37:33.845,Heart rate update,23482
+20:37:33.860,Face detection,13067560
+20:37:33.860,Heart rate update,3037
+20:37:33.878,Face detection,14644833
+20:37:33.878,Heart rate update,4644
+20:37:33.895,Face detection,14720308
+20:37:33.895,Heart rate update,3460
+20:37:33.912,Face detection,12536766
+20:37:33.912,Heart rate update,3401
+20:37:33.929,Face detection,15318765
+20:37:33.929,Heart rate update,3920
+20:37:33.951,Face detection,17344954
+20:37:33.951,Pre-filtering,228721
+20:37:33.951,PPG calculation,16122
+20:37:33.951,Post-filtering,254721
+20:37:33.952,Welch,1084090
+20:37:33.952,Smoothing,414
+20:37:33.952,Heart rate calculation,1769894
+20:37:33.971,Face detection,16841296
+20:37:33.972,Heart rate update,7656
+20:37:34.008,Face detection,21346810
+20:37:34.008,Heart rate update,2231
+20:37:34.026,Face detection,15421626
+20:37:34.027,Heart rate update,1057
+20:37:34.046,Face detection,14764472
+20:37:34.051,Heart rate update,3059
+20:37:34.067,Face detection,13732800
+20:37:34.067,Heart rate update,1795
+20:37:34.093,Face detection,17562250
+20:37:34.093,Heart rate update,3486
+20:37:34.112,Face detection,17606780
+20:37:34.112,Heart rate update,2342
+20:37:34.134,Face detection,17781625
+20:37:34.134,Heart rate update,2437
+20:37:34.154,Face detection,17075932
+20:37:34.154,Heart rate update,2014
+20:37:34.177,Face detection,14754709
+20:37:34.177,Heart rate update,1839
+20:37:34.193,Face detection,14127923
+20:37:34.193,Heart rate update,2121
+20:37:34.214,Face detection,16043421
+20:37:34.214,Heart rate update,3225
+20:37:34.229,Face detection,13036032
+20:37:34.229,Heart rate update,2875
+20:37:34.248,Face detection,14724226
+20:37:34.248,Heart rate update,2392
+20:37:34.262,Face detection,12880761
+20:37:34.262,Heart rate update,2573
+20:37:34.281,Face detection,14266823
+20:37:34.281,Heart rate update,3453
+20:37:34.295,Face detection,12460741
+20:37:34.295,Heart rate update,2833
+20:37:34.313,Face detection,13853038
+20:37:34.313,Heart rate update,3113
+20:37:34.328,Face detection,13236828
+20:37:34.328,Heart rate update,22281
+20:37:34.347,Face detection,14875213
+20:37:34.347,Heart rate update,3125
+20:37:34.363,Face detection,13786325
+20:37:34.363,Heart rate update,3549
+20:37:34.382,Face detection,14780808
+20:37:34.382,Heart rate update,3621
+20:37:34.397,Face detection,13354803
+20:37:34.397,Heart rate update,3853
+20:37:34.414,Face detection,13025626
+20:37:34.414,Heart rate update,3152
+20:37:34.429,Face detection,13044553
+20:37:34.429,Heart rate update,4072
+20:37:34.447,Face detection,14151948
+20:37:34.447,Heart rate update,3480
+20:37:34.462,Face detection,13422161
+20:37:34.462,Heart rate update,5604
+20:37:34.480,Face detection,12768682
+20:37:34.480,Heart rate update,3308
+20:37:34.494,Face detection,12630212
+20:37:34.494,Pre-filtering,173167
+20:37:34.494,PPG calculation,13983
+20:37:34.494,Post-filtering,323031
+20:37:34.495,Welch,746543
+20:37:34.495,Smoothing,294
+20:37:34.495,Heart rate calculation,1337321
+20:37:34.512,Face detection,12943879
+20:37:34.512,Heart rate update,6142
+20:37:34.527,Face detection,13000204
+20:37:34.527,Heart rate update,1333
+20:37:34.544,Face detection,12905541
+20:37:34.544,Heart rate update,1569
+20:37:34.559,Face detection,13039430
+20:37:34.559,Heart rate update,1829
+20:37:34.576,Face detection,12772887
+20:37:34.576,Heart rate update,1572
+20:37:34.591,Face detection,13675787
+20:37:34.591,Heart rate update,2562
+20:37:34.611,Face detection,12791881
+20:37:34.611,Heart rate update,1560
+20:37:34.626,Face detection,13114528
+20:37:34.626,Heart rate update,2663
+20:37:34.643,Face detection,13150919
+20:37:34.643,Heart rate update,1863
+20:37:34.658,Face detection,13383620
+20:37:34.658,Heart rate update,1889
+20:37:34.676,Face detection,12856584
+20:37:34.676,Heart rate update,2401
+20:37:34.690,Face detection,12638931
+20:37:34.690,Heart rate update,2420
+20:37:34.709,Face detection,13642624
+20:37:34.709,Heart rate update,2430
+20:37:34.725,Face detection,13696716
+20:37:34.725,Heart rate update,2489
+20:37:34.743,Face detection,13519531
+20:37:34.744,Heart rate update,3300
+20:37:34.760,Face detection,14476573
+20:37:34.760,Heart rate update,3203
+20:37:34.777,Face detection,13226415
+20:37:34.777,Heart rate update,2910
+20:37:34.793,Face detection,14057854
+20:37:34.793,Heart rate update,20218
+20:37:34.902,Face detection,104195398
+20:37:34.902,Heart rate update,2588
+20:37:34.916,Face detection,12249473
+20:37:34.916,Heart rate update,2711
+20:37:34.934,Face detection,13472449
+20:37:34.934,Heart rate update,3224
+20:37:34.951,Face detection,14542680
+20:37:34.951,Heart rate update,3472
+20:37:34.978,Face detection,15021820
+20:37:34.978,Heart rate update,3692
+20:37:34.994,Face detection,13566869
+20:37:34.994,Heart rate update,4177
+20:37:35.012,Face detection,13592721
+20:37:35.012,Heart rate update,3368
+20:37:35.026,Face detection,12927674
+20:37:35.026,Heart rate update,3348
+20:37:35.046,Face detection,13987986
+20:37:35.046,Heart rate update,3724
+20:37:35.063,Face detection,15350439
+20:37:35.063,Heart rate update,4314
+20:37:35.082,Face detection,14498103
+20:37:35.082,Pre-filtering,214271
+20:37:35.082,PPG calculation,14124
+20:37:35.083,Post-filtering,215744
+20:37:35.083,Welch,659070
+20:37:35.083,Smoothing,212
+20:37:35.083,Heart rate calculation,1244140
+20:37:35.101,Face detection,15714024
+20:37:35.101,Heart rate update,6293
+20:37:35.124,Face detection,15450083
+20:37:35.124,Heart rate update,3343
+20:37:35.147,Face detection,20743726
+20:37:35.147,Heart rate update,1481
+20:37:35.178,Face detection,13638901
+20:37:35.178,Heart rate update,2461
+20:37:35.196,Face detection,16451934
+20:37:35.196,Heart rate update,1978
+20:37:35.216,Face detection,13883917
+20:37:35.217,Heart rate update,1497
+20:37:35.232,Face detection,13568285
+20:37:35.232,Heart rate update,2014
+20:37:35.249,Face detection,13174164
+20:37:35.249,Heart rate update,2316
+20:37:35.264,Face detection,13123557
+20:37:35.264,Heart rate update,2068
+20:37:35.281,Face detection,13292087
+20:37:35.281,Heart rate update,18257
+20:37:35.296,Face detection,13845298
+20:37:35.296,Heart rate update,2292
+20:37:35.313,Face detection,13059472
+20:37:35.313,Heart rate update,2089
+20:37:35.329,Face detection,13924259
+20:37:35.329,Heart rate update,3089
+20:37:35.347,Face detection,13994888
+20:37:35.347,Heart rate update,2622
+20:37:35.362,Face detection,12693446
+20:37:35.362,Heart rate update,2813
+20:37:35.380,Face detection,13913689
+20:37:35.380,Heart rate update,3193
+20:37:35.395,Face detection,13613700
+20:37:35.395,Heart rate update,2506
+20:37:35.412,Face detection,13242812
+20:37:35.412,Heart rate update,2708
+20:37:35.428,Face detection,13626408
+20:37:35.428,Heart rate update,3171
+20:37:35.448,Face detection,16224444
+20:37:35.448,Heart rate update,3530
+20:37:35.463,Face detection,13292106
+20:37:35.463,Heart rate update,3129
+20:37:35.481,Face detection,14325772
+20:37:35.481,Heart rate update,2806
+20:37:35.499,Face detection,15753741
+20:37:35.499,Heart rate update,3869
+20:37:35.518,Face detection,14820626
+20:37:35.518,Heart rate update,3763
+20:37:35.535,Face detection,15210070
+20:37:35.535,Heart rate update,4401
+20:37:35.561,Face detection,13636283
+20:37:35.561,Heart rate update,4202
+20:37:35.577,Face detection,14689116
+20:37:35.578,Heart rate update,3573
+20:37:35.597,Face detection,14812439
+20:37:35.597,Heart rate update,3782
+20:37:35.613,Face detection,13812480
+20:37:35.613,Pre-filtering,140879
+20:37:35.613,PPG calculation,13821
+20:37:35.613,Post-filtering,132934
+20:37:35.614,Welch,732459
+20:37:35.614,Smoothing,238
+20:37:35.614,Heart rate calculation,1099806
+20:37:35.635,Face detection,16706533
+20:37:35.635,Heart rate update,7118
+20:37:35.656,Face detection,18718870
+20:37:35.656,Heart rate update,1777
+20:37:35.680,Face detection,16161969
+20:37:35.680,Heart rate update,1456
+20:37:35.701,Face detection,18654815
+20:37:35.701,Heart rate update,1741
+20:37:35.723,Face detection,14047627
+20:37:35.723,Heart rate update,1691
+20:37:35.738,Face detection,12913647
+20:37:35.738,Heart rate update,1923
+20:37:35.762,Face detection,16437798
+20:37:35.762,Heart rate update,1955
+20:37:35.777,Face detection,13485348
+20:37:35.777,Heart rate update,3296
+20:37:35.798,Face detection,16576511
+20:37:35.798,Heart rate update,2587
+20:37:35.816,Face detection,15764286
+20:37:35.816,Heart rate update,1901
+20:37:35.836,Face detection,14617381
+20:37:35.836,Heart rate update,2562
+20:37:35.852,Face detection,13818275
+20:37:35.852,Heart rate update,3044
+20:37:35.876,Face detection,12467145
+20:37:35.876,Heart rate update,2260
+20:37:35.892,Face detection,13952671
+20:37:35.892,Heart rate update,2684
+20:37:35.912,Face detection,14530843
+20:37:35.912,Heart rate update,3261
+20:37:35.931,Face detection,16494019
+20:37:35.931,Heart rate update,4443
+20:37:35.955,Face detection,17364993
+20:37:35.955,Heart rate update,2604
+20:37:35.973,Face detection,15497669
+20:37:35.973,Heart rate update,3264
+20:37:35.994,Face detection,13893075
+20:37:35.994,Heart rate update,2870
+20:37:36.009,Face detection,13057668
+20:37:36.009,Heart rate update,3216
+20:37:36.108,Face detection,95003026
+20:37:36.108,Heart rate update,4474
+20:37:36.123,Face detection,12797795
+20:37:36.123,Heart rate update,3453
+20:37:36.143,Face detection,13486033
+20:37:36.143,Heart rate update,3250
+20:37:36.160,Face detection,14604213
+20:37:36.160,Heart rate update,4369
+20:37:36.178,Face detection,13751777
+20:37:36.178,Heart rate update,3809
+20:37:36.194,Face detection,14479869
+20:37:36.194,Heart rate update,3661
+20:37:36.212,Face detection,13670143
+20:37:36.212,Heart rate update,3797
+20:37:36.227,Face detection,12891362
+20:37:36.227,Heart rate update,3483
+20:37:36.245,Face detection,13098132
+20:37:36.245,Pre-filtering,141235
+20:37:36.245,PPG calculation,13875
+20:37:36.245,Post-filtering,154793
+20:37:36.246,Welch,624320
+20:37:36.246,Smoothing,282
+20:37:36.246,Heart rate calculation,1014927
+20:37:36.261,Face detection,13500741
+20:37:36.261,Heart rate update,6527
+20:37:36.280,Face detection,14354077
+20:37:36.280,Heart rate update,1298
+20:37:36.296,Face detection,14298132
+20:37:36.296,Heart rate update,1125
+20:37:36.314,Face detection,13882342
+20:37:36.314,Heart rate update,1789
+20:37:36.331,Face detection,15323137
+20:37:36.331,Heart rate update,1250
+20:37:36.364,Face detection,13817552
+20:37:36.364,Heart rate update,2019
+20:37:36.381,Face detection,15733256
+20:37:36.381,Heart rate update,1839
+20:37:36.401,Face detection,14587074
+20:37:36.401,Heart rate update,3141
+20:37:36.418,Face detection,14487897
+20:37:36.418,Heart rate update,2527
+20:37:36.444,Face detection,17522091
+20:37:36.444,Heart rate update,3136
+20:37:36.465,Face detection,12051910
+20:37:36.466,Heart rate update,3187
+20:37:36.485,Face detection,15951157
+20:37:36.485,Heart rate update,2818
+20:37:36.500,Face detection,12637173
+20:37:36.500,Heart rate update,2610
+20:37:36.516,Face detection,12053477
+20:37:36.516,Heart rate update,2404
+20:37:36.531,Face detection,12954223
+20:37:36.531,Heart rate update,3051
+20:37:36.550,Face detection,14832371
+20:37:36.550,Heart rate update,3647
+20:37:36.563,Face detection,12262934
+20:37:36.563,Heart rate update,2473
+20:37:36.581,Face detection,13200308
+20:37:36.581,Heart rate update,3363
+20:37:36.596,Face detection,13411494
+20:37:36.596,Heart rate update,19733
+20:37:36.612,Face detection,12756470
+20:37:36.613,Heart rate update,2987
+20:37:36.628,Face detection,13792338
+20:37:36.628,Heart rate update,3104
+20:37:36.646,Face detection,13760775
+20:37:36.646,Heart rate update,2949
+20:37:36.660,Face detection,12749157
+20:37:36.660,Heart rate update,3532
+20:37:36.679,Face detection,14625815
+20:37:36.679,Heart rate update,3875
+20:37:36.695,Face detection,14331686
+20:37:36.695,Heart rate update,3578
+20:37:36.713,Face detection,14244129
+20:37:36.714,Heart rate update,21673
+20:37:36.728,Face detection,12823384
+20:37:36.728,Heart rate update,4029
+20:37:36.746,Face detection,13914143
+20:37:36.746,Heart rate update,4105
+20:37:36.762,Face detection,13900960
+20:37:36.762,Pre-filtering,144848
+20:37:36.762,PPG calculation,14023
+20:37:36.762,Post-filtering,132921
+20:37:36.763,Welch,601996
+20:37:36.763,Smoothing,420
+20:37:36.763,Heart rate calculation,970540
+20:37:36.782,Face detection,14985533
+20:37:36.782,Heart rate update,7348
+20:37:36.799,Face detection,15681438
+20:37:36.799,Heart rate update,1569
+20:37:36.818,Face detection,13525339
+20:37:36.818,Heart rate update,1645
+20:37:36.835,Face detection,14959790
+20:37:36.835,Heart rate update,1568
+20:37:36.857,Face detection,14004837
+20:37:36.857,Heart rate update,1592
+20:37:36.873,Face detection,13605787
+20:37:36.873,Heart rate update,1604
+20:37:36.893,Face detection,12868891
+20:37:36.893,Heart rate update,1846
+20:37:36.910,Face detection,14877115
+20:37:36.910,Heart rate update,2677
+20:37:36.930,Face detection,14585452
+20:37:36.930,Heart rate update,1813
+20:37:36.946,Face detection,14381026
+20:37:36.946,Heart rate update,2500
+20:37:36.965,Face detection,14001449
+20:37:36.965,Heart rate update,2600
+20:37:36.979,Face detection,12339688
+20:37:36.979,Heart rate update,2063
+20:37:37.000,Face detection,16902937
+20:37:37.000,Heart rate update,2824
+20:37:37.015,Face detection,13168484
+20:37:37.015,Heart rate update,2397
+20:37:37.032,Face detection,12527549
+20:37:37.032,Heart rate update,2266
+20:37:37.049,Face detection,15056880
+20:37:37.049,Heart rate update,3965
+20:37:37.067,Face detection,12341137
+20:37:37.067,Heart rate update,2686
+20:37:37.081,Face detection,12349475
+20:37:37.081,Heart rate update,2704
+20:37:37.102,Face detection,17039578
+20:37:37.102,Heart rate update,2890
+20:37:37.117,Face detection,13192688
+20:37:37.117,Heart rate update,3353
+20:37:37.138,Face detection,12775552
+20:37:37.139,Heart rate update,3163
+20:37:37.158,Face detection,16010663
+20:37:37.158,Heart rate update,3157
+20:37:37.277,Face detection,113061509
+20:37:37.277,Heart rate update,3982
+20:37:37.298,Face detection,19558027
+20:37:37.298,Heart rate update,5966
+20:37:37.318,Face detection,14753808
+20:37:37.318,Heart rate update,2846
+20:37:37.332,Face detection,12911139
+20:37:37.332,Heart rate update,3215
+20:37:37.351,Face detection,14705281
+20:37:37.351,Heart rate update,3739
+20:37:37.366,Face detection,12505260
+20:37:37.366,Heart rate update,3242
+20:37:37.384,Face detection,14078576
+20:37:37.384,Pre-filtering,147617
+20:37:37.384,PPG calculation,13842
+20:37:37.385,Post-filtering,135735
+20:37:37.385,Welch,608652
+20:37:37.385,Smoothing,228
+20:37:37.385,Heart rate calculation,987505
+20:37:37.402,Face detection,14771367
+20:37:37.402,Heart rate update,6083
+20:37:37.425,Face detection,12990537
+20:37:37.425,Heart rate update,1364
+20:37:37.443,Face detection,15255055
+20:37:37.443,Heart rate update,1571
+20:37:37.460,Face detection,13647294
+20:37:37.460,Heart rate update,1938
+20:37:37.476,Face detection,14158554
+20:37:37.476,Heart rate update,1719
+20:37:37.495,Face detection,14664039
+20:37:37.496,Heart rate update,1935
+20:37:37.513,Face detection,15295547
+20:37:37.513,Heart rate update,2739
+20:37:37.531,Face detection,14080559
+20:37:37.531,Heart rate update,2950
+20:37:37.549,Face detection,16402255
+20:37:37.549,Heart rate update,2937
+20:37:37.567,Face detection,13537956
+20:37:37.567,Heart rate update,1992
+20:37:37.585,Face detection,15862135
+20:37:37.585,Heart rate update,3558
+20:37:37.614,Face detection,16429385
+20:37:37.614,Heart rate update,2316
+20:37:37.630,Face detection,13716136
+20:37:37.630,Heart rate update,2627
+20:37:37.650,Face detection,15252859
+20:37:37.650,Heart rate update,2778
+20:37:37.665,Face detection,12877601
+20:37:37.665,Heart rate update,3528
+20:37:37.684,Face detection,15463600
+20:37:37.684,Heart rate update,3441
+20:37:37.704,Face detection,17175039
+20:37:37.704,Heart rate update,3399
+20:37:37.736,Face detection,15628702
+20:37:37.736,Heart rate update,4902
+20:37:37.757,Face detection,18801819
+20:37:37.757,Heart rate update,3798
+20:37:37.782,Face detection,14535990
+20:37:37.782,Heart rate update,3003
+20:37:37.798,Face detection,14156862
+20:37:37.798,Heart rate update,3415
+20:37:37.815,Face detection,12699185
+20:37:37.815,Heart rate update,3912
+20:37:37.832,Face detection,14837633
+20:37:37.832,Heart rate update,3491
+20:37:37.856,Face detection,19413618
+20:37:37.856,Heart rate update,3624
+20:37:37.873,Face detection,14532322
+20:37:37.873,Heart rate update,4157
+20:37:37.898,Face detection,16177153
+20:37:37.898,Heart rate update,4412
+20:37:37.915,Face detection,15121917
+20:37:37.915,Heart rate update,4649
+20:37:37.933,Face detection,13688220
+20:37:37.933,Heart rate update,3859
+20:37:37.953,Face detection,17985403
+20:37:37.953,Pre-filtering,141394
+20:37:37.953,PPG calculation,13839
+20:37:37.953,Post-filtering,132879
+20:37:37.954,Welch,599998
+20:37:37.954,Smoothing,631
+20:37:37.954,Heart rate calculation,974411
+20:37:37.978,Face detection,14320352
+20:37:37.978,Heart rate update,7267
+20:37:37.996,Face detection,16086879
+20:37:37.996,Heart rate update,21677
+20:37:38.014,Face detection,13441489
+20:37:38.014,Heart rate update,1388
+20:37:38.029,Face detection,13570171
+20:37:38.029,Heart rate update,1633
+20:37:38.051,Face detection,16930527
+20:37:38.051,Heart rate update,1758
+20:37:38.066,Face detection,12771344
+20:37:38.066,Heart rate update,1669
+20:37:38.084,Face detection,13608350
+20:37:38.084,Heart rate update,1988
+20:37:38.105,Face detection,18672973
+20:37:38.105,Heart rate update,2658
+20:37:38.129,Face detection,14433779
+20:37:38.129,Heart rate update,2392
+20:37:38.146,Face detection,15349015
+20:37:38.146,Heart rate update,23493
+20:37:38.165,Face detection,12900560
+20:37:38.165,Heart rate update,1871
+20:37:38.179,Face detection,12705707
+20:37:38.179,Heart rate update,2169
+20:37:38.197,Face detection,13832134
+20:37:38.197,Heart rate update,2886
+20:37:38.212,Face detection,13409537
+20:37:38.212,Heart rate update,2549
+20:37:38.228,Face detection,12743695
+20:37:38.228,Heart rate update,2532
+20:37:38.244,Face detection,14097503
+20:37:38.244,Heart rate update,3594
+20:37:38.262,Face detection,13342981
+20:37:38.262,Heart rate update,2724
+20:37:38.276,Face detection,12152156
+20:37:38.276,Heart rate update,2829
+20:37:38.294,Face detection,14287896
+20:37:38.294,Heart rate update,5227
+20:37:38.310,Face detection,13629760
+20:37:38.310,Heart rate update,3194
+20:37:38.328,Face detection,14523243
+20:37:38.328,Heart rate update,3370
+20:37:38.347,Face detection,17324347
+20:37:38.347,Heart rate update,7715
+20:37:38.368,Face detection,15616615
+20:37:38.368,Heart rate update,4092
+20:37:38.385,Face detection,14683433
+20:37:38.385,Heart rate update,20524
+20:37:38.488,Face detection,89208935
+20:37:38.488,Heart rate update,4253
+20:37:38.505,Face detection,15114794
+20:37:38.505,Heart rate update,3912
+20:37:38.527,Face detection,13635806
+20:37:38.527,Heart rate update,4247
+20:37:38.542,Face detection,14175656
+20:37:38.542,Heart rate update,3810
+20:37:38.561,Face detection,12750039
+20:37:38.561,Pre-filtering,141739
+20:37:38.561,PPG calculation,13890
+20:37:38.561,Post-filtering,133882
+20:37:38.562,Welch,575372
+20:37:38.562,Smoothing,238
+20:37:38.562,Heart rate calculation,941466
+20:37:38.578,Face detection,14436989
+20:37:38.578,Heart rate update,5702
+20:37:38.596,Face detection,14144197
+20:37:38.596,Heart rate update,1813
+20:37:38.613,Face detection,15614084
+20:37:38.613,Heart rate update,1559
+20:37:38.633,Face detection,14516515
+20:37:38.633,Heart rate update,2621
+20:37:38.653,Face detection,18342746
+20:37:38.653,Heart rate update,1966
+20:37:38.679,Face detection,14651840
+20:37:38.679,Heart rate update,1637
+20:37:38.698,Face detection,17357789
+20:37:38.698,Heart rate update,2710
+20:37:38.720,Face detection,17437272
+20:37:38.720,Heart rate update,2763
+20:37:38.736,Face detection,13972569
+20:37:38.736,Heart rate update,2331
+20:37:38.767,Face detection,14497281
+20:37:38.767,Heart rate update,1934
+20:37:38.783,Face detection,13779002
+20:37:38.783,Heart rate update,2515
+20:37:38.802,Face detection,15145816
+20:37:38.802,Heart rate update,2265
+20:37:38.819,Face detection,14017386
+20:37:38.819,Heart rate update,4262
+20:37:38.839,Face detection,12772438
+20:37:38.839,Heart rate update,3809
+20:37:38.855,Face detection,13975863
+20:37:38.855,Heart rate update,19252
+20:37:38.877,Face detection,12520911
+20:37:38.877,Heart rate update,4443
+20:37:38.893,Face detection,14574263
+20:37:38.893,Heart rate update,2890
+20:37:38.910,Face detection,12930708
+20:37:38.910,Heart rate update,3198
+20:37:38.927,Face detection,14890353
+20:37:38.927,Heart rate update,3320
+20:37:38.945,Face detection,13628559
+20:37:38.945,Heart rate update,3562
+20:37:38.962,Face detection,15313673
+20:37:38.962,Heart rate update,3279
+20:37:38.981,Face detection,14958642
+20:37:38.981,Heart rate update,3752
+20:37:38.998,Face detection,14919013
+20:37:38.998,Heart rate update,3569
+20:37:39.015,Face detection,12577693
+20:37:39.015,Heart rate update,3044
+20:37:39.029,Face detection,12644992
+20:37:39.029,Heart rate update,3346
+20:37:39.049,Face detection,15327491
+20:37:39.049,Heart rate update,3541
+20:37:39.063,Face detection,12689108
+20:37:39.063,Heart rate update,4019
+20:37:39.080,Face detection,13007985
+20:37:39.080,Heart rate update,3682
+20:37:39.095,Face detection,13431008
+20:37:39.095,Pre-filtering,159074
+20:37:39.095,PPG calculation,15705
+20:37:39.096,Post-filtering,150578
+20:37:39.096,Welch,674592
+20:37:39.096,Smoothing,414
+20:37:39.096,Heart rate calculation,1174462
+20:37:39.113,Face detection,12668189
+20:37:39.113,Heart rate update,5962
+20:37:39.127,Face detection,12571421
+20:37:39.127,Heart rate update,1463
+20:37:39.145,Face detection,14597439
+20:37:39.145,Heart rate update,1937
+20:37:39.161,Face detection,13867730
+20:37:39.161,Heart rate update,1438
+20:37:39.179,Face detection,13688318
+20:37:39.179,Heart rate update,1691
+20:37:39.196,Face detection,15924167
+20:37:39.197,Heart rate update,1619
+20:37:39.213,Face detection,12351766
+20:37:39.213,Heart rate update,2171
+20:37:39.227,Face detection,12642470
+20:37:39.228,Heart rate update,3029
+20:37:39.246,Face detection,14224835
+20:37:39.246,Heart rate update,2770
+20:37:39.261,Face detection,13688555
+20:37:39.261,Heart rate update,2935
+20:37:39.281,Face detection,15454806
+20:37:39.281,Heart rate update,3058
+20:37:39.297,Face detection,14282205
+20:37:39.297,Heart rate update,3882
+20:37:39.317,Face detection,13633801
+20:37:39.317,Heart rate update,2945
+20:37:39.331,Face detection,12499905
+20:37:39.331,Heart rate update,2882
+20:37:39.350,Face detection,14890336
+20:37:39.350,Heart rate update,3215
+20:37:39.364,Face detection,11988410
+20:37:39.364,Heart rate update,3283
+20:37:39.381,Face detection,12752487
+20:37:39.381,Heart rate update,2661
+20:37:39.396,Face detection,13638050
+20:37:39.396,Heart rate update,2981
+20:37:39.414,Face detection,12875544
+20:37:39.414,Heart rate update,2862
+20:37:39.428,Face detection,12607116
+20:37:39.428,Heart rate update,3040
+20:37:39.447,Face detection,15138600
+20:37:39.447,Heart rate update,3709
+20:37:39.462,Face detection,13408459
+20:37:39.462,Heart rate update,3243
+20:37:39.480,Face detection,13411078
+20:37:39.480,Heart rate update,3759
+20:37:39.496,Face detection,14965725
+20:37:39.496,Heart rate update,4202
+20:37:39.515,Face detection,13754325
+20:37:39.515,Heart rate update,4483
+20:37:39.529,Face detection,12406722
+20:37:39.529,Heart rate update,3576
+20:37:39.633,Face detection,100144822
+20:37:39.633,Heart rate update,3936
+20:37:39.650,Face detection,14549613
+20:37:39.651,Heart rate update,3817
+20:37:39.671,Face detection,13637411
+20:37:39.671,Pre-filtering,160722
+20:37:39.671,PPG calculation,14292
+20:37:39.672,Post-filtering,203961
+20:37:39.672,Welch,716312
+20:37:39.672,Smoothing,312
+20:37:39.672,Heart rate calculation,1197163
+20:37:39.690,Face detection,15718748
+20:37:39.690,Heart rate update,8616
+20:37:39.716,Face detection,15294360
+20:37:39.716,Heart rate update,1320
+20:37:39.733,Face detection,12893941
+20:37:39.733,Heart rate update,1054
+20:37:39.753,Face detection,15637937
+20:37:39.753,Heart rate update,1969
+20:37:39.767,Face detection,12109549
+20:37:39.767,Heart rate update,1211
+20:37:39.790,Face detection,14657271
+20:37:39.790,Heart rate update,2375
+20:37:39.809,Face detection,17046660
+20:37:39.809,Heart rate update,2105
+20:37:39.830,Face detection,15382234
+20:37:39.830,Heart rate update,2571
+20:37:39.850,Face detection,17982892
+20:37:39.850,Heart rate update,2738
+20:37:39.870,Face detection,14841534
+20:37:39.870,Heart rate update,2183
+20:37:39.884,Face detection,12675395
+20:37:39.884,Heart rate update,1781
+20:37:39.905,Face detection,13310166
+20:37:39.905,Heart rate update,3402
+20:37:39.934,Face detection,14259590
+20:37:39.934,Heart rate update,3338
+20:37:39.962,Face detection,17783156
+20:37:39.962,Heart rate update,3184
+20:37:39.980,Face detection,16417183
+20:37:39.980,Heart rate update,4423
+20:37:40.010,Face detection,21721111
+20:37:40.010,Heart rate update,5018
+20:37:40.030,Face detection,17435068
+20:37:40.030,Heart rate update,2785
+20:37:40.052,Face detection,17646591
+20:37:40.052,Heart rate update,3306
+20:37:40.067,Face detection,13136089
+20:37:40.067,Heart rate update,2746
+20:37:40.091,Face detection,14269572
+20:37:40.118,Heart rate update,4194
+20:37:40.138,Face detection,18225382
+20:37:40.138,Heart rate update,3732
+20:37:40.169,Face detection,15245021
+20:37:40.169,Heart rate update,3377
+20:37:40.184,Face detection,13166257
+20:37:40.184,Heart rate update,3382
+20:37:40.208,Face detection,15525291
+20:37:40.208,Heart rate update,4553
+20:37:40.223,Face detection,13601630
+20:37:40.223,Heart rate update,4220
+20:37:40.246,Face detection,13707639
+20:37:40.246,Heart rate update,4011
+20:37:40.261,Face detection,13584370
+20:37:40.261,Heart rate update,5364
+20:37:40.289,Face detection,22282170
+20:37:40.289,Heart rate update,6985
+20:37:40.312,Face detection,21520817
+20:37:40.313,Pre-filtering,192169
+20:37:40.313,PPG calculation,17662
+20:37:40.313,Post-filtering,170767
+20:37:40.314,Welch,784056
+20:37:40.314,Smoothing,318
+20:37:40.314,Heart rate calculation,1261200
+20:37:40.341,Face detection,22719965
+20:37:40.341,Heart rate update,9860
+20:37:40.362,Face detection,17509526
+20:37:40.362,Heart rate update,2498
+20:37:40.389,Face detection,16432092
+20:37:40.389,Heart rate update,1900
+20:37:40.408,Face detection,15958705
+20:37:40.408,Heart rate update,2293
+20:37:40.431,Face detection,16630642
+20:37:40.431,Heart rate update,1617
+20:37:40.449,Face detection,15980575
+20:37:40.449,Heart rate update,2164
+20:37:40.468,Face detection,14927290
+20:37:40.468,Heart rate update,1956
+20:37:40.483,Face detection,13574123
+20:37:40.483,Heart rate update,1957
+20:37:40.501,Face detection,13291683
+20:37:40.501,Heart rate update,1689
+20:37:40.516,Face detection,13124587
+20:37:40.516,Heart rate update,1913
+20:37:40.534,Face detection,13267284
+20:37:40.534,Heart rate update,2281
+20:37:40.549,Face detection,13190012
+20:37:40.549,Heart rate update,2061
+20:37:40.566,Face detection,13200172
+20:37:40.566,Heart rate update,1966
+20:37:40.582,Face detection,13833808
+20:37:40.582,Heart rate update,20215
+20:37:40.602,Face detection,15362362
+20:37:40.602,Heart rate update,3992
+20:37:40.618,Face detection,14234664
+20:37:40.618,Heart rate update,4000
+20:37:40.648,Face detection,16238077
+20:37:40.648,Heart rate update,4245
+20:37:40.664,Face detection,13863226
+20:37:40.664,Heart rate update,4150
+20:37:40.684,Face detection,13778256
+20:37:40.684,Heart rate update,3121
+20:37:40.700,Face detection,14574865
+20:37:40.700,Heart rate update,3929
+20:37:40.721,Face detection,13268700
+20:37:40.721,Heart rate update,4142
+20:37:40.736,Face detection,12462274
+20:37:40.736,Heart rate update,3509
+20:37:40.760,Face detection,13659642
+20:37:40.760,Heart rate update,4888
+20:37:40.775,Face detection,13149899
+20:37:40.775,Heart rate update,3492
+20:37:40.794,Face detection,14506437
+20:37:40.794,Heart rate update,3879
+20:37:40.810,Face detection,14191422
+20:37:40.810,Heart rate update,3584
+20:37:40.827,Face detection,13189490
+20:37:40.827,Heart rate update,4230
+20:37:40.844,Face detection,14983810
+20:37:40.844,Heart rate update,4449
+20:37:40.946,Face detection,96944291
+20:37:40.946,Pre-filtering,158805
+20:37:40.946,PPG calculation,15976
+20:37:40.946,Post-filtering,152431
+20:37:40.947,Welch,662418
+20:37:40.947,Smoothing,510
+20:37:40.947,Heart rate calculation,1116879
+20:37:40.964,Face detection,15459139
+20:37:40.964,Heart rate update,7011
+20:37:40.981,Face detection,12433819
+20:37:40.982,Heart rate update,1248
+20:37:40.998,Face detection,14676238
+20:37:40.998,Heart rate update,1018
+20:37:41.014,Face detection,12421694
+20:37:41.014,Heart rate update,1361
+20:37:41.030,Face detection,13812967
+20:37:41.030,Heart rate update,1164
+20:37:41.048,Face detection,14172270
+20:37:41.048,Heart rate update,1692
+20:37:41.065,Face detection,15295528
+20:37:41.065,Heart rate update,1915
+20:37:41.084,Face detection,14276575
+20:37:41.084,Heart rate update,2614
+20:37:41.098,Face detection,13146157
+20:37:41.098,Heart rate update,2442
+20:37:41.116,Face detection,13750976
+20:37:41.116,Heart rate update,2321
+20:37:41.133,Face detection,15278357
+20:37:41.133,Heart rate update,2362
+20:37:41.151,Face detection,14252709
+20:37:41.151,Heart rate update,2071
+20:37:41.167,Face detection,13535357
+20:37:41.167,Heart rate update,2522
+20:37:41.184,Face detection,12266607
+20:37:41.184,Heart rate update,2653
+20:37:41.200,Face detection,14373798
+20:37:41.200,Heart rate update,2788
+20:37:41.221,Face detection,13704541
+20:37:41.221,Heart rate update,3348
+20:37:41.236,Face detection,13436147
+20:37:41.236,Heart rate update,2707
+20:37:41.259,Face detection,14054417
+20:37:41.259,Heart rate update,3546
+20:37:41.275,Face detection,13085836
+20:37:41.275,Heart rate update,3508
+20:37:41.293,Face detection,12985330
+20:37:41.293,Heart rate update,3711
+20:37:41.309,Face detection,14654684
+20:37:41.309,Heart rate update,4321
+20:37:41.328,Face detection,14951270
+20:37:41.329,Heart rate update,3516
+20:37:41.347,Face detection,15027645
+20:37:41.347,Heart rate update,3521
+20:37:41.364,Face detection,12691055
+20:37:41.365,Heart rate update,3692
+20:37:41.379,Face detection,12841764
+20:37:41.379,Heart rate update,3271
+20:37:41.396,Face detection,13494794
+20:37:41.396,Heart rate update,3664
+20:37:41.411,Face detection,12966159
+20:37:41.411,Heart rate update,3701
+20:37:41.427,Face detection,12316383
+20:37:41.427,Heart rate update,3529
+20:37:41.444,Face detection,15507364
+20:37:41.445,Pre-filtering,152295
+20:37:41.445,PPG calculation,15074
+20:37:41.445,Post-filtering,142320
+20:37:41.446,Welch,706495
+20:37:41.446,Smoothing,417
+20:37:41.446,Heart rate calculation,1116288
+20:37:41.463,Face detection,13030501
+20:37:41.463,Heart rate update,6175
+20:37:41.477,Face detection,13030345
+20:37:41.477,Heart rate update,1206
+20:37:41.494,Face detection,12721586
+20:37:41.494,Heart rate update,1247
+20:37:41.509,Face detection,13309099
+20:37:41.509,Heart rate update,1702
+20:37:41.527,Face detection,13552512
+20:37:41.527,Heart rate update,1513
+20:37:41.544,Face detection,16066643
+20:37:41.544,Heart rate update,2425
+20:37:41.565,Face detection,15931498
+20:37:41.565,Heart rate update,2252
+20:37:41.582,Face detection,15130288
+20:37:41.582,Heart rate update,3175
+20:37:41.601,Face detection,15289719
+20:37:41.601,Heart rate update,2162
+20:37:41.617,Face detection,14234470
+20:37:41.617,Heart rate update,2674
+20:37:41.637,Face detection,12402301
+20:37:41.637,Heart rate update,1831
+20:37:41.654,Face detection,14058264
+20:37:41.655,Heart rate update,2679
+20:37:41.676,Face detection,12474764
+20:37:41.680,Heart rate update,2337
+20:37:41.696,Face detection,13978111
+20:37:41.702,Heart rate update,3218
+20:37:41.725,Face detection,12610236
+20:37:41.734,Heart rate update,3593
+20:37:41.751,Face detection,15131923
+20:37:41.758,Heart rate update,5050
+20:37:41.779,Face detection,14612536
+20:37:41.779,Heart rate update,3399
+20:37:41.796,Face detection,13900557
+20:37:41.796,Heart rate update,3515
+20:37:41.814,Face detection,13389730
+20:37:41.814,Heart rate update,2670
+20:37:41.831,Face detection,14099399
+20:37:41.831,Heart rate update,2813
+20:37:41.850,Face detection,13820095
+20:37:41.850,Heart rate update,3158
+20:37:41.865,Face detection,13515143
+20:37:41.865,Heart rate update,3468
+20:37:41.883,Face detection,13993380
+20:37:41.883,Heart rate update,3082
+20:37:41.898,Face detection,13974641
+20:37:41.898,Heart rate update,4198
+20:37:41.916,Face detection,13501283
+20:37:41.916,Heart rate update,5330
+20:37:41.931,Face detection,13990934
+20:37:41.931,Heart rate update,4626
+20:37:41.949,Face detection,13347681
+20:37:41.949,Heart rate update,4270
+20:37:41.965,Face detection,14656955
+20:37:41.965,Heart rate update,5375
+20:37:41.985,Face detection,15487354
+20:37:41.985,Pre-filtering,173686
+20:37:41.985,PPG calculation,17097
+20:37:41.986,Post-filtering,188139
+20:37:41.986,Welch,744572
+20:37:41.986,Smoothing,574
+20:37:41.986,Heart rate calculation,1226138
+20:37:42.003,Face detection,14395328
+20:37:42.003,Heart rate update,6443
+20:37:42.106,Face detection,93545454
+20:37:42.106,Heart rate update,1891
+20:37:42.123,Face detection,14848854
+20:37:42.123,Heart rate update,2835
+20:37:42.148,Face detection,17463393
+20:37:42.148,Heart rate update,1901
+20:37:42.169,Face detection,16583319
+20:37:42.169,Heart rate update,2004
+20:37:42.195,Face detection,15470948
+20:37:42.195,Heart rate update,1778
+20:37:42.210,Face detection,13877636
+20:37:42.210,Heart rate update,2774
+20:37:42.227,Face detection,12540919
+20:37:42.227,Heart rate update,2126
+20:37:42.241,Face detection,12506866
+20:37:42.241,Heart rate update,2799
+20:37:42.260,Face detection,13910379
+20:37:42.260,Heart rate update,2635
+20:37:42.276,Face detection,13824181
+20:37:42.276,Heart rate update,1944
+20:37:42.294,Face detection,12906738
+20:37:42.294,Heart rate update,2301
+20:37:42.308,Face detection,12876769
+20:37:42.308,Heart rate update,2162
+20:37:42.325,Face detection,12296469
+20:37:42.325,Heart rate update,2390
+20:37:42.339,Face detection,12503465
+20:37:42.339,Heart rate update,2728
+20:37:42.359,Face detection,13028269
+20:37:42.359,Heart rate update,3985
+20:37:42.374,Face detection,13959695
+20:37:42.374,Heart rate update,2783
+20:37:42.398,Face detection,16599587
+20:37:42.398,Heart rate update,4769
+20:37:42.416,Face detection,15689050
+20:37:42.416,Heart rate update,3689
+20:37:42.437,Face detection,16401321
+20:37:42.438,Heart rate update,3795
+20:37:42.458,Face detection,17528035
+20:37:42.458,Heart rate update,3330
+20:37:42.478,Face detection,15615476
+20:37:42.478,Heart rate update,5360
+20:37:42.496,Face detection,15520423
+20:37:42.496,Heart rate update,4060
+20:37:42.513,Face detection,13046915
+20:37:42.513,Heart rate update,3695
+20:37:42.528,Face detection,13181791
+20:37:42.528,Heart rate update,4068
+20:37:42.545,Face detection,13529629
+20:37:42.545,Heart rate update,3730
+20:37:42.560,Face detection,12425665
+20:37:42.560,Heart rate update,4149
+20:37:42.577,Face detection,13256078
+20:37:42.577,Heart rate update,3928
+20:37:42.591,Face detection,12982671
+20:37:42.591,Pre-filtering,140418
+20:37:42.592,PPG calculation,13894
+20:37:42.592,Post-filtering,132623
+20:37:42.592,Welch,644427
+20:37:42.592,Smoothing,284
+20:37:42.592,Heart rate calculation,1009144
+20:37:42.610,Face detection,13886839
+20:37:42.610,Heart rate update,7017
+20:37:42.626,Face detection,13866794
+20:37:42.626,Heart rate update,1554
+20:37:42.646,Face detection,15565816
+20:37:42.646,Heart rate update,1365
+20:37:42.663,Face detection,14973434
+20:37:42.663,Heart rate update,1648
+20:37:42.681,Face detection,14204579
+20:37:42.681,Heart rate update,1550
+20:37:42.696,Face detection,13160919
+20:37:42.696,Heart rate update,1686
+20:37:42.716,Face detection,15364114
+20:37:42.716,Heart rate update,2227
+20:37:42.733,Face detection,15111670
+20:37:42.733,Heart rate update,2668
+20:37:42.754,Face detection,16161512
+20:37:42.754,Heart rate update,2734
+20:37:42.768,Face detection,12427776
+20:37:42.768,Heart rate update,2132
+20:37:42.795,Face detection,13347358
+20:37:42.795,Heart rate update,3209
+20:37:42.810,Face detection,13422427
+20:37:42.810,Heart rate update,2530
+20:37:42.827,Face detection,12034322
+20:37:42.827,Heart rate update,2358
+20:37:42.841,Face detection,12665924
+20:37:42.841,Heart rate update,2923
+20:37:42.863,Face detection,14547461
+20:37:42.864,Heart rate update,4221
+20:37:42.880,Face detection,14025434
+20:37:42.880,Heart rate update,3420
+20:37:42.898,Face detection,13007514
+20:37:42.898,Heart rate update,2576
+20:37:42.913,Face detection,13508916
+20:37:42.913,Heart rate update,3153
+20:37:42.931,Face detection,13250962
+20:37:42.931,Heart rate update,2861
+20:37:42.945,Face detection,12411408
+20:37:42.945,Heart rate update,3242
+20:37:42.964,Face detection,12845099
+20:37:42.964,Heart rate update,2897
+20:37:42.978,Face detection,12296203
+20:37:42.978,Heart rate update,19645
+20:37:42.998,Face detection,13039422
+20:37:42.998,Heart rate update,3568
+20:37:43.013,Face detection,13024098
+20:37:43.013,Heart rate update,3188
+20:37:43.030,Face detection,12812046
+20:37:43.030,Heart rate update,3180
+20:37:43.044,Face detection,12480869
+20:37:43.044,Heart rate update,3991
+20:37:43.064,Face detection,12828184
+20:37:43.064,Heart rate update,3970
+20:37:43.078,Face detection,12355966
+20:37:43.078,Heart rate update,3944
+20:37:43.098,Face detection,13306923
+20:37:43.098,Pre-filtering,141954
+20:37:43.098,PPG calculation,13974
+20:37:43.098,Post-filtering,134059
+20:37:43.099,Welch,847099
+20:37:43.099,Smoothing,221
+20:37:43.099,Heart rate calculation,1239122
+20:37:43.114,Face detection,12874289
+20:37:43.114,Heart rate update,6137
+20:37:43.132,Face detection,13719223
+20:37:43.132,Heart rate update,1664
+20:37:43.150,Face detection,16252577
+20:37:43.150,Heart rate update,1527
+20:37:43.248,Face detection,93230936
+20:37:43.248,Heart rate update,3438
+20:37:43.273,Face detection,14894971
+20:37:43.273,Heart rate update,2143
+20:37:43.302,Face detection,15072733
+20:37:43.302,Heart rate update,2303
+20:37:43.317,Face detection,12990866
+20:37:43.317,Heart rate update,1727
+20:37:43.333,Face detection,12607463
+20:37:43.334,Heart rate update,1840
+20:37:43.349,Face detection,13489378
+20:37:43.349,Heart rate update,1677
+20:37:43.365,Face detection,12421031
+20:37:43.365,Heart rate update,1826
+20:37:43.380,Face detection,13831480
+20:37:43.381,Heart rate update,2093
+20:37:43.398,Face detection,12796784
+20:37:43.398,Heart rate update,1717
+20:37:43.412,Face detection,12676422
+20:37:43.412,Heart rate update,2270
+20:37:43.430,Face detection,12569447
+20:37:43.430,Heart rate update,2214
+20:37:43.448,Face detection,15634077
+20:37:43.448,Heart rate update,3137
+20:37:43.468,Face detection,15296064
+20:37:43.468,Heart rate update,2786
+20:37:43.485,Face detection,15575669
+20:37:43.485,Heart rate update,2999
+20:37:43.514,Face detection,13902456
+20:37:43.514,Heart rate update,3862
+20:37:43.531,Face detection,15424260
+20:37:43.531,Heart rate update,2774
+20:37:43.552,Face detection,16471347
+20:37:43.552,Heart rate update,4736
+20:37:43.569,Face detection,14499033
+20:37:43.569,Heart rate update,3191
+20:37:43.597,Face detection,15333296
+20:37:43.597,Heart rate update,3265
+20:37:43.613,Face detection,13524447
+20:37:43.613,Heart rate update,3102
+20:37:43.629,Face detection,12369126
+20:37:43.629,Heart rate update,3462
+20:37:43.645,Face detection,14327093
+20:37:43.645,Heart rate update,3634
+20:37:43.664,Face detection,14527014
+20:37:43.664,Heart rate update,4380
+20:37:43.680,Face detection,14711462
+20:37:43.680,Heart rate update,4526
+20:37:43.700,Face detection,13632832
+20:37:43.700,Heart rate update,3957
+20:37:43.716,Face detection,14496576
+20:37:43.716,Pre-filtering,143450
+20:37:43.716,PPG calculation,14192
+20:37:43.716,Post-filtering,132562
+20:37:43.717,Welch,650947
+20:37:43.717,Smoothing,297
+20:37:43.717,Heart rate calculation,1054928
+20:37:43.737,Face detection,12409002
+20:37:43.737,Heart rate update,6256
+20:37:43.757,Face detection,15803335
+20:37:43.757,Heart rate update,1484
+20:37:43.776,Face detection,13653383
+20:37:43.776,Heart rate update,1416
+20:37:43.791,Face detection,13790216
+20:37:43.791,Heart rate update,1925
+20:37:43.809,Face detection,13612799
+20:37:43.809,Heart rate update,1468
+20:37:43.824,Face detection,13560575
+20:37:43.824,Heart rate update,2496
+20:37:43.842,Face detection,13736076
+20:37:43.842,Heart rate update,2242
+20:37:43.858,Face detection,13821753
+20:37:43.858,Heart rate update,2885
+20:37:43.876,Face detection,13762439
+20:37:43.876,Heart rate update,2132
+20:37:43.891,Face detection,13301407
+20:37:43.891,Heart rate update,2023
+20:37:43.910,Face detection,13673745
+20:37:43.910,Heart rate update,2115
+20:37:43.925,Face detection,13595415
+20:37:43.925,Heart rate update,3080
+20:37:43.944,Face detection,14422626
+20:37:43.944,Heart rate update,2988
+20:37:43.961,Face detection,14789049
+20:37:43.961,Heart rate update,3200
+20:37:43.979,Face detection,14286255
+20:37:43.979,Heart rate update,3684
+20:37:43.995,Face detection,14046084
+20:37:43.995,Heart rate update,4521
+20:37:44.013,Face detection,13972828
+20:37:44.013,Heart rate update,3661
+20:37:44.028,Face detection,13757015
+20:37:44.028,Heart rate update,3496
+20:37:44.046,Face detection,13510394
+20:37:44.046,Heart rate update,3144
+20:37:44.061,Face detection,13067845
+20:37:44.061,Heart rate update,3371
+20:37:44.078,Face detection,13357647
+20:37:44.078,Heart rate update,3150
+20:37:44.094,Face detection,13687037
+20:37:44.094,Heart rate update,3845
+20:37:44.111,Face detection,13943683
+20:37:44.112,Heart rate update,3820
+20:37:44.127,Face detection,14142444
+20:37:44.127,Heart rate update,4215
+20:37:44.147,Face detection,13853845
+20:37:44.147,Heart rate update,3741
+20:37:44.162,Face detection,13394192
+20:37:44.162,Heart rate update,3697
+20:37:44.180,Face detection,13911130
+20:37:44.180,Heart rate update,3713
+20:37:44.196,Face detection,13962021
+20:37:44.196,Heart rate update,3536
+20:37:44.213,Face detection,13525366
+20:37:44.214,Pre-filtering,159189
+20:37:44.214,PPG calculation,15560
+20:37:44.214,Post-filtering,155269
+20:37:44.214,Welch,656259
+20:37:44.215,Smoothing,251
+20:37:44.215,Heart rate calculation,1070640
+20:37:44.230,Face detection,13467578
+20:37:44.230,Heart rate update,6290
+20:37:44.247,Face detection,13488579
+20:37:44.247,Heart rate update,1428
+20:37:44.262,Face detection,13327428
+20:37:44.262,Heart rate update,1222
+20:37:44.279,Face detection,12456923
+20:37:44.279,Heart rate update,1606
+20:37:44.293,Face detection,12671790
+20:37:44.293,Heart rate update,1381
+20:37:44.390,Face detection,93319958
+20:37:44.390,Heart rate update,2098
+20:37:44.408,Face detection,14247474
+20:37:44.408,Heart rate update,2408
+20:37:44.427,Face detection,14664443
+20:37:44.427,Heart rate update,3506
+20:37:44.443,Face detection,13459932
+20:37:44.443,Heart rate update,2707
+20:37:44.460,Face detection,13493385
+20:37:44.460,Heart rate update,1931
+20:37:44.475,Face detection,12921914
+20:37:44.475,Heart rate update,2158
+20:37:44.492,Face detection,12521594
+20:37:44.492,Heart rate update,2693
+20:37:44.506,Face detection,12819336
+20:37:44.506,Heart rate update,2453
+20:37:44.525,Face detection,13552921
+20:37:44.525,Heart rate update,2868
+20:37:44.541,Face detection,13763809
+20:37:44.541,Heart rate update,2856
+20:37:44.559,Face detection,13468731
+20:37:44.559,Heart rate update,3494
+20:37:44.574,Face detection,12894788
+20:37:44.574,Heart rate update,2793
+20:37:44.593,Face detection,13667829
+20:37:44.593,Heart rate update,4257
+20:37:44.612,Face detection,16348096
+20:37:44.612,Heart rate update,3494
+20:37:44.629,Face detection,12882481
+20:37:44.629,Heart rate update,2971
+20:37:44.645,Face detection,14164469
+20:37:44.645,Heart rate update,2858
+20:37:44.662,Face detection,13221371
+20:37:44.662,Heart rate update,3133
+20:37:44.677,Face detection,13216741
+20:37:44.677,Heart rate update,3303
+20:37:44.695,Face detection,13484321
+20:37:44.695,Heart rate update,3443
+20:37:44.710,Face detection,13586853
+20:37:44.710,Heart rate update,3309
+20:37:44.727,Face detection,13152551
+20:37:44.727,Heart rate update,4288
+20:37:44.742,Face detection,13359140
+20:37:44.742,Heart rate update,3115
+20:37:44.759,Face detection,13273971
+20:37:44.760,Heart rate update,5112
+20:37:44.775,Face detection,13665692
+20:37:44.775,Pre-filtering,172466
+20:37:44.775,PPG calculation,15433
+20:37:44.775,Post-filtering,150047
+20:37:44.776,Welch,681635
+20:37:44.776,Smoothing,296
+20:37:44.776,Heart rate calculation,1114426
+20:37:44.795,Face detection,14227498
+20:37:44.795,Heart rate update,6607
+20:37:44.810,Face detection,13694185
+20:37:44.810,Heart rate update,1156
+20:37:44.826,Face detection,12334029
+20:37:44.826,Heart rate update,1411
+20:37:44.840,Face detection,12512181
+20:37:44.840,Heart rate update,1759
+20:37:44.860,Face detection,13914461
+20:37:44.860,Heart rate update,1389
+20:37:44.874,Face detection,12259637
+20:37:44.874,Heart rate update,1441
+20:37:44.893,Face detection,13289653
+20:37:44.893,Heart rate update,1922
+20:37:44.907,Face detection,12272758
+20:37:44.907,Heart rate update,2060
+20:37:44.925,Face detection,12728636
+20:37:44.925,Heart rate update,2038
+20:37:44.940,Face detection,12956044
+20:37:44.940,Heart rate update,2099
+20:37:44.959,Face detection,13583818
+20:37:44.959,Heart rate update,2085
+20:37:44.975,Face detection,13551180
+20:37:44.975,Heart rate update,2219
+20:37:44.993,Face detection,13468029
+20:37:44.993,Heart rate update,2063
+20:37:45.007,Face detection,12688574
+20:37:45.007,Heart rate update,2807
+20:37:45.025,Face detection,12617619
+20:37:45.025,Heart rate update,2367
+20:37:45.039,Face detection,12435487
+20:37:45.039,Heart rate update,3218
+20:37:45.060,Face detection,13780480
+20:37:45.060,Heart rate update,2545
+20:37:45.074,Face detection,13152354
+20:37:45.074,Heart rate update,2696
+20:37:45.092,Face detection,13412945
+20:37:45.092,Heart rate update,3065
+20:37:45.107,Face detection,13199222
+20:37:45.107,Heart rate update,3006
+20:37:45.125,Face detection,12928159
+20:37:45.125,Heart rate update,3908
+20:37:45.141,Face detection,14409542
+20:37:45.141,Heart rate update,3304
+20:37:45.161,Face detection,14325344
+20:37:45.161,Heart rate update,3822
+20:37:45.177,Face detection,14095120
+20:37:45.177,Heart rate update,3165
+20:37:45.196,Face detection,14728364
+20:37:45.196,Heart rate update,3910
+20:37:45.212,Face detection,14424420
+20:37:45.212,Heart rate update,3640
+20:37:45.229,Face detection,13827446
+20:37:45.230,Heart rate update,3432
+20:37:45.245,Face detection,13474026
+20:37:45.245,Heart rate update,4181
+20:37:45.262,Face detection,13316855
+20:37:45.263,Pre-filtering,159067
+20:37:45.263,PPG calculation,15491
+20:37:45.263,Post-filtering,150488
+20:37:45.263,Welch,655146
+20:37:45.263,Smoothing,555
+20:37:45.263,Heart rate calculation,1063665
+20:37:45.278,Face detection,13212777
+20:37:45.278,Heart rate update,6431
+20:37:45.296,Face detection,13392673
+20:37:45.296,Heart rate update,1695
+20:37:45.311,Face detection,13340120
+20:37:45.311,Heart rate update,1600
+20:37:45.328,Face detection,13472902
+20:37:45.328,Heart rate update,1963
+20:37:45.343,Face detection,13265908
+20:37:45.343,Heart rate update,2027
+20:37:45.361,Face detection,13358406
+20:37:45.365,Heart rate update,1646
+20:37:45.381,Face detection,13799582
+20:37:45.381,Heart rate update,2280
+20:37:45.477,Face detection,91944448
+20:37:45.477,Heart rate update,2685
+20:37:45.493,Face detection,13313584
+20:37:45.493,Heart rate update,1855
+20:37:45.510,Face detection,12622684
+20:37:45.510,Heart rate update,1989
+20:37:45.526,Face detection,12445870
+20:37:45.526,Heart rate update,1894
+20:37:45.543,Face detection,12698468
+20:37:45.543,Heart rate update,2167
+20:37:45.558,Face detection,12535528
+20:37:45.558,Heart rate update,2271
+20:37:45.575,Face detection,12980798
+20:37:45.575,Heart rate update,2237
+20:37:45.590,Face detection,12848688
+20:37:45.590,Heart rate update,2789
+20:37:45.611,Face detection,12960851
+20:37:45.611,Heart rate update,2936
+20:37:45.626,Face detection,13833904
+20:37:45.626,Heart rate update,3168
+20:37:45.646,Face detection,15221033
+20:37:45.646,Heart rate update,3503
+20:37:45.661,Face detection,13246099
+20:37:45.661,Heart rate update,3096
+20:37:45.679,Face detection,13226889
+20:37:45.679,Heart rate update,2629
+20:37:45.693,Face detection,12668235
+20:37:45.693,Heart rate update,3244
+20:37:45.711,Face detection,13177928
+20:37:45.711,Heart rate update,3722
+20:37:45.725,Face detection,12324716
+20:37:45.725,Heart rate update,3710
+20:37:45.743,Face detection,13377893
+20:37:45.749,Heart rate update,3134
+20:37:45.763,Face detection,13062233
+20:37:45.763,Heart rate update,3052
+20:37:45.780,Face detection,13232245
+20:37:45.780,Heart rate update,3019
+20:37:45.795,Face detection,13415329
+20:37:45.795,Heart rate update,3782
+20:37:45.813,Face detection,13838946
+20:37:45.813,Heart rate update,3955
+20:37:45.828,Face detection,13415890
+20:37:45.829,Pre-filtering,163808
+20:37:45.829,PPG calculation,15374
+20:37:45.829,Post-filtering,156878
+20:37:45.830,Welch,681687
+20:37:45.830,Smoothing,248
+20:37:45.830,Heart rate calculation,1101761
+20:37:45.847,Face detection,13443402
+20:37:45.847,Heart rate update,7492
+20:37:45.862,Face detection,13330294
+20:37:45.862,Heart rate update,1230
+20:37:45.880,Face detection,13565340
+20:37:45.880,Heart rate update,1023
+20:37:45.895,Face detection,13255500
+20:37:45.895,Heart rate update,2034
+20:37:45.912,Face detection,13538334
+20:37:45.912,Heart rate update,1589
+20:37:45.927,Face detection,13248082
+20:37:45.927,Heart rate update,4918
+20:37:45.945,Face detection,13750763
+20:37:45.945,Heart rate update,1932
+20:37:45.961,Face detection,14397037
+20:37:45.961,Heart rate update,2371
+20:37:45.978,Face detection,13289765
+20:37:45.978,Heart rate update,2345
+20:37:45.994,Face detection,13800460
+20:37:45.994,Heart rate update,2438
+20:37:46.013,Face detection,14806893
+20:37:46.013,Heart rate update,2846
+20:37:46.029,Face detection,14429308
+20:37:46.029,Heart rate update,3626
+20:37:46.048,Face detection,14789679
+20:37:46.048,Heart rate update,2516
+20:37:46.064,Face detection,13811122
+20:37:46.064,Heart rate update,3384
+20:37:46.083,Face detection,14937434
+20:37:46.083,Heart rate update,3015
+20:37:46.103,Face detection,18584438
+20:37:46.103,Heart rate update,5049
+20:37:46.139,Face detection,18730596
+20:37:46.139,Heart rate update,5924
+20:37:46.157,Face detection,15855475
+20:37:46.169,Heart rate update,7172
+20:37:46.203,Face detection,14994503
+20:37:46.203,Heart rate update,3616
+20:37:46.218,Face detection,13105924
+20:37:46.218,Heart rate update,2962
+20:37:46.237,Face detection,13520236
+20:37:46.237,Heart rate update,3028
+20:37:46.253,Face detection,13407013
+20:37:46.253,Heart rate update,3037
+20:37:46.276,Face detection,13345461
+20:37:46.276,Heart rate update,3255
+20:37:46.292,Face detection,13578582
+20:37:46.292,Heart rate update,3584
+20:37:46.310,Face detection,14346213
+20:37:46.310,Heart rate update,22066
+20:37:46.328,Face detection,16448657
+20:37:46.328,Heart rate update,4445
+20:37:46.350,Face detection,17255265
+20:37:46.350,Heart rate update,4998
+20:37:46.368,Face detection,16617950
+20:37:46.368,Heart rate update,4889
+20:37:46.398,Face detection,16890982
+20:37:46.398,Pre-filtering,198404
+20:37:46.398,PPG calculation,19681
+20:37:46.398,Post-filtering,186802
+20:37:46.399,Welch,799211
+20:37:46.399,Smoothing,349
+20:37:46.399,Heart rate calculation,1335862
+20:37:46.415,Face detection,14409189
+20:37:46.416,Heart rate update,7647
+20:37:46.435,Face detection,14731780
+20:37:46.435,Heart rate update,1000
+20:37:46.450,Face detection,13636034
+20:37:46.460,Heart rate update,1765
+20:37:46.482,Face detection,16681151
+20:37:46.482,Heart rate update,2706
+20:37:46.500,Face detection,16920427
+20:37:46.500,Heart rate update,1515
+20:37:46.525,Face detection,15666868
+20:37:46.525,Heart rate update,1983
+20:37:46.542,Face detection,14774647
+20:37:46.542,Heart rate update,1912
+20:37:46.562,Face detection,14161789
+20:37:46.562,Heart rate update,2548
+20:37:46.578,Face detection,14001261
+20:37:46.578,Heart rate update,2175
+20:37:46.675,Face detection,92800382
+20:37:46.675,Heart rate update,2407
+20:37:46.689,Face detection,12101053
+20:37:46.689,Heart rate update,2817
+20:37:46.717,Face detection,13522684
+20:37:46.717,Heart rate update,2254
+20:37:46.732,Face detection,13225743
+20:37:46.732,Heart rate update,2604
+20:37:46.752,Face detection,15205584
+20:37:46.752,Heart rate update,3724
+20:37:46.767,Face detection,13618613
+20:37:46.767,Heart rate update,2857
+20:37:46.785,Face detection,13926278
+20:37:46.785,Heart rate update,3586
+20:37:46.802,Face detection,13539185
+20:37:46.819,Heart rate update,3922
+20:37:46.845,Face detection,15236658
+20:37:46.845,Heart rate update,3293
+20:37:46.860,Face detection,13610420
+20:37:46.861,Heart rate update,3057
+20:37:46.878,Face detection,13531473
+20:37:46.878,Heart rate update,3163
+20:37:46.893,Face detection,13159909
+20:37:46.893,Heart rate update,3313
+20:37:46.913,Face detection,15335878
+20:37:46.913,Heart rate update,3571
+20:37:46.928,Face detection,13318035
+20:37:46.928,Heart rate update,4293
+20:37:46.948,Face detection,13877474
+20:37:46.948,Heart rate update,3279
+20:37:46.963,Face detection,13492539
+20:37:46.963,Heart rate update,3667
+20:37:46.981,Face detection,13522250
+20:37:46.981,Heart rate update,3563
+20:37:46.996,Face detection,13441209
+20:37:46.996,Heart rate update,4524
+20:37:47.013,Face detection,13576449
+20:37:47.013,Heart rate update,3877
+20:37:47.028,Face detection,13379749
+20:37:47.028,Pre-filtering,162313
+20:37:47.028,PPG calculation,15676
+20:37:47.029,Post-filtering,156118
+20:37:47.029,Welch,668145
+20:37:47.029,Smoothing,514
+20:37:47.029,Heart rate calculation,1109430
+20:37:47.047,Face detection,13963284
+20:37:47.047,Heart rate update,8238
+20:37:47.062,Face detection,13316760
+20:37:47.062,Heart rate update,1398
+20:37:47.079,Face detection,13273467
+20:37:47.079,Heart rate update,1268
+20:37:47.095,Face detection,13480232
+20:37:47.095,Heart rate update,1888
+20:37:47.112,Face detection,13727194
+20:37:47.112,Heart rate update,2094
+20:37:47.128,Face detection,13729893
+20:37:47.128,Heart rate update,1727
+20:37:47.147,Face detection,14368712
+20:37:47.147,Heart rate update,2999
+20:37:47.163,Face detection,14267004
+20:37:47.163,Heart rate update,2953
+20:37:47.181,Face detection,13978948
+20:37:47.181,Heart rate update,2263
+20:37:47.199,Face detection,16419874
+20:37:47.199,Heart rate update,3444
+20:37:47.220,Face detection,16291106
+20:37:47.220,Heart rate update,3041
+20:37:47.239,Face detection,16917929
+20:37:47.239,Heart rate update,4009
+20:37:47.262,Face detection,15269660
+20:37:47.262,Heart rate update,3563
+20:37:47.278,Face detection,14338448
+20:37:47.278,Heart rate update,2925
+20:37:47.297,Face detection,13858908
+20:37:47.297,Heart rate update,3539
+20:37:47.312,Face detection,13664936
+20:37:47.312,Heart rate update,4159
+20:37:47.330,Face detection,13546253
+20:37:47.330,Heart rate update,2784
+20:37:47.345,Face detection,14016777
+20:37:47.345,Heart rate update,4255
+20:37:47.363,Face detection,13470954
+20:37:47.363,Heart rate update,2933
+20:37:47.377,Face detection,13268221
+20:37:47.377,Heart rate update,3518
+20:37:47.396,Face detection,14007446
+20:37:47.396,Heart rate update,2916
+20:37:47.410,Face detection,12690866
+20:37:47.410,Heart rate update,3910
+20:37:47.426,Face detection,12175847
+20:37:47.426,Heart rate update,3854
+20:37:47.443,Face detection,15828357
+20:37:47.444,Heart rate update,3554
+20:37:47.463,Face detection,13889025
+20:37:47.463,Heart rate update,3229
+20:37:47.478,Face detection,13179043
+20:37:47.478,Heart rate update,3638
+20:37:47.496,Face detection,13581417
+20:37:47.496,Heart rate update,3361
+20:37:47.511,Face detection,13428846
+20:37:47.511,Heart rate update,4562
+20:37:47.530,Face detection,14628620
+20:37:47.530,Pre-filtering,172259
+20:37:47.530,PPG calculation,15893
+20:37:47.530,Post-filtering,186864
+20:37:47.531,Welch,675681
+20:37:47.531,Smoothing,267
+20:37:47.531,Heart rate calculation,1159393
+20:37:47.548,Face detection,14918750
+20:37:47.548,Heart rate update,8275
+20:37:47.566,Face detection,14541668
+20:37:47.566,Heart rate update,1891
+20:37:47.582,Face detection,14464903
+20:37:47.583,Heart rate update,1245
+20:37:47.602,Face detection,15339372
+20:37:47.602,Heart rate update,2223
+20:37:47.623,Face detection,13805118
+20:37:47.623,Heart rate update,1952
+20:37:47.648,Face detection,15510553
+20:37:47.648,Heart rate update,2201
+20:37:47.663,Face detection,13087735
+20:37:47.663,Heart rate update,1732
+20:37:47.680,Face detection,12755855
+20:37:47.680,Heart rate update,3216
+20:37:47.694,Face detection,12359946
+20:37:47.694,Heart rate update,2192
+20:37:47.712,Face detection,13339340
+20:37:47.712,Heart rate update,2528
+20:37:47.727,Face detection,13343294
+20:37:47.727,Heart rate update,2425
+20:37:47.824,Face detection,92191894
+20:37:47.824,Heart rate update,2647
+20:37:47.840,Face detection,13419846
+20:37:47.840,Heart rate update,2445
+20:37:47.859,Face detection,13352514
+20:37:47.859,Heart rate update,2876
+20:37:47.874,Face detection,13217776
+20:37:47.874,Heart rate update,2455
+20:37:47.892,Face detection,13393225
+20:37:47.892,Heart rate update,4083
+20:37:47.908,Face detection,13691770
+20:37:47.908,Heart rate update,3408
+20:37:47.927,Face detection,13786623
+20:37:47.927,Heart rate update,3286
+20:37:47.942,Face detection,14267290
+20:37:47.942,Heart rate update,4667
+20:37:47.963,Face detection,14006923
+20:37:47.963,Heart rate update,3363
+20:37:47.978,Face detection,14056829
+20:37:47.978,Heart rate update,4065
+20:37:47.997,Face detection,14578498
+20:37:47.997,Heart rate update,4772
+20:37:48.015,Face detection,15459656
+20:37:48.015,Heart rate update,3771
+20:37:48.033,Face detection,14222026
+20:37:48.033,Heart rate update,4195
+20:37:48.049,Face detection,14202082
+20:37:48.049,Heart rate update,3863
+20:37:48.066,Face detection,13440155
+20:37:48.066,Heart rate update,3875
+20:37:48.082,Face detection,13547525
+20:37:48.082,Heart rate update,3554
+20:37:48.100,Face detection,14284612
+20:37:48.100,Heart rate update,4186
+20:37:48.115,Face detection,13684274
+20:37:48.116,Pre-filtering,165174
+20:37:48.116,PPG calculation,16380
+20:37:48.116,Post-filtering,159172
+20:37:48.116,Welch,686149
+20:37:48.117,Smoothing,220
+20:37:48.117,Heart rate calculation,1134782
+20:37:48.135,Face detection,13439766
+20:37:48.135,Heart rate update,7208
+20:37:48.150,Face detection,13313907
+20:37:48.150,Heart rate update,1354
+20:37:48.167,Face detection,13586115
+20:37:48.167,Heart rate update,1498
+20:37:48.183,Face detection,13939742
+20:37:48.183,Heart rate update,1458
+20:37:48.201,Face detection,13327860
+20:37:48.201,Heart rate update,2100
+20:37:48.216,Face detection,13385635
+20:37:48.216,Heart rate update,2412
+20:37:48.234,Face detection,13455007
+20:37:48.234,Heart rate update,1720
+20:37:48.250,Face detection,13817844
+20:37:48.250,Heart rate update,2725
+20:37:48.267,Face detection,13411975
+20:37:48.267,Heart rate update,2375
+20:37:48.283,Face detection,13331650
+20:37:48.283,Heart rate update,2089
+20:37:48.301,Face detection,13512037
+20:37:48.301,Heart rate update,2024
+20:37:48.316,Face detection,13482154
+20:37:48.316,Heart rate update,3220
+20:37:48.335,Face detection,14714620
+20:37:48.335,Heart rate update,2866
+20:37:48.353,Face detection,15753420
+20:37:48.353,Heart rate update,3469
+20:37:48.378,Face detection,15249431
+20:37:48.378,Heart rate update,3857
+20:37:48.394,Face detection,14944502
+20:37:48.394,Heart rate update,3049
+20:37:48.412,Face detection,13718830
+20:37:48.412,Heart rate update,3849
+20:37:48.427,Face detection,13491988
+20:37:48.427,Heart rate update,2861
+20:37:48.445,Face detection,13440399
+20:37:48.445,Heart rate update,3724
+20:37:48.460,Face detection,13339892
+20:37:48.460,Heart rate update,2848
+20:37:48.477,Face detection,13393158
+20:37:48.477,Heart rate update,3506
+20:37:48.492,Face detection,13762956
+20:37:48.492,Heart rate update,4483
+20:37:48.510,Face detection,13454138
+20:37:48.510,Heart rate update,3681
+20:37:48.525,Face detection,13280359
+20:37:48.525,Heart rate update,3841
+20:37:48.543,Face detection,13436415
+20:37:48.543,Heart rate update,4380
+20:37:48.558,Face detection,13899255
+20:37:48.558,Heart rate update,4704
+20:37:48.576,Face detection,13492549
+20:37:48.576,Heart rate update,4456
+20:37:48.592,Face detection,13323034
+20:37:48.592,Heart rate update,4852
+20:37:48.610,Face detection,14183949
+20:37:48.611,Pre-filtering,160130
+20:37:48.611,PPG calculation,15973
+20:37:48.611,Post-filtering,150402
+20:37:48.611,Welch,658469
+20:37:48.612,Smoothing,237
+20:37:48.612,Heart rate calculation,1084257
+20:37:48.626,Face detection,13095393
+20:37:48.626,Heart rate update,11699
+20:37:48.644,Face detection,13275098
+20:37:48.644,Heart rate update,1303
+20:37:48.659,Face detection,13217006
+20:37:48.659,Heart rate update,1397
+20:37:48.677,Face detection,14042284
+20:37:48.677,Heart rate update,2098
+20:37:48.691,Face detection,13203575
+20:37:48.692,Heart rate update,1666
+20:37:48.709,Face detection,13417474
+20:37:48.709,Heart rate update,2112
+20:37:48.724,Face detection,12998095
+20:37:48.724,Heart rate update,1887
+20:37:48.742,Face detection,13804368
+20:37:48.743,Heart rate update,3305
+20:37:48.758,Face detection,14133422
+20:37:48.758,Heart rate update,1918
+20:37:48.776,Face detection,13610152
+20:37:48.777,Heart rate update,2913
+20:37:48.792,Face detection,13537292
+20:37:48.792,Heart rate update,3015
+20:37:48.810,Face detection,14157835
+20:37:48.811,Heart rate update,2517
+20:37:48.826,Face detection,13221948
+20:37:48.826,Heart rate update,2651
+20:37:48.923,Face detection,92851150
+20:37:48.923,Heart rate update,2964
+20:37:48.938,Face detection,13295349
+20:37:48.938,Heart rate update,3446
+20:37:48.960,Face detection,13479776
+20:37:48.960,Heart rate update,4484
+20:37:48.975,Face detection,13285237
+20:37:48.975,Heart rate update,3863
+20:37:48.993,Face detection,13392589
+20:37:48.993,Heart rate update,4140
+20:37:49.008,Face detection,13432901
+20:37:49.008,Heart rate update,3486
+20:37:49.027,Face detection,13850600
+20:37:49.027,Heart rate update,3238
+20:37:49.042,Face detection,13566319
+20:37:49.043,Heart rate update,3393
+20:37:49.060,Face detection,13317066
+20:37:49.060,Heart rate update,3066
+20:37:49.075,Face detection,13260759
+20:37:49.075,Heart rate update,3516
+20:37:49.094,Face detection,13536084
+20:37:49.094,Heart rate update,3690
+20:37:49.109,Face detection,13393462
+20:37:49.109,Heart rate update,4306
+20:37:49.128,Face detection,13893104
+20:37:49.128,Heart rate update,3850
+20:37:49.143,Face detection,13662001
+20:37:49.143,Heart rate update,5472
+20:37:49.163,Face detection,13823989
+20:37:49.163,Heart rate update,3835
+20:37:49.178,Face detection,13593500
+20:37:49.178,Pre-filtering,170948
+20:37:49.178,PPG calculation,16541
+20:37:49.178,Post-filtering,159251
+20:37:49.179,Welch,721594
+20:37:49.179,Smoothing,314
+20:37:49.179,Heart rate calculation,1180068
+20:37:49.198,Face detection,13888647
+20:37:49.198,Heart rate update,7341
+20:37:49.214,Face detection,13726788
+20:37:49.214,Heart rate update,1334
+20:37:49.231,Face detection,13570275
+20:37:49.231,Heart rate update,1708
+20:37:49.246,Face detection,13363915
+20:37:49.247,Heart rate update,2127
+20:37:49.264,Face detection,13170383
+20:37:49.264,Heart rate update,1883
+20:37:49.279,Face detection,13253803
+20:37:49.279,Heart rate update,1985
+20:37:49.296,Face detection,13417802
+20:37:49.296,Heart rate update,2177
+20:37:49.312,Face detection,13943662
+20:37:49.312,Heart rate update,2528
+20:37:49.329,Face detection,13408382
+20:37:49.329,Heart rate update,2320
+20:37:49.344,Face detection,13073987
+20:37:49.344,Heart rate update,2388
+20:37:49.362,Face detection,13341141
+20:37:49.362,Heart rate update,2636
+20:37:49.376,Face detection,13282331
+20:37:49.377,Heart rate update,2691
+20:37:49.394,Face detection,13910037
+20:37:49.394,Heart rate update,2310
+20:37:49.409,Face detection,13376782
+20:37:49.409,Heart rate update,2952
+20:37:49.428,Face detection,13761721
+20:37:49.428,Heart rate update,2366
+20:37:49.443,Face detection,13840368
+20:37:49.443,Heart rate update,3210
+20:37:49.461,Face detection,13373784
+20:37:49.461,Heart rate update,3123
+20:37:49.476,Face detection,13255023
+20:37:49.476,Heart rate update,2829
+20:37:49.494,Face detection,13427911
+20:37:49.494,Heart rate update,2954
+20:37:49.509,Face detection,13486811
+20:37:49.509,Heart rate update,3140
+20:37:49.526,Face detection,13278283
+20:37:49.526,Heart rate update,3209
+20:37:49.542,Face detection,13778014
+20:37:49.542,Heart rate update,4127
+20:37:49.560,Face detection,14216467
+20:37:49.560,Heart rate update,3711
+20:37:49.577,Face detection,15087068
+20:37:49.577,Heart rate update,4602
+20:37:49.598,Face detection,16525538
+20:37:49.598,Heart rate update,3737
+20:37:49.616,Face detection,15810149
+20:37:49.616,Heart rate update,4638
+20:37:49.637,Face detection,16200224
+20:37:49.637,Heart rate update,4551
+20:37:49.654,Face detection,15495104
+20:37:49.654,Heart rate update,4599
+20:37:49.687,Face detection,14872459
+20:37:49.688,Pre-filtering,160756
+20:37:49.688,PPG calculation,15616
+20:37:49.688,Post-filtering,151865
+20:37:49.688,Welch,672215
+20:37:49.689,Smoothing,269
+20:37:49.689,Heart rate calculation,1117347
+20:37:49.704,Face detection,13209964
+20:37:49.704,Heart rate update,7098
+20:37:49.726,Face detection,13507503
+20:37:49.726,Heart rate update,1654
+20:37:49.741,Face detection,13300702
+20:37:49.741,Heart rate update,1181
+20:37:49.759,Face detection,13387664
+20:37:49.759,Heart rate update,2219
+20:37:49.774,Face detection,13686782
+20:37:49.774,Heart rate update,1898
+20:37:49.793,Face detection,13822592
+20:37:49.793,Heart rate update,1672
+20:37:49.808,Face detection,13531329
+20:37:49.809,Heart rate update,1924
+20:37:49.826,Face detection,13921738
+20:37:49.826,Heart rate update,2898
+20:37:49.841,Face detection,13316723
+20:37:49.841,Heart rate update,3072
+20:37:49.863,Face detection,13295993
+20:37:49.863,Heart rate update,2346
+20:37:49.878,Face detection,13449827
+20:37:49.887,Heart rate update,3170
+20:37:49.911,Face detection,14024174
+20:37:49.911,Heart rate update,2609
+20:37:49.927,Face detection,13909565
+20:37:49.927,Heart rate update,2717
+20:37:49.945,Face detection,14091421
+20:37:49.945,Heart rate update,2514
+20:37:49.960,Face detection,13840785
+20:37:49.960,Heart rate update,4021
+20:37:50.058,Face detection,92709332
+20:37:50.058,Heart rate update,3935
+20:37:50.073,Face detection,13283761
+20:37:50.073,Heart rate update,3053
+20:37:50.100,Face detection,13868849
+20:37:50.100,Heart rate update,3550
+20:37:50.116,Face detection,13393421
+20:37:50.116,Heart rate update,2989
+20:37:50.134,Face detection,13463036
+20:37:50.134,Heart rate update,3973
+20:37:50.150,Face detection,13947791
+20:37:50.150,Heart rate update,3522
+20:37:50.168,Face detection,14180729
+20:37:50.168,Heart rate update,3868
+20:37:50.184,Face detection,13871259
+20:37:50.184,Heart rate update,3762
+20:37:50.205,Face detection,13523510
+20:37:50.205,Heart rate update,3853
+20:37:50.220,Face detection,13128993
+20:37:50.220,Heart rate update,3461
+20:37:50.243,Face detection,13696058
+20:37:50.243,Heart rate update,3444
+20:37:50.260,Face detection,13438159
+20:37:50.269,Heart rate update,6845
+20:37:50.296,Face detection,15887745
+20:37:50.296,Heart rate update,3841
+20:37:50.310,Face detection,13261230
+20:37:50.311,Pre-filtering,159648
+20:37:50.311,PPG calculation,15842
+20:37:50.311,Post-filtering,150588
+20:37:50.311,Welch,681543
+20:37:50.312,Smoothing,243
+20:37:50.312,Heart rate calculation,1111157
+20:37:50.329,Face detection,13538204
+20:37:50.329,Heart rate update,9780
+20:37:50.345,Face detection,14189456
+20:37:50.345,Heart rate update,1392
+20:37:50.363,Face detection,13937590
+20:37:50.363,Heart rate update,1247
+20:37:50.378,Face detection,13348022
+20:37:50.378,Heart rate update,2444
+20:37:50.396,Face detection,13551074
+20:37:50.396,Heart rate update,1686
+20:37:50.411,Face detection,13401431
+20:37:50.411,Heart rate update,1812
+20:37:50.429,Face detection,13958266
+20:37:50.429,Heart rate update,1856
+20:37:50.444,Face detection,13207587
+20:37:50.444,Heart rate update,2572
+20:37:50.461,Face detection,13451361
+20:37:50.461,Heart rate update,2230
+20:37:50.476,Face detection,13262143
+20:37:50.476,Heart rate update,2369
+20:37:50.494,Face detection,13504910
+20:37:50.494,Heart rate update,2276
+20:37:50.508,Face detection,13212652
+20:37:50.509,Heart rate update,2472
+20:37:50.526,Face detection,13486831
+20:37:50.526,Heart rate update,2173
+20:37:50.541,Face detection,13437137
+20:37:50.541,Heart rate update,2775
+20:37:50.559,Face detection,13409922
+20:37:50.559,Heart rate update,3061
+20:37:50.574,Face detection,13247515
+20:37:50.574,Heart rate update,3473
+20:37:50.593,Face detection,13419578
+20:37:50.593,Heart rate update,3331
+20:37:50.608,Face detection,13413502
+20:37:50.608,Heart rate update,3909
+20:37:50.626,Face detection,13612659
+20:37:50.626,Heart rate update,5868
+20:37:50.641,Face detection,13752616
+20:37:50.641,Heart rate update,4252
+20:37:50.663,Face detection,13655204
+20:37:50.663,Heart rate update,3047
+20:37:50.679,Face detection,13363454
+20:37:50.679,Heart rate update,3281
+20:37:50.696,Face detection,13610803
+20:37:50.696,Heart rate update,3755
+20:37:50.711,Face detection,13347716
+20:37:50.711,Heart rate update,3476
+20:37:50.728,Face detection,13359199
+20:37:50.728,Heart rate update,3640
+20:37:50.744,Face detection,13589115
+20:37:50.744,Heart rate update,3915
+20:37:50.761,Face detection,13617003
+20:37:50.761,Heart rate update,4054
+20:37:50.777,Face detection,14206256
+20:37:50.777,Heart rate update,3738
+20:37:50.795,Face detection,13803471
+20:37:50.795,Pre-filtering,163313
+20:37:50.795,PPG calculation,16006
+20:37:50.796,Post-filtering,154855
+20:37:50.796,Welch,674065
+20:37:50.796,Smoothing,273
+20:37:50.796,Heart rate calculation,1110657
+20:37:50.811,Face detection,13587970
+20:37:50.811,Heart rate update,7502
+20:37:50.830,Face detection,13943377
+20:37:50.830,Heart rate update,1286
+20:37:50.849,Face detection,17766982
+20:37:50.849,Heart rate update,2979
+20:37:50.874,Face detection,20399517
+20:37:50.874,Heart rate update,3093
+20:37:50.894,Face detection,18135825
+20:37:50.894,Heart rate update,1974
+20:37:50.917,Face detection,14527965
+20:37:50.917,Heart rate update,1656
+20:37:50.933,Face detection,13706033
+20:37:50.933,Heart rate update,2061
+20:37:50.950,Face detection,13561782
+20:37:50.950,Heart rate update,2071
+20:37:50.966,Face detection,13498672
+20:37:50.966,Heart rate update,1799
+20:37:50.984,Face detection,13482434
+20:37:50.987,Heart rate update,2760
+20:37:51.003,Face detection,13468154
+20:37:51.003,Heart rate update,2178
+20:37:51.026,Face detection,13495304
+20:37:51.027,Heart rate update,2196
+20:37:51.042,Face detection,13541966
+20:37:51.042,Heart rate update,2925
+20:37:51.060,Face detection,13514609
+20:37:51.060,Heart rate update,2614
+20:37:51.075,Face detection,13672090
+20:37:51.076,Heart rate update,2957
+20:37:51.094,Face detection,13446498
+20:37:51.094,Heart rate update,3308
+20:37:51.110,Face detection,14092138
+20:37:51.110,Heart rate update,3084
+20:37:51.206,Face detection,92632928
+20:37:51.206,Heart rate update,3024
+20:37:51.221,Face detection,13244411
+20:37:51.221,Heart rate update,3084
+20:37:51.241,Face detection,13273531
+20:37:51.241,Heart rate update,3090
+20:37:51.257,Face detection,13351116
+20:37:51.257,Heart rate update,2975
+20:37:51.275,Face detection,13731863
+20:37:51.275,Heart rate update,3141
+20:37:51.291,Face detection,13729524
+20:37:51.291,Heart rate update,3347
+20:37:51.309,Face detection,13338100
+20:37:51.309,Heart rate update,3243
+20:37:51.323,Face detection,13071918
+20:37:51.323,Heart rate update,3496
+20:37:51.342,Face detection,13266717
+20:37:51.342,Heart rate update,3199
+20:37:51.357,Face detection,13047187
+20:37:51.357,Heart rate update,3734
+20:37:51.375,Face detection,13127929
+20:37:51.375,Heart rate update,3622
+20:37:51.390,Face detection,13404682
+20:37:51.390,Pre-filtering,158769
+20:37:51.390,PPG calculation,15630
+20:37:51.391,Post-filtering,151214
+20:37:51.391,Welch,681567
+20:37:51.391,Smoothing,302
+20:37:51.391,Heart rate calculation,1109369
+20:37:51.409,Face detection,13321793
+20:37:51.409,Heart rate update,6395
+20:37:51.424,Face detection,13441118
+20:37:51.424,Heart rate update,1832
+20:37:51.443,Face detection,13326032
+20:37:51.443,Heart rate update,1506
+20:37:51.457,Face detection,13177868
+20:37:51.457,Heart rate update,1686
+20:37:51.475,Face detection,13230621
+20:37:51.475,Heart rate update,1917
+20:37:51.491,Face detection,13675135
+20:37:51.491,Heart rate update,1867
+20:37:51.509,Face detection,13634290
+20:37:51.509,Heart rate update,1690
+20:37:51.524,Face detection,13623438
+20:37:51.524,Heart rate update,2457
+20:37:51.542,Face detection,13811319
+20:37:51.542,Heart rate update,2368
+20:37:51.557,Face detection,13501214
+20:37:51.557,Heart rate update,2131
+20:37:51.576,Face detection,13338869
+20:37:51.576,Heart rate update,2507
+20:37:51.592,Face detection,13504565
+20:37:51.592,Heart rate update,2911
+20:37:51.609,Face detection,13452120
+20:37:51.609,Heart rate update,2702
+20:37:51.624,Face detection,13455924
+20:37:51.642,Heart rate update,3846
+20:37:51.661,Face detection,14883858
+20:37:51.661,Heart rate update,3469
+20:37:51.676,Face detection,13407939
+20:37:51.676,Heart rate update,3228
+20:37:51.693,Face detection,13191567
+20:37:51.693,Heart rate update,2804
+20:37:51.709,Face detection,13745352
+20:37:51.709,Heart rate update,3251
+20:37:51.726,Face detection,13239657
+20:37:51.726,Heart rate update,3262
+20:37:51.741,Face detection,13282473
+20:37:51.741,Heart rate update,2859
+20:37:51.759,Face detection,13199329
+20:37:51.759,Heart rate update,3080
+20:37:51.774,Face detection,13220781
+20:37:51.774,Heart rate update,3239
+20:37:51.793,Face detection,13455867
+20:37:51.793,Heart rate update,3149
+20:37:51.808,Face detection,13168521
+20:37:51.808,Heart rate update,3504
+20:37:51.826,Face detection,13436034
+20:37:51.826,Heart rate update,3719
+20:37:51.842,Face detection,13565875
+20:37:51.842,Heart rate update,3884
+20:37:51.861,Face detection,13261082
+20:37:51.861,Heart rate update,3826
+20:37:51.876,Face detection,13131127
+20:37:51.876,Heart rate update,3584
+20:37:51.894,Face detection,13545360
+20:37:51.894,Pre-filtering,163356
+20:37:51.894,PPG calculation,16462
+20:37:51.895,Post-filtering,152670
+20:37:51.895,Welch,643804
+20:37:51.895,Smoothing,243
+20:37:51.895,Heart rate calculation,1123950
+20:37:51.911,Face detection,14559183
+20:37:51.911,Heart rate update,9551
+20:37:51.931,Face detection,15200063
+20:37:51.931,Heart rate update,1778
+20:37:51.947,Face detection,14080045
+20:37:51.947,Heart rate update,1435
+20:37:51.965,Face detection,13497813
+20:37:51.965,Heart rate update,2130
+20:37:51.980,Face detection,13650543
+20:37:51.981,Heart rate update,2047
+20:37:51.998,Face detection,13764163
+20:37:51.999,Heart rate update,2284
+20:37:52.015,Face detection,15019775
+20:37:52.015,Heart rate update,1973
+20:37:52.033,Face detection,14044472
+20:37:52.033,Heart rate update,3039
+20:37:52.049,Face detection,13707222
+20:37:52.049,Heart rate update,2342
+20:37:52.067,Face detection,13558861
+20:37:52.067,Heart rate update,1914
+20:37:52.082,Face detection,13422859
+20:37:52.082,Heart rate update,2093
+20:37:52.100,Face detection,13507201
+20:37:52.100,Heart rate update,2193
+20:37:52.116,Face detection,13533937
+20:37:52.116,Heart rate update,2372
+20:37:52.133,Face detection,13358919
+20:37:52.133,Heart rate update,2751
+20:37:52.149,Face detection,13991393
+20:37:52.149,Heart rate update,2993
+20:37:52.167,Face detection,13774762
+20:37:52.167,Heart rate update,3463
+20:37:52.183,Face detection,13643605
+20:37:52.183,Heart rate update,3143
+20:37:52.200,Face detection,13759545
+20:37:52.200,Heart rate update,4015
+20:37:52.216,Face detection,13754808
+20:37:52.216,Heart rate update,2931
+20:37:52.316,Face detection,95037865
+20:37:52.316,Heart rate update,2652
+20:37:52.331,Face detection,13346536
+20:37:52.331,Heart rate update,2769
+20:37:52.349,Face detection,13727638
+20:37:52.349,Heart rate update,3627
+20:37:52.364,Face detection,13378260
+20:37:52.364,Heart rate update,3455
+20:37:52.382,Face detection,13748135
+20:37:52.382,Heart rate update,3306
+20:37:52.397,Face detection,13583511
+20:37:52.397,Heart rate update,3917
+20:37:52.415,Face detection,13464574
+20:37:52.415,Heart rate update,4139
+20:37:52.430,Face detection,13224597
+20:37:52.430,Heart rate update,3566
+20:37:52.447,Face detection,13715877
+20:37:52.447,Heart rate update,4229
+20:37:52.462,Face detection,13303913
+20:37:52.463,Pre-filtering,160964
+20:37:52.463,PPG calculation,15601
+20:37:52.463,Post-filtering,150863
+20:37:52.464,Welch,681376
+20:37:52.464,Smoothing,241
+20:37:52.464,Heart rate calculation,1095875
+20:37:52.481,Face detection,13262032
+20:37:52.481,Heart rate update,7012
+20:37:52.496,Face detection,13373647
+20:37:52.496,Heart rate update,1406
+20:37:52.513,Face detection,13278643
+20:37:52.513,Heart rate update,1303
+20:37:52.529,Face detection,13374808
+20:37:52.529,Heart rate update,1757
+20:37:52.546,Face detection,13248380
+20:37:52.546,Heart rate update,1477
+20:37:52.561,Face detection,13415806
+20:37:52.561,Heart rate update,1755
+20:37:52.579,Face detection,14003201
+20:37:52.579,Heart rate update,2558
+20:37:52.595,Face detection,14542161
+20:37:52.595,Heart rate update,3248
+20:37:52.619,Face detection,15770339
+20:37:52.619,Heart rate update,2700
+20:37:52.635,Face detection,14995491
+20:37:52.635,Heart rate update,3338
+20:37:52.662,Face detection,13572522
+20:37:52.662,Heart rate update,2222
+20:37:52.677,Face detection,13327225
+20:37:52.677,Heart rate update,2477
+20:37:52.695,Face detection,13876190
+20:37:52.695,Heart rate update,2791
+20:37:52.710,Face detection,13693176
+20:37:52.710,Heart rate update,2638
+20:37:52.727,Face detection,13306218
+20:37:52.728,Heart rate update,2533
+20:37:52.743,Face detection,13977916
+20:37:52.743,Heart rate update,4369
+20:37:52.761,Face detection,13624267
+20:37:52.761,Heart rate update,2673
+20:37:52.777,Face detection,13678414
+20:37:52.777,Heart rate update,3867
+20:37:52.798,Face detection,13935592
+20:37:52.798,Heart rate update,2935
+20:37:52.814,Face detection,14013537
+20:37:52.814,Heart rate update,3028
+20:37:52.832,Face detection,13803148
+20:37:52.832,Heart rate update,3953
+20:37:52.849,Face detection,15418122
+20:37:52.849,Heart rate update,4106
+20:37:52.867,Face detection,13858826
+20:37:52.867,Heart rate update,3385
+20:37:52.882,Face detection,13591347
+20:37:52.883,Heart rate update,6419
+20:37:52.900,Face detection,13695657
+20:37:52.900,Heart rate update,3932
+20:37:52.916,Face detection,14209084
+20:37:52.916,Heart rate update,3730
+20:37:52.934,Face detection,13737553
+20:37:52.934,Heart rate update,3624
+20:37:52.950,Face detection,13908768
+20:37:52.950,Heart rate update,4059
+20:37:52.968,Face detection,13566258
+20:37:52.968,Pre-filtering,201185
+20:37:52.968,PPG calculation,16050
+20:37:52.968,Post-filtering,155615
+20:37:52.969,Welch,658469
+20:37:52.969,Smoothing,251
+20:37:52.969,Heart rate calculation,1148784
+20:37:52.984,Face detection,13314911
+20:37:52.984,Heart rate update,6727
+20:37:53.004,Face detection,13627503
+20:37:53.004,Heart rate update,1920
+20:37:53.021,Face detection,13346897
+20:37:53.021,Heart rate update,1339
+20:37:53.043,Face detection,14645710
+20:37:53.043,Heart rate update,2323
+20:37:53.066,Face detection,13669552
+20:37:53.066,Heart rate update,1982
+20:37:53.084,Face detection,13937379
+20:37:53.084,Heart rate update,2076
+20:37:53.099,Face detection,13700893
+20:37:53.100,Heart rate update,1972
+20:37:53.119,Face detection,14711200
+20:37:53.119,Heart rate update,3052
+20:37:53.134,Face detection,13921145
+20:37:53.134,Heart rate update,2428
+20:37:53.160,Face detection,14144757
+20:37:53.160,Heart rate update,2361
+20:37:53.176,Face detection,13938512
+20:37:53.176,Heart rate update,2265
+20:37:53.195,Face detection,14559635
+20:37:53.195,Heart rate update,3584
+20:37:53.211,Face detection,14444579
+20:37:53.211,Heart rate update,3165
+20:37:53.230,Face detection,14987928
+20:37:53.230,Heart rate update,5091
+20:37:53.246,Face detection,14645234
+20:37:53.246,Heart rate update,2372
+20:37:53.265,Face detection,13793833
+20:37:53.265,Heart rate update,4158
+20:37:53.280,Face detection,13446169
+20:37:53.280,Heart rate update,2756
+20:37:53.297,Face detection,13378907
+20:37:53.297,Heart rate update,3196
+20:37:53.312,Face detection,13318281
+20:37:53.312,Heart rate update,3114
+20:37:53.329,Face detection,13395467
+20:37:53.329,Heart rate update,3496
+20:37:53.344,Face detection,13474598
+20:37:53.345,Heart rate update,3738
+20:37:53.442,Face detection,93812543
+20:37:53.442,Heart rate update,3222
+20:37:53.460,Face detection,13370746
+20:37:53.460,Heart rate update,3678
+20:37:53.478,Face detection,13914878
+20:37:53.478,Heart rate update,4113
+20:37:53.494,Face detection,13646622
+20:37:53.494,Heart rate update,3808
+20:37:53.513,Face detection,13476519
+20:37:53.513,Heart rate update,3960
+20:37:53.531,Face detection,14085756
+20:37:53.531,Heart rate update,4636
+20:37:53.549,Face detection,13660865
+20:37:53.549,Heart rate update,4104
+20:37:53.564,Face detection,13992542
+20:37:53.564,Pre-filtering,159932
+20:37:53.564,PPG calculation,16152
+20:37:53.565,Post-filtering,150439
+20:37:53.565,Welch,664558
+20:37:53.565,Smoothing,392
+20:37:53.565,Heart rate calculation,1080693
+20:37:53.584,Face detection,14184369
+20:37:53.584,Heart rate update,6708
+20:37:53.599,Face detection,13763824
+20:37:53.600,Heart rate update,1959
+20:37:53.618,Face detection,14182781
+20:37:53.618,Heart rate update,1405
+20:37:53.637,Face detection,14142888
+20:37:53.637,Heart rate update,1984
+20:37:53.660,Face detection,14621392
+20:37:53.660,Heart rate update,1805
+20:37:53.675,Face detection,13486393
+20:37:53.675,Heart rate update,2038
+20:37:53.693,Face detection,13591057
+20:37:53.693,Heart rate update,1729
+20:37:53.708,Face detection,13339663
+20:37:53.708,Heart rate update,2737
+20:37:53.726,Face detection,13284559
+20:37:53.726,Heart rate update,2743
+20:37:53.741,Face detection,13395118
+20:37:53.741,Heart rate update,2827
+20:37:53.759,Face detection,13537938
+20:37:53.759,Heart rate update,2668
+20:37:53.774,Face detection,13572004
+20:37:53.774,Heart rate update,2750
+20:37:53.793,Face detection,13962966
+20:37:53.793,Heart rate update,2879
+20:37:53.809,Face detection,13757001
+20:37:53.809,Heart rate update,3518
+20:37:53.827,Face detection,13590979
+20:37:53.827,Heart rate update,2865
+20:37:53.842,Face detection,13578304
+20:37:53.842,Heart rate update,4338
+20:37:53.859,Face detection,13463052
+20:37:53.860,Heart rate update,2963
+20:37:53.874,Face detection,13232060
+20:37:53.874,Heart rate update,2748
+20:37:53.892,Face detection,13591942
+20:37:53.892,Heart rate update,2755
+20:37:53.907,Face detection,13496371
+20:37:53.908,Heart rate update,2953
+20:37:53.925,Face detection,13571967
+20:37:53.926,Heart rate update,3010
+20:37:53.942,Face detection,14020328
+20:37:53.942,Heart rate update,4300
+20:37:53.961,Face detection,15016243
+20:37:53.961,Heart rate update,3578
+20:37:53.977,Face detection,14251223
+20:37:53.977,Heart rate update,4517
+20:37:53.999,Face detection,14728570
+20:37:53.999,Heart rate update,3908
+20:37:54.016,Face detection,15418852
+20:37:54.016,Heart rate update,4475
+20:37:54.035,Face detection,15142525
+20:37:54.035,Heart rate update,3914
+20:37:54.052,Face detection,15282101
+20:37:54.052,Heart rate update,4254
+20:37:54.078,Face detection,14053193
+20:37:54.078,Pre-filtering,164672
+20:37:54.078,PPG calculation,16135
+20:37:54.078,Post-filtering,159139
+20:37:54.079,Welch,680133
+20:37:54.079,Smoothing,259
+20:37:54.079,Heart rate calculation,1118172
+20:37:54.094,Face detection,14000093
+20:37:54.095,Heart rate update,7177
+20:37:54.113,Face detection,14321526
+20:37:54.113,Heart rate update,1439
+20:37:54.128,Face detection,13347900
+20:37:54.128,Heart rate update,1425
+20:37:54.146,Face detection,13612212
+20:37:54.146,Heart rate update,1923
+20:37:54.161,Face detection,13214010
+20:37:54.161,Heart rate update,1987
+20:37:54.178,Face detection,13341366
+20:37:54.178,Heart rate update,1557
+20:37:54.193,Face detection,13759272
+20:37:54.193,Heart rate update,2506
+20:37:54.211,Face detection,13940152
+20:37:54.211,Heart rate update,2601
+20:37:54.227,Face detection,13509576
+20:37:54.227,Heart rate update,2065
+20:37:54.246,Face detection,13844159
+20:37:54.246,Heart rate update,2954
+20:37:54.261,Face detection,13619046
+20:37:54.261,Heart rate update,2620
+20:37:54.280,Face detection,14169603
+20:37:54.280,Heart rate update,2784
+20:37:54.295,Face detection,13578506
+20:37:54.295,Heart rate update,2669
+20:37:54.312,Face detection,13400379
+20:37:54.312,Heart rate update,3905
+20:37:54.328,Face detection,14198003
+20:37:54.328,Heart rate update,3811
+20:37:54.348,Face detection,15534765
+20:37:54.348,Heart rate update,3957
+20:37:54.364,Face detection,14375553
+20:37:54.364,Heart rate update,3839
+20:37:54.382,Face detection,14144014
+20:37:54.382,Heart rate update,2909
+20:37:54.397,Face detection,13458305
+20:37:54.398,Heart rate update,4356
+20:37:54.415,Face detection,13478566
+20:37:54.415,Heart rate update,3410
+20:37:54.430,Face detection,13196897
+20:37:54.430,Heart rate update,3997
+20:37:54.447,Face detection,13403444
+20:37:54.447,Heart rate update,3617
+20:37:54.462,Face detection,13372885
+20:37:54.462,Heart rate update,4135
+20:37:54.572,Face detection,105978112
+20:37:54.572,Heart rate update,6272
+20:37:54.594,Face detection,19681847
+20:37:54.594,Heart rate update,3948
+20:37:54.617,Face detection,18137193
+20:37:54.617,Heart rate update,4617
+20:37:54.634,Face detection,15078247
+20:37:54.634,Heart rate update,4233
+20:37:54.655,Face detection,14237682
+20:37:54.655,Heart rate update,3924
+20:37:54.671,Face detection,13469989
+20:37:54.671,Pre-filtering,186096
+20:37:54.671,PPG calculation,17442
+20:37:54.671,Post-filtering,156868
+20:37:54.672,Welch,665597
+20:37:54.672,Smoothing,287
+20:37:54.672,Heart rate calculation,1200275
+20:37:54.700,Face detection,13593410
+20:37:54.700,Heart rate update,11159
+20:37:54.716,Face detection,13276098
+20:37:54.716,Heart rate update,1268
+20:37:54.734,Face detection,13748306
+20:37:54.734,Heart rate update,1453
+20:37:54.751,Face detection,14827288
+20:37:54.751,Heart rate update,2049
+20:37:54.776,Face detection,14254304
+20:37:54.776,Heart rate update,1873
+20:37:54.793,Face detection,15607018
+20:37:54.793,Heart rate update,1894
+20:37:54.813,Face detection,13674578
+20:37:54.813,Heart rate update,2289
+20:37:54.828,Face detection,13359474
+20:37:54.828,Heart rate update,2668
+20:37:54.845,Face detection,13354185
+20:37:54.846,Heart rate update,2620
+20:37:54.861,Face detection,13829025
+20:37:54.861,Heart rate update,2464
+20:37:54.879,Face detection,13395761
+20:37:54.879,Heart rate update,3279
+20:37:54.894,Face detection,13412172
+20:37:54.894,Heart rate update,3121
+20:37:54.911,Face detection,13422752
+20:37:54.911,Heart rate update,2820
+20:37:54.926,Face detection,13377775
+20:37:54.927,Heart rate update,2902
+20:37:54.944,Face detection,13291068
+20:37:54.944,Heart rate update,3534
+20:37:54.959,Face detection,13164121
+20:37:54.959,Heart rate update,3790
+20:37:54.977,Face detection,13360969
+20:37:54.977,Heart rate update,3383
+20:37:54.992,Face detection,13668075
+20:37:54.992,Heart rate update,4180
+20:37:55.011,Face detection,14101608
+20:37:55.011,Heart rate update,3525
+20:37:55.026,Face detection,13331727
+20:37:55.031,Heart rate update,4194
+20:37:55.053,Face detection,17574139
+20:37:55.053,Heart rate update,4284
+20:37:55.071,Face detection,15810347
+20:37:55.071,Heart rate update,4849
+20:37:55.094,Face detection,14188966
+20:37:55.094,Heart rate update,4296
+20:37:55.109,Face detection,13684905
+20:37:55.109,Heart rate update,3892
+20:37:55.127,Face detection,13691994
+20:37:55.127,Heart rate update,4985
+20:37:55.144,Face detection,15067409
+20:37:55.144,Heart rate update,4712
+20:37:55.163,Face detection,14519324
+20:37:55.163,Heart rate update,4927
+20:37:55.180,Face detection,16034322
+20:37:55.180,Heart rate update,5123
+20:37:55.201,Face detection,16789076
+20:37:55.201,Pre-filtering,269221
+20:37:55.201,PPG calculation,18623
+20:37:55.202,Post-filtering,179596
+20:37:55.202,Welch,779640
+20:37:55.202,Smoothing,406
+20:37:55.203,Heart rate calculation,1399447
+20:37:55.221,Face detection,16274474
+20:37:55.221,Heart rate update,8287
+20:37:55.248,Face detection,18049520
+20:37:55.248,Heart rate update,1927
+20:37:55.266,Face detection,16132890
+20:37:55.266,Heart rate update,1467
+20:37:55.287,Face detection,16020954
+20:37:55.287,Heart rate update,2692
+20:37:55.308,Face detection,17878426
+20:37:55.308,Heart rate update,2529
+20:37:55.332,Face detection,15319084
+20:37:55.333,Heart rate update,2196
+20:37:55.349,Face detection,14456283
+20:37:55.349,Heart rate update,2646
+20:37:55.367,Face detection,13892689
+20:37:55.367,Heart rate update,2745
+20:37:55.383,Face detection,13526594
+20:37:55.383,Heart rate update,2163
+20:37:55.403,Face detection,15598318
+20:37:55.418,Heart rate update,2468
+20:37:55.434,Face detection,14236626
+20:37:55.434,Heart rate update,2690
+20:37:55.455,Face detection,14081983
+20:37:55.455,Heart rate update,2915
+20:37:55.471,Face detection,13321227
+20:37:55.471,Heart rate update,2780
+20:37:55.502,Face detection,15565994
+20:37:55.502,Heart rate update,3460
+20:37:55.519,Face detection,14365776
+20:37:55.519,Heart rate update,2929
+20:37:55.545,Face detection,14751468
+20:37:55.545,Heart rate update,4255
+20:37:55.561,Face detection,14080467
+20:37:55.561,Heart rate update,3795
+20:37:55.582,Face detection,15543083
+20:37:55.582,Heart rate update,4025
+20:37:55.600,Face detection,15854936
+20:37:55.600,Heart rate update,4141
+20:37:55.620,Face detection,16105582
+20:37:55.620,Heart rate update,4631
+20:37:55.640,Face detection,15950504
+20:37:55.640,Heart rate update,4056
+20:37:55.665,Face detection,15333999
+20:37:55.665,Heart rate update,4433
+20:37:55.681,Face detection,14139936
+20:37:55.681,Heart rate update,4615
+20:37:55.698,Face detection,13471650
+20:37:55.699,Heart rate update,3753
+20:37:55.713,Face detection,13259887
+20:37:55.713,Heart rate update,4101
+20:37:55.810,Face detection,92117342
+20:37:55.810,Heart rate update,4058
+20:37:55.826,Face detection,13834166
+20:37:55.826,Heart rate update,4676
+20:37:55.844,Face detection,13523683
+20:37:55.844,Heart rate update,4291
+20:37:55.859,Face detection,13442354
+20:37:55.859,Pre-filtering,164696
+20:37:55.859,PPG calculation,15877
+20:37:55.859,Post-filtering,151435
+20:37:55.860,Welch,680717
+20:37:55.860,Smoothing,245
+20:37:55.860,Heart rate calculation,1102007
+20:37:55.877,Face detection,13423250
+20:37:55.877,Heart rate update,6694
+20:37:55.892,Face detection,13373946
+20:37:55.892,Heart rate update,1431
+20:37:55.910,Face detection,13437913
+20:37:55.910,Heart rate update,1609
+20:37:55.925,Face detection,13459825
+20:37:55.925,Heart rate update,1597
+20:37:55.943,Face detection,13515416
+20:37:55.943,Heart rate update,1677
+20:37:55.958,Face detection,13554594
+20:37:55.958,Heart rate update,1927
+20:37:55.976,Face detection,14253024
+20:37:55.976,Heart rate update,2164
+20:37:55.992,Face detection,13555086
+20:37:55.992,Heart rate update,2638
+20:37:56.012,Face detection,13940052
+20:37:56.012,Heart rate update,2201
+20:37:56.028,Face detection,14173278
+20:37:56.028,Heart rate update,2460
+20:37:56.046,Face detection,14098126
+20:37:56.046,Heart rate update,3173
+20:37:56.062,Face detection,13881119
+20:37:56.062,Heart rate update,3133
+20:37:56.079,Face detection,13566077
+20:37:56.079,Heart rate update,2944
+20:37:56.094,Face detection,13248757
+20:37:56.094,Heart rate update,3590
+20:37:56.112,Face detection,13507726
+20:37:56.112,Heart rate update,2774
+20:37:56.127,Face detection,13316271
+20:37:56.127,Heart rate update,3934
+20:37:56.144,Face detection,13488002
+20:37:56.144,Heart rate update,2750
+20:37:56.159,Face detection,13368319
+20:37:56.159,Heart rate update,3554
+20:37:56.177,Face detection,13411633
+20:37:56.177,Heart rate update,3007
+20:37:56.192,Face detection,13420998
+20:37:56.192,Heart rate update,3746
+20:37:56.210,Face detection,13691548
+20:37:56.210,Heart rate update,2976
+20:37:56.226,Face detection,14459080
+20:37:56.226,Heart rate update,4040
+20:37:56.267,Face detection,14844069
+20:37:56.267,Heart rate update,3313
+20:37:56.284,Face detection,14461174
+20:37:56.284,Heart rate update,4482
+20:37:56.315,Face detection,15404175
+20:37:56.316,Heart rate update,3626
+20:37:56.333,Face detection,15548751
+20:37:56.333,Heart rate update,4045
+20:37:56.352,Face detection,15149697
+20:37:56.352,Heart rate update,4519
+20:37:56.367,Face detection,13855990
+20:37:56.367,Heart rate update,4257
+20:37:56.395,Face detection,13964655
+20:37:56.395,Pre-filtering,161341
+20:37:56.395,PPG calculation,15572
+20:37:56.395,Post-filtering,150708
+20:37:56.396,Welch,655583
+20:37:56.396,Smoothing,303
+20:37:56.396,Heart rate calculation,1070888
+20:37:56.411,Face detection,13568039
+20:37:56.411,Heart rate update,7133
+20:37:56.431,Face detection,13512956
+20:37:56.431,Heart rate update,1161
+20:37:56.446,Face detection,13394344
+20:37:56.446,Heart rate update,1353
+20:37:56.463,Face detection,13471695
+20:37:56.463,Heart rate update,1665
+20:37:56.481,Face detection,16166350
+20:37:56.481,Heart rate update,1687
+20:37:56.499,Face detection,13331989
+20:37:56.499,Heart rate update,1548
+20:37:56.513,Face detection,13181809
+20:37:56.514,Heart rate update,1621
+20:37:56.531,Face detection,13622895
+20:37:56.531,Heart rate update,2391
+20:37:56.546,Face detection,13567019
+20:37:56.546,Heart rate update,1921
+20:37:56.564,Face detection,13705348
+20:37:56.564,Heart rate update,1928
+20:37:56.579,Face detection,13350132
+20:37:56.579,Heart rate update,1957
+20:37:56.598,Face detection,14495461
+20:37:56.599,Heart rate update,2854
+20:37:56.613,Face detection,13366170
+20:37:56.613,Heart rate update,2528
+20:37:56.631,Face detection,13747295
+20:37:56.631,Heart rate update,3695
+20:37:56.646,Face detection,13342092
+20:37:56.646,Heart rate update,2698
+20:37:56.664,Face detection,13410036
+20:37:56.664,Heart rate update,3315
+20:37:56.679,Face detection,13225547
+20:37:56.679,Heart rate update,3100
+20:37:56.697,Face detection,13590665
+20:37:56.698,Heart rate update,2907
+20:37:56.713,Face detection,13518456
+20:37:56.713,Heart rate update,3374
+20:37:56.734,Face detection,15311025
+20:37:56.734,Heart rate update,3766
+20:37:56.751,Face detection,15383985
+20:37:56.751,Heart rate update,3469
+20:37:56.782,Face detection,15328939
+20:37:56.782,Heart rate update,3203
+20:37:56.798,Face detection,13993218
+20:37:56.798,Heart rate update,3441
+20:37:56.816,Face detection,13510084
+20:37:56.816,Heart rate update,3615
+20:37:56.831,Face detection,13578413
+20:37:56.840,Heart rate update,4838
+20:37:56.862,Face detection,13936357
+20:37:56.862,Heart rate update,6288
+20:37:56.877,Face detection,13621771
+20:37:56.882,Heart rate update,4344
+20:37:56.980,Face detection,92501649
+20:37:56.980,Heart rate update,4052
+20:37:56.994,Face detection,13247180
+20:37:56.995,Pre-filtering,157926
+20:37:56.995,PPG calculation,15649
+20:37:56.995,Post-filtering,149242
+20:37:56.996,Welch,685449
+20:37:56.996,Smoothing,246
+20:37:56.996,Heart rate calculation,1097633
+20:37:57.013,Face detection,13301403
+20:37:57.013,Heart rate update,6581
+20:37:57.028,Face detection,13189995
+20:37:57.028,Heart rate update,1203
+20:37:57.045,Face detection,13463795
+20:37:57.045,Heart rate update,1186
+20:37:57.060,Face detection,13349701
+20:37:57.060,Heart rate update,1736
+20:37:57.078,Face detection,13218939
+20:37:57.078,Heart rate update,1459
+20:37:57.094,Face detection,13271830
+20:37:57.094,Heart rate update,1865
+20:37:57.114,Face detection,13408225
+20:37:57.114,Heart rate update,1838
+20:37:57.129,Face detection,13676150
+20:37:57.129,Heart rate update,2514
+20:37:57.148,Face detection,13611789
+20:37:57.148,Heart rate update,2337
+20:37:57.163,Face detection,13537807
+20:37:57.163,Heart rate update,2587
+20:37:57.180,Face detection,13461261
+20:37:57.180,Heart rate update,2433
+20:37:57.195,Face detection,13385659
+20:37:57.195,Heart rate update,2910
+20:37:57.214,Face detection,13590833
+20:37:57.214,Heart rate update,3346
+20:37:57.229,Face detection,13445302
+20:37:57.229,Heart rate update,2836
+20:37:57.247,Face detection,13388047
+20:37:57.247,Heart rate update,2872
+20:37:57.262,Face detection,13288070
+20:37:57.262,Heart rate update,3999
+20:37:57.279,Face detection,13402385
+20:37:57.279,Heart rate update,2999
+20:37:57.294,Face detection,13051190
+20:37:57.294,Heart rate update,3111
+20:37:57.311,Face detection,13525360
+20:37:57.312,Heart rate update,2867
+20:37:57.326,Face detection,13160385
+20:37:57.326,Heart rate update,3108
+20:37:57.345,Face detection,13386820
+20:37:57.345,Heart rate update,3371
+20:37:57.360,Face detection,13291955
+20:37:57.360,Heart rate update,3938
+20:37:57.381,Face detection,13837885
+20:37:57.381,Heart rate update,3264
+20:37:57.396,Face detection,13149919
+20:37:57.396,Heart rate update,3500
+20:37:57.414,Face detection,13471179
+20:37:57.414,Heart rate update,3259
+20:37:57.428,Face detection,13030817
+20:37:57.428,Heart rate update,3663
+20:37:57.446,Face detection,13467641
+20:37:57.446,Heart rate update,3676
+20:37:57.460,Face detection,13151399
+20:37:57.460,Heart rate update,4035
+20:37:57.478,Face detection,13201417
+20:37:57.478,Pre-filtering,158904
+20:37:57.478,PPG calculation,15535
+20:37:57.479,Post-filtering,150190
+20:37:57.479,Welch,655106
+20:37:57.479,Smoothing,238
+20:37:57.479,Heart rate calculation,1066031
+20:37:57.494,Face detection,13161249
+20:37:57.494,Heart rate update,7138
+20:37:57.512,Face detection,13120181
+20:37:57.512,Heart rate update,1135
+20:37:57.527,Face detection,13355641
+20:37:57.527,Heart rate update,1650
+20:37:57.546,Face detection,13794908
+20:37:57.546,Heart rate update,1748
+20:37:57.561,Face detection,13561466
+20:37:57.561,Heart rate update,2010
+20:37:57.580,Face detection,13469691
+20:37:57.580,Heart rate update,1600
+20:37:57.596,Face detection,13447501
+20:37:57.596,Heart rate update,2549
+20:37:57.614,Face detection,13382378
+20:37:57.614,Heart rate update,3047
+20:37:57.628,Face detection,13119566
+20:37:57.629,Heart rate update,2549
+20:37:57.646,Face detection,13310269
+20:37:57.646,Heart rate update,2732
+20:37:57.661,Face detection,13434838
+20:37:57.661,Heart rate update,2368
+20:37:57.678,Face detection,13159926
+20:37:57.678,Heart rate update,2748
+20:37:57.693,Face detection,13326092
+20:37:57.694,Heart rate update,2707
+20:37:57.711,Face detection,13233286
+20:37:57.711,Heart rate update,3103
+20:37:57.726,Face detection,13400048
+20:37:57.726,Heart rate update,2579
+20:37:57.745,Face detection,13591777
+20:37:57.745,Heart rate update,4006
+20:37:57.760,Face detection,13296989
+20:37:57.760,Heart rate update,2528
+20:37:57.778,Face detection,13212340
+20:37:57.778,Heart rate update,3632
+20:37:57.793,Face detection,13344799
+20:37:57.793,Heart rate update,3385
+20:37:57.811,Face detection,13353898
+20:37:57.811,Heart rate update,3183
+20:37:57.826,Face detection,13468522
+20:37:57.826,Heart rate update,3023
+20:37:57.845,Face detection,13387591
+20:37:57.845,Heart rate update,3379
+20:37:57.859,Face detection,13331705
+20:37:57.860,Heart rate update,4065
+20:37:57.878,Face detection,13217709
+20:37:57.878,Heart rate update,3683
+20:37:57.893,Face detection,13798049
+20:37:57.893,Heart rate update,3857
+20:37:57.911,Face detection,13195133
+20:37:57.911,Heart rate update,3606
+20:37:57.926,Face detection,13616160
+20:37:57.926,Heart rate update,3965
+20:37:57.944,Face detection,13215031
+20:37:57.944,Heart rate update,3663
+20:37:57.959,Face detection,13438100
+20:37:57.960,Pre-filtering,159921
+20:37:57.960,PPG calculation,15873
+20:37:57.960,Post-filtering,150870
+20:37:57.960,Welch,681129
+20:37:57.960,Smoothing,234
+20:37:57.960,Heart rate calculation,1098407
+20:37:58.057,Face detection,91879700
+20:37:58.057,Heart rate update,7051
+20:37:58.073,Face detection,13615365
+20:37:58.073,Heart rate update,1503
+20:37:58.094,Face detection,13751574
+20:37:58.094,Heart rate update,1447
+20:37:58.109,Face detection,13243489
+20:37:58.109,Heart rate update,1993
+20:37:58.128,Face detection,13433061
+20:37:58.128,Heart rate update,2110
+20:37:58.143,Face detection,13351243
+20:37:58.143,Heart rate update,1468
+20:37:58.161,Face detection,13535424
+20:37:58.161,Heart rate update,2339
+20:37:58.176,Face detection,13351823
+20:37:58.176,Heart rate update,2542
+20:37:58.194,Face detection,13397835
+20:37:58.194,Heart rate update,1954
+20:37:58.209,Face detection,13348789
+20:37:58.209,Heart rate update,2233
+20:37:58.228,Face detection,13538994
+20:37:58.228,Heart rate update,2167
+20:37:58.243,Face detection,13483045
+20:37:58.243,Heart rate update,2154
+20:37:58.261,Face detection,13587671
+20:37:58.261,Heart rate update,2116
+20:37:58.276,Face detection,13488473
+20:37:58.276,Heart rate update,2394
+20:37:58.294,Face detection,13657428
+20:37:58.295,Heart rate update,2698
+20:37:58.310,Face detection,13505394
+20:37:58.310,Heart rate update,2842
+20:37:58.328,Face detection,13692048
+20:37:58.328,Heart rate update,3224
+20:37:58.343,Face detection,13898562
+20:37:58.343,Heart rate update,2856
+20:37:58.361,Face detection,13770407
+20:37:58.361,Heart rate update,3614
+20:37:58.378,Face detection,13709047
+20:37:58.378,Heart rate update,2959
+20:37:58.396,Face detection,13744887
+20:37:58.396,Heart rate update,3265
+20:37:58.412,Face detection,13895198
+20:37:58.412,Heart rate update,3873
+20:37:58.430,Face detection,13970371
+20:37:58.430,Heart rate update,4174
+20:37:58.445,Face detection,13576395
+20:37:58.445,Heart rate update,3411
+20:37:58.462,Face detection,13751924
+20:37:58.462,Heart rate update,4070
+20:37:58.478,Face detection,13691268
+20:37:58.478,Heart rate update,3715
+20:37:58.495,Face detection,13442368
+20:37:58.495,Heart rate update,4540
+20:37:58.511,Face detection,13782977
+20:37:58.511,Heart rate update,4630
+20:37:58.528,Face detection,13477619
+20:37:58.529,Pre-filtering,162545
+20:37:58.529,PPG calculation,15703
+20:37:58.529,Post-filtering,150176
+20:37:58.529,Welch,655101
+20:37:58.529,Smoothing,244
+20:37:58.529,Heart rate calculation,1071136
+20:37:58.545,Face detection,13254659
+20:37:58.545,Heart rate update,6922
+20:37:58.562,Face detection,13502226
+20:37:58.562,Heart rate update,1384
+20:37:58.577,Face detection,13360625
+20:37:58.577,Heart rate update,1172
+20:37:58.595,Face detection,13832882
+20:37:58.595,Heart rate update,1644
+20:37:58.612,Face detection,14719437
+20:37:58.612,Heart rate update,2264
+20:37:58.629,Face detection,13706911
+20:37:58.629,Heart rate update,1692
+20:37:58.645,Face detection,13148613
+20:37:58.645,Heart rate update,1907
+20:37:58.662,Face detection,13508722
+20:37:58.662,Heart rate update,2675
+20:37:58.677,Face detection,13193275
+20:37:58.677,Heart rate update,2045
+20:37:58.695,Face detection,13483881
+20:37:58.695,Heart rate update,2135
+20:37:58.710,Face detection,13318675
+20:37:58.710,Heart rate update,2178
+20:37:58.728,Face detection,13301581
+20:37:58.728,Heart rate update,2324
+20:37:58.743,Face detection,13358097
+20:37:58.743,Heart rate update,3284
+20:37:58.761,Face detection,13684189
+20:37:58.761,Heart rate update,2457
+20:37:58.776,Face detection,13359004
+20:37:58.776,Heart rate update,2638
+20:37:58.796,Face detection,13799244
+20:37:58.796,Heart rate update,3986
+20:37:58.811,Face detection,13641371
+20:37:58.811,Heart rate update,3136
+20:37:58.829,Face detection,13437750
+20:37:58.829,Heart rate update,3230
+20:37:58.844,Face detection,13578462
+20:37:58.844,Heart rate update,3703
+20:37:58.863,Face detection,13429434
+20:37:58.863,Heart rate update,2735
+20:37:58.877,Face detection,13129166
+20:37:58.877,Heart rate update,3137
+20:37:58.895,Face detection,14109581
+20:37:58.895,Heart rate update,3590
+20:37:58.910,Face detection,13320466
+20:37:58.910,Heart rate update,3520
+20:37:58.928,Face detection,13489467
+20:37:58.928,Heart rate update,3102
+20:37:58.943,Face detection,13224827
+20:37:58.943,Heart rate update,3615
+20:37:58.961,Face detection,13289965
+20:37:58.961,Heart rate update,4527
+20:37:58.976,Face detection,13714926
+20:37:58.976,Heart rate update,4167
+20:37:58.995,Face detection,13474138
+20:37:58.995,Heart rate update,3769
+20:37:59.010,Face detection,13411952
+20:37:59.010,Pre-filtering,158810
+20:37:59.010,PPG calculation,15842
+20:37:59.010,Post-filtering,149295
+20:37:59.011,Welch,684305
+20:37:59.011,Smoothing,296
+20:37:59.011,Heart rate calculation,1091994
+20:37:59.029,Face detection,13490720
+20:37:59.029,Heart rate update,6602
+20:37:59.043,Face detection,13237261
+20:37:59.043,Heart rate update,1186
+20:37:59.140,Face detection,92573176
+20:37:59.140,Heart rate update,1927
+20:37:59.156,Face detection,13636224
+20:37:59.156,Heart rate update,2160
+20:37:59.177,Face detection,13565971
+20:37:59.177,Heart rate update,1322
+20:37:59.193,Face detection,13691217
+20:37:59.193,Heart rate update,1629
+20:37:59.211,Face detection,14028700
+20:37:59.211,Heart rate update,1682
+20:37:59.226,Face detection,13222938
+20:37:59.226,Heart rate update,1951
+20:37:59.244,Face detection,13546464
+20:37:59.244,Heart rate update,1927
+20:37:59.259,Face detection,13401126
+20:37:59.259,Heart rate update,1968
+20:37:59.278,Face detection,13478673
+20:37:59.278,Heart rate update,1971
+20:37:59.293,Face detection,13248763
+20:37:59.293,Heart rate update,2403
+20:37:59.310,Face detection,13440494
+20:37:59.311,Heart rate update,2533
+20:37:59.326,Face detection,13714180
+20:37:59.326,Heart rate update,2532
+20:37:59.344,Face detection,13636699
+20:37:59.344,Heart rate update,2691
+20:37:59.359,Face detection,13258067
+20:37:59.359,Heart rate update,3622
+20:37:59.378,Face detection,13458837
+20:37:59.378,Heart rate update,2578
+20:37:59.393,Face detection,13235580
+20:37:59.393,Heart rate update,3700
+20:37:59.411,Face detection,13690028
+20:37:59.411,Heart rate update,3387
+20:37:59.426,Face detection,13361646
+20:37:59.426,Heart rate update,2963
+20:37:59.444,Face detection,13792686
+20:37:59.444,Heart rate update,3047
+20:37:59.459,Face detection,13230039
+20:37:59.459,Heart rate update,3414
+20:37:59.478,Face detection,13330509
+20:37:59.478,Heart rate update,4062
+20:37:59.493,Face detection,13347270
+20:37:59.493,Heart rate update,3755
+20:37:59.511,Face detection,13338941
+20:37:59.511,Heart rate update,3533
+20:37:59.526,Face detection,13739483
+20:37:59.526,Heart rate update,3952
+20:37:59.544,Face detection,13595450
+20:37:59.544,Heart rate update,4692
+20:37:59.560,Face detection,14137363
+20:37:59.560,Heart rate update,3730
+20:37:59.578,Face detection,13414546
+20:37:59.578,Pre-filtering,160081
+20:37:59.578,PPG calculation,15332
+20:37:59.578,Post-filtering,152139
+20:37:59.579,Welch,655887
+20:37:59.579,Smoothing,254
+20:37:59.579,Heart rate calculation,1069551
+20:37:59.595,Face detection,13629833
+20:37:59.595,Heart rate update,7386
+20:37:59.613,Face detection,13853116
+20:37:59.613,Heart rate update,1448
+20:37:59.628,Face detection,13685502
+20:37:59.628,Heart rate update,1471
+20:37:59.646,Face detection,13467050
+20:37:59.646,Heart rate update,2065
+20:37:59.661,Face detection,13938708
+20:37:59.662,Heart rate update,1819
+20:37:59.679,Face detection,13419322
+20:37:59.679,Heart rate update,1986
+20:37:59.694,Face detection,13299872
+20:37:59.694,Heart rate update,1944
+20:37:59.712,Face detection,13836475
+20:37:59.712,Heart rate update,2455
+20:37:59.727,Face detection,13177318
+20:37:59.727,Heart rate update,1833
+20:37:59.745,Face detection,13389521
+20:37:59.745,Heart rate update,2180
+20:37:59.760,Face detection,13327003
+20:37:59.760,Heart rate update,2306
+20:37:59.778,Face detection,13429205
+20:37:59.778,Heart rate update,2455
+20:37:59.794,Face detection,13809448
+20:37:59.794,Heart rate update,2379
+20:37:59.811,Face detection,13491559
+20:37:59.811,Heart rate update,2586
+20:37:59.827,Face detection,13936819
+20:37:59.827,Heart rate update,2349
+20:37:59.844,Face detection,13516262
+20:37:59.844,Heart rate update,3663
+20:37:59.860,Face detection,13555360
+20:37:59.860,Heart rate update,2623
+20:37:59.878,Face detection,13351833
+20:37:59.878,Heart rate update,2678
+20:37:59.893,Face detection,13652101
+20:37:59.893,Heart rate update,2555
+20:37:59.911,Face detection,13433363
+20:37:59.911,Heart rate update,3175
+20:37:59.926,Face detection,13573564
+20:37:59.926,Heart rate update,2894
+20:37:59.945,Face detection,14230950
+20:37:59.945,Heart rate update,4025
+20:37:59.961,Face detection,14398923
+20:37:59.961,Heart rate update,3015
+20:37:59.978,Face detection,13697025
+20:37:59.978,Heart rate update,3213
+20:37:59.995,Face detection,13823433
+20:37:59.995,Heart rate update,3786
+20:38:00.013,Face detection,14142093
+20:38:00.013,Heart rate update,3487
+20:38:00.029,Face detection,13466552
+20:38:00.029,Heart rate update,4738
+20:38:00.046,Face detection,13478944
+20:38:00.046,Heart rate update,4152
+20:38:00.061,Face detection,13314633
+20:38:00.061,Pre-filtering,160273
+20:38:00.061,PPG calculation,15831
+20:38:00.062,Post-filtering,174124
+20:38:00.062,Welch,682235
+20:38:00.062,Smoothing,262
+20:38:00.062,Heart rate calculation,1130799
+20:38:00.080,Face detection,13515586
+20:38:00.080,Heart rate update,7628
+20:38:00.095,Face detection,13245730
+20:38:00.095,Heart rate update,1274
+20:38:00.113,Face detection,13475955
+20:38:00.113,Heart rate update,1083
+20:38:00.128,Face detection,13257772
+20:38:00.128,Heart rate update,1631
+20:38:00.224,Face detection,92100837
+20:38:00.225,Heart rate update,1441
+20:38:00.242,Face detection,13476541
+20:38:00.242,Heart rate update,1479
+20:38:00.262,Face detection,13434380
+20:38:00.262,Heart rate update,1959
+20:38:00.277,Face detection,13309504
+20:38:00.277,Heart rate update,2685
+20:38:00.295,Face detection,13426805
+20:38:00.295,Heart rate update,2517
+20:38:00.310,Face detection,13277372
+20:38:00.310,Heart rate update,2514
+20:38:00.328,Face detection,13373826
+20:38:00.329,Heart rate update,2665
+20:38:00.345,Face detection,14292485
+20:38:00.345,Heart rate update,2864
+20:38:00.362,Face detection,13594141
+20:38:00.362,Heart rate update,2679
+20:38:00.380,Face detection,14098941
+20:38:00.380,Heart rate update,2368
+20:38:00.397,Face detection,13817838
+20:38:00.397,Heart rate update,3460
+20:38:00.412,Face detection,13808613
+20:38:00.413,Heart rate update,2974
+20:38:00.430,Face detection,13357013
+20:38:00.430,Heart rate update,3371
+20:38:00.445,Face detection,13281306
+20:38:00.445,Heart rate update,3313
+20:38:00.463,Face detection,13431805
+20:38:00.463,Heart rate update,4614
+20:38:00.478,Face detection,13633018
+20:38:00.478,Heart rate update,3400
+20:38:00.496,Face detection,13968776
+20:38:00.496,Heart rate update,4170
+20:38:00.511,Face detection,13480672
+20:38:00.511,Heart rate update,3190
+20:38:00.529,Face detection,13424299
+20:38:00.529,Heart rate update,4439
+20:38:00.543,Face detection,13078610
+20:38:00.543,Heart rate update,3972
+20:38:00.560,Face detection,13405786
+20:38:00.560,Heart rate update,3628
+20:38:00.575,Face detection,13328898
+20:38:00.575,Heart rate update,3929
+20:38:00.595,Face detection,13356995
+20:38:00.595,Heart rate update,4053
+20:38:00.610,Face detection,13381407
+20:38:00.610,Heart rate update,4398
+20:38:00.628,Face detection,13370333
+20:38:00.628,Pre-filtering,160746
+20:38:00.628,PPG calculation,15530
+20:38:00.628,Post-filtering,149615
+20:38:00.629,Welch,642417
+20:38:00.629,Smoothing,250
+20:38:00.629,Heart rate calculation,1053894
+20:38:00.644,Face detection,13295594
+20:38:00.644,Heart rate update,7275
+20:38:00.661,Face detection,13383470
+20:38:00.662,Heart rate update,1076
+20:38:00.677,Face detection,13754931
+20:38:00.677,Heart rate update,1036
+20:38:00.695,Face detection,13636614
+20:38:00.695,Heart rate update,1805
+20:38:00.710,Face detection,13273606
+20:38:00.710,Heart rate update,1504
+20:38:00.728,Face detection,13323832
+20:38:00.728,Heart rate update,1300
+20:38:00.743,Face detection,13713241
+20:38:00.744,Heart rate update,2269
+20:38:00.763,Face detection,15039071
+20:38:00.763,Heart rate update,2538
+20:38:00.779,Face detection,13916242
+20:38:00.779,Heart rate update,2734
+20:38:00.797,Face detection,13720975
+20:38:00.797,Heart rate update,2379
+20:38:00.812,Face detection,13242171
+20:38:00.812,Heart rate update,2435
+20:38:00.830,Face detection,13280743
+20:38:00.830,Heart rate update,2408
+20:38:00.845,Face detection,13191346
+20:38:00.845,Heart rate update,2690
+20:38:00.863,Face detection,14143169
+20:38:00.863,Heart rate update,2396
+20:38:00.879,Face detection,13956817
+20:38:00.879,Heart rate update,2775
+20:38:00.896,Face detection,13490670
+20:38:00.897,Heart rate update,3273
+20:38:00.911,Face detection,13283430
+20:38:00.911,Heart rate update,3147
+20:38:00.929,Face detection,13463959
+20:38:00.929,Heart rate update,3007
+20:38:00.944,Face detection,13330223
+20:38:00.944,Heart rate update,3156
+20:38:00.962,Face detection,13649344
+20:38:00.962,Heart rate update,2969
+20:38:00.977,Face detection,13448354
+20:38:00.977,Heart rate update,3067
+20:38:00.995,Face detection,14195129
+20:38:00.995,Heart rate update,3800
+20:38:01.010,Face detection,13370370
+20:38:01.010,Heart rate update,3293
+20:38:01.029,Face detection,13727979
+20:38:01.029,Heart rate update,3581
+20:38:01.044,Face detection,13908151
+20:38:01.044,Heart rate update,4039
+20:38:01.062,Face detection,13565729
+20:38:01.062,Heart rate update,4924
+20:38:01.077,Face detection,13461628
+20:38:01.077,Heart rate update,3807
+20:38:01.095,Face detection,13418345
+20:38:01.095,Heart rate update,4469
+20:38:01.110,Face detection,13456993
+20:38:01.110,Pre-filtering,158067
+20:38:01.110,PPG calculation,15558
+20:38:01.110,Post-filtering,149188
+20:38:01.111,Welch,682120
+20:38:01.111,Smoothing,253
+20:38:01.111,Heart rate calculation,1091914
+20:38:01.129,Face detection,13407058
+20:38:01.129,Heart rate update,7128
+20:38:01.144,Face detection,13565146
+20:38:01.144,Heart rate update,1694
+20:38:01.162,Face detection,13502097
+20:38:01.162,Heart rate update,1338
+20:38:01.177,Face detection,13409033
+20:38:01.177,Heart rate update,1809
+20:38:01.197,Face detection,13641367
+20:38:01.197,Heart rate update,1905
+20:38:01.212,Face detection,13434616
+20:38:01.212,Heart rate update,1403
+20:38:01.308,Face detection,92313889
+20:38:01.308,Heart rate update,2144
+20:38:01.323,Face detection,13162446
+20:38:01.323,Heart rate update,3003
+20:38:01.344,Face detection,13629009
+20:38:01.344,Heart rate update,2101
+20:38:01.360,Face detection,13907772
+20:38:01.360,Heart rate update,2304
+20:38:01.378,Face detection,13578106
+20:38:01.378,Heart rate update,2182
+20:38:01.393,Face detection,13383903
+20:38:01.393,Heart rate update,2331
+20:38:01.411,Face detection,13513693
+20:38:01.411,Heart rate update,2266
+20:38:01.425,Face detection,13227487
+20:38:01.425,Heart rate update,2728
+20:38:01.445,Face detection,13531421
+20:38:01.445,Heart rate update,2935
+20:38:01.460,Face detection,13283059
+20:38:01.460,Heart rate update,3469
+20:38:01.478,Face detection,14226524
+20:38:01.478,Heart rate update,3005
+20:38:01.493,Face detection,13369979
+20:38:01.493,Heart rate update,3309
+20:38:01.511,Face detection,13347955
+20:38:01.511,Heart rate update,2936
+20:38:01.526,Face detection,13704677
+20:38:01.526,Heart rate update,3474
+20:38:01.545,Face detection,14277300
+20:38:01.545,Heart rate update,3036
+20:38:01.560,Face detection,14178008
+20:38:01.560,Heart rate update,3396
+20:38:01.579,Face detection,14093832
+20:38:01.579,Heart rate update,4222
+20:38:01.595,Face detection,13649688
+20:38:01.595,Heart rate update,4357
+20:38:01.612,Face detection,13731361
+20:38:01.612,Heart rate update,4253
+20:38:01.628,Face detection,13873840
+20:38:01.628,Heart rate update,4213
+20:38:01.646,Face detection,13383871
+20:38:01.646,Heart rate update,4000
+20:38:01.661,Face detection,13502142
+20:38:01.661,Heart rate update,4435
+20:38:01.679,Face detection,13321047
+20:38:01.679,Pre-filtering,202258
+20:38:01.679,PPG calculation,15686
+20:38:01.680,Post-filtering,153053
+20:38:01.680,Welch,654993
+20:38:01.680,Smoothing,248
+20:38:01.680,Heart rate calculation,1115095
+20:38:01.696,Face detection,13743057
+20:38:01.696,Heart rate update,6503
+20:38:01.713,Face detection,13429420
+20:38:01.713,Heart rate update,1263
+20:38:01.728,Face detection,13421145
+20:38:01.728,Heart rate update,1030
+20:38:01.746,Face detection,13341308
+20:38:01.746,Heart rate update,1542
+20:38:01.761,Face detection,13280345
+20:38:01.761,Heart rate update,2400
+20:38:01.779,Face detection,13643233
+20:38:01.779,Heart rate update,1809
+20:38:01.794,Face detection,13272408
+20:38:01.794,Heart rate update,1739
+20:38:01.811,Face detection,13366514
+20:38:01.811,Heart rate update,2210
+20:38:01.827,Face detection,13941242
+20:38:01.827,Heart rate update,1953
+20:38:01.844,Face detection,13521750
+20:38:01.844,Heart rate update,2617
+20:38:01.859,Face detection,13485191
+20:38:01.859,Heart rate update,2167
+20:38:01.878,Face detection,13383557
+20:38:01.878,Heart rate update,2218
+20:38:01.893,Face detection,13615667
+20:38:01.893,Heart rate update,2265
+20:38:01.911,Face detection,13475219
+20:38:01.911,Heart rate update,2456
+20:38:01.926,Face detection,13560392
+20:38:01.926,Heart rate update,2586
+20:38:01.944,Face detection,13675402
+20:38:01.944,Heart rate update,3869
+20:38:01.960,Face detection,13805724
+20:38:01.960,Heart rate update,2758
+20:38:01.979,Face detection,14202920
+20:38:01.979,Heart rate update,3458
+20:38:01.995,Face detection,13671530
+20:38:01.995,Heart rate update,2771
+20:38:02.013,Face detection,13380277
+20:38:02.013,Heart rate update,3039
+20:38:02.028,Face detection,13482593
+20:38:02.028,Heart rate update,3156
+20:38:02.046,Face detection,13474360
+20:38:02.046,Heart rate update,3228
+20:38:02.061,Face detection,13279263
+20:38:02.061,Heart rate update,4029
+20:38:02.078,Face detection,13343614
+20:38:02.078,Heart rate update,3578
+20:38:02.093,Face detection,13325267
+20:38:02.093,Heart rate update,4389
+20:38:02.111,Face detection,13382072
+20:38:02.111,Heart rate update,4311
+20:38:02.126,Face detection,13182585
+20:38:02.126,Heart rate update,4286
+20:38:02.144,Face detection,13368021
+20:38:02.144,Heart rate update,4569
+20:38:02.160,Face detection,13375499
+20:38:02.160,Pre-filtering,159439
+20:38:02.160,PPG calculation,15637
+20:38:02.160,Post-filtering,150020
+20:38:02.161,Welch,681186
+20:38:02.161,Smoothing,655
+20:38:02.161,Heart rate calculation,1093583
+20:38:02.178,Face detection,13599949
+20:38:02.178,Heart rate update,6596
+20:38:02.193,Face detection,13290772
+20:38:02.193,Heart rate update,1296
+20:38:02.211,Face detection,13503652
+20:38:02.211,Heart rate update,1132
+20:38:02.226,Face detection,13164455
+20:38:02.226,Heart rate update,1819
+20:38:02.244,Face detection,13433895
+20:38:02.244,Heart rate update,1768
+20:38:02.259,Face detection,13334271
+20:38:02.259,Heart rate update,1473
+20:38:02.278,Face detection,13503630
+20:38:02.278,Heart rate update,1504
+20:38:02.293,Face detection,13314002
+20:38:02.293,Heart rate update,2071
+20:38:02.390,Face detection,92852616
+20:38:02.390,Heart rate update,2584
+20:38:02.405,Face detection,13384257
+20:38:02.405,Heart rate update,1884
+20:38:02.428,Face detection,13331338
+20:38:02.428,Heart rate update,2099
+20:38:02.443,Face detection,13766549
+20:38:02.443,Heart rate update,2196
+20:38:02.462,Face detection,13558748
+20:38:02.462,Heart rate update,2477
+20:38:02.478,Face detection,13613654
+20:38:02.478,Heart rate update,2310
+20:38:02.497,Face detection,13410848
+20:38:02.497,Heart rate update,2469
+20:38:02.512,Face detection,13433182
+20:38:02.512,Heart rate update,2899
+20:38:02.530,Face detection,13627085
+20:38:02.530,Heart rate update,2629
+20:38:02.545,Face detection,13741061
+20:38:02.545,Heart rate update,3042
+20:38:02.563,Face detection,13609976
+20:38:02.563,Heart rate update,3173
+20:38:02.578,Face detection,13782142
+20:38:02.578,Heart rate update,3440
+20:38:02.595,Face detection,13525774
+20:38:02.595,Heart rate update,3354
+20:38:02.610,Face detection,13304182
+20:38:02.610,Heart rate update,3226
+20:38:02.628,Face detection,13349191
+20:38:02.628,Heart rate update,3530
+20:38:02.643,Face detection,13545612
+20:38:02.643,Heart rate update,3842
+20:38:02.661,Face detection,13436560
+20:38:02.662,Heart rate update,4440
+20:38:02.677,Face detection,13773994
+20:38:02.677,Heart rate update,4111
+20:38:02.695,Face detection,13578720
+20:38:02.695,Heart rate update,3842
+20:38:02.710,Face detection,13251499
+20:38:02.710,Heart rate update,4264
+20:38:02.730,Face detection,13282992
+20:38:02.730,Pre-filtering,158896
+20:38:02.730,PPG calculation,15296
+20:38:02.730,Post-filtering,149888
+20:38:02.731,Welch,654789
+20:38:02.731,Smoothing,235
+20:38:02.731,Heart rate calculation,1064592
+20:38:02.747,Face detection,14086610
+20:38:02.747,Heart rate update,7256
+20:38:02.764,Face detection,13484996
+20:38:02.765,Heart rate update,1243
+20:38:02.779,Face detection,13190856
+20:38:02.779,Heart rate update,1695
+20:38:02.797,Face detection,13724236
+20:38:02.797,Heart rate update,1730
+20:38:02.813,Face detection,13490573
+20:38:02.813,Heart rate update,1853
+20:38:02.831,Face detection,13431513
+20:38:02.831,Heart rate update,1762
+20:38:02.846,Face detection,13339667
+20:38:02.846,Heart rate update,2247
+20:38:02.864,Face detection,13380644
+20:38:02.864,Heart rate update,2750
+20:38:02.879,Face detection,13214198
+20:38:02.879,Heart rate update,2840
+20:38:02.897,Face detection,13579982
+20:38:02.897,Heart rate update,2608
+20:38:02.912,Face detection,13139205
+20:38:02.912,Heart rate update,2722
+20:38:02.931,Face detection,13417317
+20:38:02.931,Heart rate update,2182
+20:38:02.946,Face detection,13671108
+20:38:02.946,Heart rate update,2667
+20:38:02.964,Face detection,13478730
+20:38:02.964,Heart rate update,2833
+20:38:02.979,Face detection,13222865
+20:38:02.979,Heart rate update,2558
+20:38:02.997,Face detection,13698707
+20:38:02.997,Heart rate update,3370
+20:38:03.013,Face detection,13613946
+20:38:03.013,Heart rate update,2621
+20:38:03.032,Face detection,14812728
+20:38:03.032,Heart rate update,3228
+20:38:03.048,Face detection,14637931
+20:38:03.048,Heart rate update,2987
+20:38:03.066,Face detection,14121255
+20:38:03.066,Heart rate update,3367
+20:38:03.082,Face detection,14144255
+20:38:03.082,Heart rate update,3280
+20:38:03.100,Face detection,14264660
+20:38:03.100,Heart rate update,3412
+20:38:03.118,Face detection,15693922
+20:38:03.118,Heart rate update,4063
+20:38:03.149,Face detection,15950622
+20:38:03.149,Heart rate update,4096
+20:38:03.166,Face detection,15733915
+20:38:03.166,Heart rate update,3293
+20:38:03.186,Face detection,15222874
+20:38:03.186,Heart rate update,3646
+20:38:03.203,Face detection,15263931
+20:38:03.203,Heart rate update,3938
+20:38:03.236,Face detection,15710427
+20:38:03.236,Heart rate update,3872
+20:38:03.252,Face detection,14713244
+20:38:03.252,Pre-filtering,164840
+20:38:03.252,PPG calculation,15995
+20:38:03.252,Post-filtering,154236
+20:38:03.253,Welch,702011
+20:38:03.253,Smoothing,285
+20:38:03.253,Heart rate calculation,1128519
+20:38:03.280,Face detection,13887777
+20:38:03.280,Heart rate update,6632
+20:38:03.296,Face detection,14040986
+20:38:03.296,Heart rate update,1467
+20:38:03.314,Face detection,14100419
+20:38:03.314,Heart rate update,1308
+20:38:03.329,Face detection,13994172
+20:38:03.329,Heart rate update,1357
+20:38:03.347,Face detection,14191603
+20:38:03.347,Heart rate update,1875
+20:38:03.362,Face detection,13484146
+20:38:03.362,Heart rate update,2006
+20:38:03.380,Face detection,13521698
+20:38:03.380,Heart rate update,1668
+20:38:03.395,Face detection,13272576
+20:38:03.395,Heart rate update,2506
+20:38:03.412,Face detection,13764060
+20:38:03.412,Heart rate update,2145
+20:38:03.427,Face detection,13313312
+20:38:03.427,Heart rate update,1838
+20:38:03.524,Face detection,93179571
+20:38:03.524,Heart rate update,2460
+20:38:03.542,Face detection,13529645
+20:38:03.542,Heart rate update,2716
+20:38:03.561,Face detection,13803421
+20:38:03.561,Heart rate update,2355
+20:38:03.576,Face detection,13506288
+20:38:03.577,Heart rate update,2350
+20:38:03.597,Face detection,13877961
+20:38:03.597,Heart rate update,3601
+20:38:03.612,Face detection,13828078
+20:38:03.612,Heart rate update,3012
+20:38:03.630,Face detection,13462036
+20:38:03.630,Heart rate update,2904
+20:38:03.645,Face detection,13437262
+20:38:03.645,Heart rate update,2738
+20:38:03.662,Face detection,13287374
+20:38:03.662,Heart rate update,3400
+20:38:03.677,Face detection,13341552
+20:38:03.677,Heart rate update,4991
+20:38:03.695,Face detection,13421619
+20:38:03.695,Heart rate update,3566
+20:38:03.710,Face detection,13220547
+20:38:03.710,Heart rate update,3532
+20:38:03.728,Face detection,13440143
+20:38:03.728,Heart rate update,3664
+20:38:03.743,Face detection,13305799
+20:38:03.743,Heart rate update,3712
+20:38:03.761,Face detection,13380720
+20:38:03.761,Heart rate update,4043
+20:38:03.777,Face detection,13506585
+20:38:03.777,Heart rate update,3787
+20:38:03.795,Face detection,13320848
+20:38:03.795,Heart rate update,3424
+20:38:03.810,Face detection,13229727
+20:38:03.810,Heart rate update,3881
+20:38:03.831,Face detection,13857187
+20:38:03.831,Pre-filtering,171965
+20:38:03.831,PPG calculation,15399
+20:38:03.831,Post-filtering,151146
+20:38:03.832,Welch,647398
+20:38:03.832,Smoothing,246
+20:38:03.832,Heart rate calculation,1076951
+20:38:03.847,Face detection,13349151
+20:38:03.847,Heart rate update,6961
+20:38:03.864,Face detection,13493732
+20:38:03.864,Heart rate update,1536
+20:38:03.879,Face detection,13213969
+20:38:03.879,Heart rate update,1214
+20:38:03.898,Face detection,13647639
+20:38:03.898,Heart rate update,1787
+20:38:03.913,Face detection,13205275
+20:38:03.913,Heart rate update,1524
+20:38:03.931,Face detection,13614593
+20:38:03.931,Heart rate update,2225
+20:38:03.946,Face detection,13413138
+20:38:03.946,Heart rate update,1482
+20:38:03.964,Face detection,13326555
+20:38:03.964,Heart rate update,1965
+20:38:03.979,Face detection,13537237
+20:38:03.979,Heart rate update,2128
+20:38:03.997,Face detection,13486319
+20:38:03.997,Heart rate update,1788
+20:38:04.012,Face detection,13144726
+20:38:04.012,Heart rate update,1956
+20:38:04.031,Face detection,13451255
+20:38:04.031,Heart rate update,2464
+20:38:04.045,Face detection,13226480
+20:38:04.045,Heart rate update,2770
+20:38:04.064,Face detection,13464912
+20:38:04.064,Heart rate update,2698
+20:38:04.079,Face detection,13220937
+20:38:04.079,Heart rate update,2818
+20:38:04.097,Face detection,13544089
+20:38:04.097,Heart rate update,4289
+20:38:04.112,Face detection,13349828
+20:38:04.113,Heart rate update,2918
+20:38:04.131,Face detection,13513353
+20:38:04.131,Heart rate update,2499
+20:38:04.146,Face detection,13637803
+20:38:04.146,Heart rate update,2746
+20:38:04.164,Face detection,13680560
+20:38:04.164,Heart rate update,3530
+20:38:04.179,Face detection,13366431
+20:38:04.179,Heart rate update,3182
+20:38:04.197,Face detection,13527546
+20:38:04.197,Heart rate update,2883
+20:38:04.212,Face detection,13129450
+20:38:04.212,Heart rate update,3569
+20:38:04.231,Face detection,13508497
+20:38:04.231,Heart rate update,3384
+20:38:04.246,Face detection,13289593
+20:38:04.246,Heart rate update,3536
+20:38:04.264,Face detection,13301738
+20:38:04.264,Heart rate update,5463
+20:38:04.279,Face detection,13567237
+20:38:04.279,Heart rate update,3645
+20:38:04.297,Face detection,13426357
+20:38:04.297,Heart rate update,3744
+20:38:04.312,Face detection,13330295
+20:38:04.312,Pre-filtering,162833
+20:38:04.312,PPG calculation,15322
+20:38:04.313,Post-filtering,149771
+20:38:04.313,Welch,681141
+20:38:04.313,Smoothing,650
+20:38:04.313,Heart rate calculation,1096298
+20:38:04.331,Face detection,13385490
+20:38:04.331,Heart rate update,6471
+20:38:04.346,Face detection,13705124
+20:38:04.346,Heart rate update,1842
+20:38:04.364,Face detection,13544092
+20:38:04.364,Heart rate update,1157
+20:38:04.379,Face detection,13426298
+20:38:04.379,Heart rate update,1591
+20:38:04.397,Face detection,13667239
+20:38:04.397,Heart rate update,1335
+20:38:04.413,Face detection,13412745
+20:38:04.413,Heart rate update,1405
+20:38:04.430,Face detection,13305705
+20:38:04.430,Heart rate update,1710
+20:38:04.446,Face detection,13427506
+20:38:04.446,Heart rate update,2422
+20:38:04.465,Face detection,14272237
+20:38:04.465,Heart rate update,1801
+20:38:04.480,Face detection,13229231
+20:38:04.480,Heart rate update,1886
+20:38:04.498,Face detection,13773248
+20:38:04.498,Heart rate update,2149
+20:38:04.513,Face detection,13388118
+20:38:04.513,Heart rate update,2081
+20:38:04.611,Face detection,93845444
+20:38:04.611,Heart rate update,2458
+20:38:04.632,Face detection,14365545
+20:38:04.632,Heart rate update,2774
+20:38:04.650,Face detection,15149937
+20:38:04.650,Heart rate update,2809
+20:38:04.678,Face detection,13889400
+20:38:04.678,Heart rate update,3278
+20:38:04.700,Face detection,13902138
+20:38:04.700,Heart rate update,3047
+20:38:04.731,Face detection,13834680
+20:38:04.731,Heart rate update,2954
+20:38:04.764,Face detection,14221621
+20:38:04.765,Heart rate update,3282
+20:38:04.799,Face detection,15556718
+20:38:04.799,Heart rate update,5769
+20:38:04.831,Face detection,13538381
+20:38:04.831,Heart rate update,2921
+20:38:04.866,Face detection,14735870
+20:38:04.866,Heart rate update,3125
+20:38:04.902,Face detection,16406966
+20:38:04.902,Heart rate update,3684
+20:38:04.934,Face detection,16680576
+20:38:04.934,Heart rate update,3855
+20:38:04.968,Face detection,16067808
+20:38:04.968,Heart rate update,3850
+20:38:05.001,Face detection,16670265
+20:38:05.001,Heart rate update,4533
+20:38:05.035,Face detection,16377970
+20:38:05.035,Heart rate update,4036
+20:38:05.068,Face detection,16167900
+20:38:05.068,Heart rate update,3596
+20:38:05.099,Face detection,15032494
+20:38:05.099,Pre-filtering,171873
+20:38:05.099,PPG calculation,16837
+20:38:05.100,Post-filtering,161705
+20:38:05.100,Welch,680530
+20:38:05.100,Smoothing,236
+20:38:05.100,Heart rate calculation,1120931
+20:38:05.131,Face detection,13559062
+20:38:05.131,Heart rate update,6214
+20:38:05.165,Face detection,13623759
+20:38:05.165,Heart rate update,1074
+20:38:05.199,Face detection,14788509
+20:38:05.199,Heart rate update,1023
+20:38:05.231,Face detection,13951475
+20:38:05.231,Heart rate update,1445
+20:38:05.265,Face detection,14767645
+20:38:05.265,Heart rate update,1464
+20:38:05.300,Face detection,15109523
+20:38:05.300,Heart rate update,1960
+20:38:05.335,Face detection,16134528
+20:38:05.335,Heart rate update,1903
+20:38:05.367,Face detection,15396168
+20:38:05.367,Heart rate update,2047
+20:38:05.400,Face detection,16150921
+20:38:05.400,Heart rate update,2117
+20:38:05.434,Face detection,15934196
+20:38:05.434,Heart rate update,2532
+20:38:05.465,Face detection,14332745
+20:38:05.465,Heart rate update,2218
+20:38:05.501,Face detection,15642988
+20:38:05.501,Heart rate update,2099
+20:38:05.534,Face detection,15938230
+20:38:05.534,Heart rate update,2009
+20:38:05.564,Face detection,13616062
+20:38:05.564,Heart rate update,2375
+20:38:05.600,Face detection,14958299
+20:38:05.600,Heart rate update,2506
+20:38:05.633,Face detection,15776575
+20:38:05.633,Heart rate update,2784
+20:38:05.664,Face detection,13509802
+20:38:05.664,Heart rate update,2861
+20:38:05.700,Face detection,15055624
+20:38:05.700,Heart rate update,2579
+20:38:05.734,Face detection,16010404
+20:38:05.734,Heart rate update,3087
+20:38:05.766,Face detection,14878919
+20:38:05.766,Heart rate update,2820
+20:38:05.797,Face detection,13929123
+20:38:05.797,Heart rate update,2987
+20:38:05.833,Face detection,15619411
+20:38:05.833,Heart rate update,3216
+20:38:05.866,Face detection,14818072
+20:38:05.866,Heart rate update,2664
+20:38:05.899,Face detection,15052559
+20:38:05.899,Heart rate update,2953
+20:38:05.932,Face detection,14363751
+20:38:05.932,Heart rate update,3037
+20:38:05.965,Face detection,13573124
+20:38:05.965,Heart rate update,2951
+20:38:06.001,Face detection,16680059
+20:38:06.001,Heart rate update,3356
+20:38:06.036,Face detection,18055421
+20:38:06.036,Heart rate update,4186
+20:38:06.065,Face detection,13387848
+20:38:06.065,Pre-filtering,167056
+20:38:06.065,PPG calculation,15960
+20:38:06.065,Post-filtering,152462
+20:38:06.066,Welch,655239
+20:38:06.066,Smoothing,254
+20:38:06.066,Heart rate calculation,1080335
+20:38:06.100,Face detection,15794976
+20:38:06.100,Heart rate update,7045
+20:38:06.135,Face detection,16589565
+20:38:06.135,Heart rate update,1337

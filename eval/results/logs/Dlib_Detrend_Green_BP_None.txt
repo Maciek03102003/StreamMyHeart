@@ -1,0 +1,742 @@
+20:26:06.408: [macOS] Permission for audio device access granted.
+20:26:06.415: [macOS] Permission for video device access granted.
+20:26:06.422: [macOS] Permission for accessibility granted.
+20:26:06.433: [macOS] Permission for screen capture granted.
+20:26:06.433: CPU Name: Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz
+20:26:06.433: CPU Speed: 2300MHz
+20:26:06.433: Physical Cores: 8, Logical Cores: 16
+20:26:06.433: Physical Memory: 65536MB Total
+20:26:06.433: Model Identifier: MacBookPro16,1
+20:26:06.433: OS Name: macOS
+20:26:06.433: OS Version: Version 15.3.1 (Build 24D70)
+20:26:06.433: Rosetta translation used: false
+20:26:06.433: Kernel Version: 24.3.0
+20:26:06.434: hotkeys-cocoa: Using keyboard layout 'com.apple.keylayout.ABC'
+20:26:06.434: Current Date/Time: 2025-02-25, 20:26:06
+20:26:06.434: Browser Hardware Acceleration: true
+20:26:06.435: Qt Version: 6.6.3 (runtime), 6.6.3 (compiled)
+20:26:06.435: Portable mode: false
+20:26:06.650: OBS 31.0.1 (mac)
+20:26:06.650: ---------------------------------
+20:26:06.653: ---------------------------------
+20:26:06.653: audio settings reset:
+20:26:06.653: 	samples per sec: 48000
+20:26:06.653: 	speakers:        2
+20:26:06.653: 	max buffering:   960 milliseconds
+20:26:06.653: 	buffering type:  dynamically increasing
+20:26:06.654: ---------------------------------
+20:26:06.654: Initializing OpenGL...
+20:26:06.737: Loading up OpenGL on adapter ATI Technologies Inc. AMD Radeon Pro 5500M OpenGL Engine
+20:26:06.738: OpenGL loaded successfully, version 4.1 ATI-6.1.13, shading language 4.10
+20:26:07.146: ---------------------------------
+20:26:07.146: video settings reset:
+20:26:07.146: 	base resolution:   1920x1080
+20:26:07.146: 	output resolution: 1280x720
+20:26:07.146: 	downscale filter:  Bicubic
+20:26:07.146: 	fps:               30/1
+20:26:07.146: 	format:            NV12
+20:26:07.146: 	YUV mode:          Rec. 709/Partial
+20:26:07.147: NV12 texture support enabled
+20:26:07.147: P010 texture support not available
+20:26:07.148: Audio monitoring device:
+20:26:07.148: 	name: Default
+20:26:07.148: 	id: default
+20:26:07.149: ---------------------------------
+20:26:07.160: No AJA devices found, skipping loading AJA UI plugin
+20:26:07.160: Failed to initialize module 'aja-output-ui'
+20:26:07.168: No AJA devices found, skipping loading AJA plugin
+20:26:07.168: Failed to initialize module 'aja'
+20:26:07.170: Failed to load 'en-US' text for module: 'decklink-captions'
+20:26:07.172: Failed to load 'en-US' text for module: 'decklink-output-ui'
+20:26:07.173: A DeckLink iterator could not be created.  The DeckLink drivers may not be installed
+20:26:07.173: Failed to initialize module 'decklink'
+20:26:07.309: [obs-browser]: Version 2.24.4
+20:26:07.309: [obs-browser]: CEF Version 127.0.6533.100 (runtime), 127.3.2+gf1af617+chromium-127.0.6533.100 (compiled)
+20:26:07.346: [obs-websocket] [obs_module_load] you can haz websockets (Version: 5.5.4 | RPC Version: 1)
+20:26:07.346: [obs-websocket] [obs_module_load] Qt version (compile-time): 6.6.3 | Qt version (run-time): 6.6.3
+20:26:07.346: [obs-websocket] [obs_module_load] Linked ASIO Version: 103100
+20:26:07.346: DEPRECATION: obs_frontend_get_global_config is deprecated. Read from global or user configuration explicitly instead.
+20:26:07.352: [obs-websocket] [obs_module_load] Module loaded.
+20:26:07.359: os_dlopen(/Applications/VLC.app/Contents/MacOS/lib/libvlccore.dylib->/Applications/VLC.app/Contents/MacOS/lib/libvlccore.dylib): dlopen(/Applications/VLC.app/Contents/MacOS/lib/libvlccore.dylib, 0x0105): tried: '/Applications/VLC.app/Contents/MacOS/lib/libvlccore.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Applications/VLC.app/Contents/MacOS/lib/libvlccore.dylib' (no such file), '/Applications/VLC.app/Contents/MacOS/lib/libvlccore.dylib' (no such file)
+20:26:07.359: 
+20:26:07.359: [vlc-video]: Couldn't find VLC installation, VLC video source disabled
+20:26:07.364: Failed to load 'en-GB' text for module: 'stream-my-heart'
+20:26:07.364: [stream-my-heart] plugin loaded successfully (version 1.0.0)
+20:26:07.364: ---------------------------------
+20:26:07.364:   Loaded Modules:
+20:26:07.364:     stream-my-heart
+20:26:07.364:     vlc-video
+20:26:07.364:     text-freetype2
+20:26:07.364:     rtmp-services
+20:26:07.364:     obs-x264
+20:26:07.364:     obs-websocket
+20:26:07.364:     obs-webrtc
+20:26:07.364:     obs-vst
+20:26:07.364:     obs-transitions
+20:26:07.364:     obs-outputs
+20:26:07.364:     obs-filters
+20:26:07.364:     obs-ffmpeg
+20:26:07.364:     obs-browser
+20:26:07.364:     mac-virtualcam
+20:26:07.364:     mac-videotoolbox
+20:26:07.364:     mac-syphon
+20:26:07.364:     mac-capture
+20:26:07.364:     mac-avcapture
+20:26:07.364:     mac-avcapture-legacy
+20:26:07.364:     image-source
+20:26:07.364:     frontend-tools
+20:26:07.364:     decklink-output-ui
+20:26:07.364:     decklink-captions
+20:26:07.364:     coreaudio-encoder
+20:26:07.364: ---------------------------------
+20:26:07.372: obs_register_encoder: Encoder id 'com.apple.videotoolbox.videoencoder.h264.gva' already exists!  Duplicate library?
+20:26:07.372: obs_register_encoder: Encoder id 'com.apple.videotoolbox.videoencoder.hevc.gva' already exists!  Duplicate library?
+20:26:07.372: [VideoToolbox encoder]: Added VideoToolbox encoders
+20:26:07.372: ---------------------------------
+20:26:07.372: Available Encoders:
+20:26:07.372:   Video Encoders:
+20:26:07.372: 	- ffmpeg_aom_av1 (AOM AV1)
+20:26:07.372: 	- obs_x264 (x264)
+20:26:07.372: 	- com.apple.videotoolbox.videoencoder.prores-422 (Apple VT ProRes Software Encoder)
+20:26:07.372: 	- com.apple.videotoolbox.videoencoder.h264.gva (Apple VT H264 Hardware Encoder)
+20:26:07.372: 	- com.apple.videotoolbox.videoencoder.h264 (Apple VT H264 Software Encoder)
+20:26:07.372: 	- com.apple.videotoolbox.videoencoder.hevc.ave (Apple VT HEVC T2 Hardware Encoder)
+20:26:07.372: 	- com.apple.videotoolbox.videoencoder.hevc.gva (Apple VT HEVC Hardware Encoder)
+20:26:07.372: 	- com.apple.videotoolbox.videoencoder.hevc.vcp (Apple VT HEVC Software Encoder)
+20:26:07.372:   Audio Encoders:
+20:26:07.372: 	- CoreAudio_AAC (CoreAudio AAC)
+20:26:07.372: 	- ffmpeg_aac (FFmpeg AAC)
+20:26:07.372: 	- ffmpeg_opus (FFmpeg Opus)
+20:26:07.372: 	- ffmpeg_pcm_s16le (FFmpeg PCM (16-bit))
+20:26:07.372: 	- ffmpeg_pcm_s24le (FFmpeg PCM (24-bit))
+20:26:07.372: 	- ffmpeg_pcm_f32le (FFmpeg PCM (32-bit float))
+20:26:07.372: 	- ffmpeg_alac (FFmpeg ALAC (24-bit))
+20:26:07.372: 	- ffmpeg_flac (FFmpeg FLAC (16-bit))
+20:26:07.372: ==== Startup complete ===============================================
+20:26:07.424: All scene data cleared
+20:26:07.424: ------------------------------------------------
+20:26:07.530: Downmix enabled: 1 to 2 channels.
+20:26:07.623: coreaudio: Device 'MacBook Pro Microphone' [48000 Hz] initialized
+20:26:07.624: [Loaded global audio device]: 'Mic/Aux'
+20:26:07.634: Switched to scene 'Scene'
+20:26:07.634: ------------------------------------------------
+20:26:07.634: Loaded scenes:
+20:26:07.634: - scene 'Scene':
+20:26:07.634:     - source: 'Video Capture Device' (macos-avcapture)
+20:26:07.634:         - filter: 'Heart Rate Monitor' (heart_rate_filter)
+20:26:07.634:     - source: 'Heart Rate Display' (text_ft2_source_v2)
+20:26:07.634: ------------------------------------------------
+20:26:07.673: Video Capture Device: Selected device 'FaceTime HD Camera (Built-in)'
+20:26:07.991: [mac-virtualcam] macOS Camera Extension user approval required.
+20:26:10.623: [stream-my-heart] Face detection took: 1193708227 ns
+20:26:10.746: [stream-my-heart] Face detection took: 88754664 ns
+20:26:10.842: [stream-my-heart] Face detection took: 87501286 ns
+20:26:10.939: [stream-my-heart] Face detection took: 86572159 ns
+20:26:11.032: [stream-my-heart] Face detection took: 86162962 ns
+20:26:11.122: [stream-my-heart] Face detection took: 86347593 ns
+20:26:11.213: [stream-my-heart] Face detection took: 86236113 ns
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:11.221: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:11.315: [stream-my-heart] Face detection took: 97660057 ns
+20:26:11.423: [stream-my-heart] Face detection took: 86414845 ns
+20:26:11.523: [stream-my-heart] Face detection took: 86224720 ns
+20:26:11.610: [stream-my-heart] Face detection took: 85530639 ns
+20:26:11.729: [stream-my-heart] Face detection took: 86313732 ns
+20:26:11.826: [stream-my-heart] Face detection took: 86050841 ns
+20:26:11.930: [stream-my-heart] Face detection took: 86794729 ns
+20:26:12.019: [stream-my-heart] Face detection took: 86057959 ns
+20:26:12.111: [stream-my-heart] Face detection took: 86415404 ns
+20:26:12.198: [stream-my-heart] Face detection took: 85324915 ns
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:12.219: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:12.290: [stream-my-heart] Face detection took: 86379768 ns
+20:26:12.380: [stream-my-heart] Face detection took: 85681638 ns
+20:26:12.471: [stream-my-heart] Face detection took: 86243618 ns
+20:26:12.558: [stream-my-heart] Face detection took: 85698308 ns
+20:26:12.659: [stream-my-heart] Face detection took: 86623913 ns
+20:26:12.746: [stream-my-heart] Face detection took: 86060126 ns
+20:26:12.839: [stream-my-heart] Face detection took: 86168539 ns
+20:26:12.927: [stream-my-heart] Face detection took: 85936765 ns
+20:26:13.023: [stream-my-heart] Face detection took: 86886436 ns
+20:26:13.112: [stream-my-heart] Face detection took: 86509830 ns
+20:26:13.209: [stream-my-heart] Face detection took: 86215139 ns
+20:26:13.299: [stream-my-heart] Face detection took: 86031104 ns
+20:26:13.389: [stream-my-heart] Face detection took: 85732534 ns
+20:26:13.476: [stream-my-heart] Face detection took: 85629446 ns
+20:26:13.575: [stream-my-heart] Face detection took: 87402833 ns
+20:26:13.667: [stream-my-heart] Face detection took: 90142813 ns
+20:26:13.757: [stream-my-heart] Face detection took: 85515869 ns
+20:26:13.845: [stream-my-heart] Face detection took: 86848414 ns
+20:26:13.940: [stream-my-heart] Face detection took: 86336985 ns
+20:26:14.027: [stream-my-heart] Face detection took: 85669491 ns
+20:26:14.122: [stream-my-heart] Face detection took: 85547428 ns
+20:26:14.209: [stream-my-heart] Face detection took: 85723007 ns
+20:26:14.306: [stream-my-heart] Face detection took: 85862356 ns
+20:26:14.394: [stream-my-heart] Face detection took: 85706526 ns
+20:26:14.489: [stream-my-heart] Face detection took: 85675895 ns
+20:26:14.577: [stream-my-heart] Face detection took: 85731371 ns
+20:26:14.673: [stream-my-heart] Face detection took: 85552440 ns
+20:26:14.760: [stream-my-heart] Face detection took: 85680157 ns
+20:26:14.855: [stream-my-heart] Face detection took: 86131513 ns
+20:26:14.943: [stream-my-heart] Face detection took: 85364784 ns
+20:26:15.040: [stream-my-heart] Face detection took: 86718977 ns
+20:26:15.128: [stream-my-heart] Face detection took: 85979281 ns
+20:26:15.222: [stream-my-heart] Face detection took: 86122146 ns
+20:26:15.310: [stream-my-heart] Face detection took: 85867586 ns
+20:26:15.407: [stream-my-heart] Face detection took: 86454939 ns
+20:26:15.495: [stream-my-heart] Face detection took: 86265405 ns
+20:26:15.595: [stream-my-heart] Face detection took: 87189271 ns
+20:26:15.682: [stream-my-heart] Face detection took: 85719170 ns
+20:26:15.775: [stream-my-heart] Face detection took: 87820187 ns
+20:26:15.864: [stream-my-heart] Face detection took: 86875076 ns
+20:26:15.956: [stream-my-heart] Face detection took: 85872304 ns
+20:26:16.044: [stream-my-heart] Face detection took: 85919171 ns
+20:26:16.139: [stream-my-heart] Face detection took: 85718066 ns
+20:26:16.227: [stream-my-heart] Face detection took: 85823593 ns
+20:26:16.323: [stream-my-heart] Face detection took: 87187190 ns
+20:26:16.411: [stream-my-heart] Face detection took: 86150448 ns
+20:26:16.518: [stream-my-heart] Face detection took: 98898302 ns
+20:26:16.608: [stream-my-heart] Face detection took: 88346683 ns
+20:26:16.706: [stream-my-heart] Face detection took: 85886503 ns
+20:26:16.793: [stream-my-heart] Face detection took: 85965636 ns
+20:26:16.891: [stream-my-heart] Face detection took: 86029025 ns
+20:26:16.979: [stream-my-heart] Face detection took: 85973642 ns
+20:26:17.074: [stream-my-heart] Face detection took: 85676244 ns
+20:26:17.162: [stream-my-heart] Face detection took: 86436015 ns
+20:26:17.256: [stream-my-heart] Face detection took: 85797901 ns
+20:26:17.344: [stream-my-heart] Face detection took: 86078281 ns
+20:26:17.439: [stream-my-heart] Face detection took: 85348386 ns
+20:26:17.528: [stream-my-heart] Face detection took: 86589698 ns
+20:26:17.622: [stream-my-heart] Face detection took: 85611996 ns
+20:26:17.709: [stream-my-heart] Face detection took: 85479423 ns
+20:26:17.806: [stream-my-heart] Face detection took: 85608481 ns
+20:26:17.894: [stream-my-heart] Face detection took: 86324987 ns
+20:26:17.988: [stream-my-heart] Face detection took: 86016253 ns
+20:26:18.076: [stream-my-heart] Face detection took: 86176341 ns
+20:26:18.172: [stream-my-heart] Face detection took: 85500285 ns
+20:26:18.261: [stream-my-heart] Face detection took: 86709556 ns
+20:26:18.356: [stream-my-heart] Face detection took: 86302879 ns
+20:26:18.444: [stream-my-heart] Face detection took: 85979419 ns
+20:26:18.542: [stream-my-heart] Face detection took: 85531355 ns
+20:26:18.630: [stream-my-heart] Face detection took: 86179071 ns
+20:26:18.724: [stream-my-heart] Face detection took: 87803111 ns
+20:26:18.811: [stream-my-heart] Face detection took: 85679869 ns
+20:26:18.909: [stream-my-heart] Face detection took: 85656174 ns
+20:26:19.000: [stream-my-heart] Face detection took: 86924780 ns
+20:26:19.092: [stream-my-heart] Face detection took: 85608199 ns
+20:26:19.183: [stream-my-heart] Face detection took: 86282117 ns
+20:26:19.273: [stream-my-heart] Face detection took: 85524069 ns
+20:26:19.361: [stream-my-heart] Face detection took: 86122492 ns
+20:26:19.456: [stream-my-heart] Face detection took: 86404077 ns
+20:26:19.545: [stream-my-heart] Face detection took: 86942991 ns
+20:26:19.646: [stream-my-heart] Face detection took: 86064625 ns
+20:26:19.734: [stream-my-heart] Face detection took: 86045443 ns
+20:26:19.825: [stream-my-heart] Face detection took: 85787273 ns
+20:26:19.913: [stream-my-heart] Face detection took: 86569284 ns
+20:26:20.011: [stream-my-heart] Face detection took: 87614905 ns
+20:26:20.099: [stream-my-heart] Face detection took: 85773067 ns
+20:26:20.189: [stream-my-heart] Face detection took: 85458436 ns
+20:26:20.276: [stream-my-heart] Face detection took: 85494226 ns
+20:26:20.375: [stream-my-heart] Face detection took: 86135877 ns
+20:26:20.463: [stream-my-heart] Face detection took: 86121423 ns
+20:26:20.556: [stream-my-heart] Face detection took: 86100130 ns
+20:26:20.644: [stream-my-heart] Face detection took: 86354700 ns
+20:26:20.743: [stream-my-heart] Face detection took: 86947728 ns
+20:26:20.834: [stream-my-heart] Face detection took: 86374320 ns
+20:26:20.925: [stream-my-heart] Face detection took: 85514823 ns
+20:26:21.012: [stream-my-heart] Face detection took: 85974562 ns
+20:26:21.111: [stream-my-heart] Face detection took: 86702070 ns
+20:26:21.200: [stream-my-heart] Face detection took: 85860659 ns
+20:26:21.293: [stream-my-heart] Face detection took: 86920195 ns
+20:26:21.381: [stream-my-heart] Face detection took: 85770663 ns
+20:26:21.474: [stream-my-heart] Face detection took: 85852638 ns
+20:26:21.474: [stream-my-heart] Heart rate update took: 5300 ns
+20:26:21.563: [stream-my-heart] Face detection took: 87589091 ns
+20:26:21.563: [stream-my-heart] Heart rate update took: 1411 ns
+20:26:21.655: [stream-my-heart] Face detection took: 85341033 ns
+20:26:21.655: [stream-my-heart] Heart rate update took: 1114 ns
+20:26:21.743: [stream-my-heart] Face detection took: 86215581 ns
+20:26:21.743: [stream-my-heart] Heart rate update took: 1601 ns
+20:26:21.842: [stream-my-heart] Face detection took: 85760689 ns
+20:26:21.842: [stream-my-heart] Heart rate update took: 1441 ns
+20:26:21.930: [stream-my-heart] Face detection took: 86872133 ns
+20:26:21.930: [stream-my-heart] Heart rate update took: 2195 ns
+20:26:22.025: [stream-my-heart] Face detection took: 86269015 ns
+20:26:22.025: [stream-my-heart] Heart rate update took: 1907 ns
+20:26:22.113: [stream-my-heart] Face detection took: 86048915 ns
+20:26:22.113: [stream-my-heart] Heart rate update took: 2230 ns
+20:26:22.206: [stream-my-heart] Face detection took: 85582208 ns
+20:26:22.206: [stream-my-heart] Heart rate update took: 1740 ns
+20:26:22.294: [stream-my-heart] Face detection took: 86181025 ns
+20:26:22.294: [stream-my-heart] Heart rate update took: 1901 ns
+20:26:22.392: [stream-my-heart] Face detection took: 86211555 ns
+20:26:22.392: [stream-my-heart] Heart rate update took: 2094 ns
+20:26:22.479: [stream-my-heart] Face detection took: 85514927 ns
+20:26:22.479: [stream-my-heart] Heart rate update took: 2454 ns
+20:26:22.574: [stream-my-heart] Face detection took: 86035542 ns
+20:26:22.574: [stream-my-heart] Heart rate update took: 2016 ns
+20:26:22.661: [stream-my-heart] Face detection took: 85850641 ns
+20:26:22.661: [stream-my-heart] Heart rate update took: 2371 ns
+20:26:22.756: [stream-my-heart] Face detection took: 86155731 ns
+20:26:22.756: [stream-my-heart] Heart rate update took: 2172 ns
+20:26:22.844: [stream-my-heart] Face detection took: 86205083 ns
+20:26:22.844: [stream-my-heart] Heart rate update took: 3565 ns
+20:26:22.940: [stream-my-heart] Face detection took: 86021643 ns
+20:26:22.940: [stream-my-heart] Heart rate update took: 2312 ns
+20:26:23.028: [stream-my-heart] Face detection took: 85914644 ns
+20:26:23.028: [stream-my-heart] Heart rate update took: 2364 ns
+20:26:23.123: [stream-my-heart] Face detection took: 86402694 ns
+20:26:23.123: [stream-my-heart] Heart rate update took: 2490 ns
+20:26:23.211: [stream-my-heart] Face detection took: 85506454 ns
+20:26:23.211: [stream-my-heart] Heart rate update took: 2990 ns
+20:26:23.307: [stream-my-heart] Face detection took: 85836490 ns
+20:26:23.307: [stream-my-heart] Heart rate update took: 3016 ns
+20:26:23.395: [stream-my-heart] Face detection took: 85886365 ns
+20:26:23.395: [stream-my-heart] Heart rate update took: 2805 ns
+20:26:23.492: [stream-my-heart] Face detection took: 86261434 ns
+20:26:23.492: [stream-my-heart] Heart rate update took: 2910 ns
+20:26:23.579: [stream-my-heart] Face detection took: 85912160 ns
+20:26:23.579: [stream-my-heart] Heart rate update took: 2868 ns
+20:26:23.672: [stream-my-heart] Face detection took: 85450914 ns
+20:26:23.672: [stream-my-heart] Heart rate update took: 2748 ns
+20:26:23.759: [stream-my-heart] Face detection took: 85661771 ns
+20:26:23.759: [stream-my-heart] Heart rate update took: 3344 ns
+20:26:23.859: [stream-my-heart] Face detection took: 87045526 ns
+20:26:23.859: [stream-my-heart] Heart rate update took: 3286 ns
+20:26:23.949: [stream-my-heart] Face detection took: 86096836 ns
+20:26:23.949: [stream-my-heart] Heart rate update took: 3142 ns
+20:26:24.041: [stream-my-heart] Face detection took: 85484959 ns
+20:26:24.041: [stream-my-heart] Pre-filtering took: 140832 ns
+20:26:24.041: [stream-my-heart] PPG calculation took: 12652 ns
+20:26:24.041: [stream-my-heart] Post-filtering took: 132281 ns
+20:26:24.042: [stream-my-heart] Welch took: 256693 ns
+20:26:24.042: [stream-my-heart] Smoothing took: 192 ns
+20:26:24.042: [stream-my-heart] Heart rate calculation took: 632311 ns
+20:26:24.129: [stream-my-heart] Face detection took: 85930233 ns
+20:26:24.129: [stream-my-heart] Heart rate update took: 3891 ns
+20:26:24.223: [stream-my-heart] Face detection took: 85560501 ns
+20:26:24.223: [stream-my-heart] Heart rate update took: 1216 ns
+20:26:24.311: [stream-my-heart] Face detection took: 85747486 ns
+20:26:24.311: [stream-my-heart] Heart rate update took: 1586 ns
+20:26:24.406: [stream-my-heart] Face detection took: 86606047 ns
+20:26:24.406: [stream-my-heart] Heart rate update took: 1427 ns
+20:26:24.495: [stream-my-heart] Face detection took: 86594941 ns
+20:26:24.495: [stream-my-heart] Heart rate update took: 1857 ns
+20:26:24.591: [stream-my-heart] Face detection took: 85751123 ns
+20:26:24.591: [stream-my-heart] Heart rate update took: 1805 ns
+20:26:24.679: [stream-my-heart] Face detection took: 86216790 ns
+20:26:24.679: [stream-my-heart] Heart rate update took: 1486 ns
+20:26:24.774: [stream-my-heart] Face detection took: 86028160 ns
+20:26:24.774: [stream-my-heart] Heart rate update took: 2160 ns
+20:26:24.861: [stream-my-heart] Face detection took: 85998686 ns
+20:26:24.862: [stream-my-heart] Heart rate update took: 1961 ns
+20:26:24.956: [stream-my-heart] Face detection took: 85639868 ns
+20:26:24.956: [stream-my-heart] Heart rate update took: 1721 ns
+20:26:25.044: [stream-my-heart] Face detection took: 85488956 ns
+20:26:25.044: [stream-my-heart] Heart rate update took: 2039 ns
+20:26:25.139: [stream-my-heart] Face detection took: 86210912 ns
+20:26:25.139: [stream-my-heart] Heart rate update took: 2107 ns
+20:26:25.227: [stream-my-heart] Face detection took: 85513000 ns
+20:26:25.227: [stream-my-heart] Heart rate update took: 2570 ns
+20:26:25.315: [stream-my-heart] Face detection took: 83993495 ns
+20:26:25.315: [stream-my-heart] Heart rate update took: 3033 ns
+20:26:25.413: [stream-my-heart] Face detection took: 86647108 ns
+20:26:25.413: [stream-my-heart] Heart rate update took: 2193 ns
+20:26:25.518: [stream-my-heart] Face detection took: 93035137 ns
+20:26:25.519: [stream-my-heart] Heart rate update took: 3586 ns
+20:26:25.608: [stream-my-heart] Face detection took: 85620566 ns
+20:26:25.608: [stream-my-heart] Heart rate update took: 2715 ns
+20:26:25.706: [stream-my-heart] Face detection took: 86665386 ns
+20:26:25.706: [stream-my-heart] Heart rate update took: 2768 ns
+20:26:25.796: [stream-my-heart] Face detection took: 85758190 ns
+20:26:25.796: [stream-my-heart] Heart rate update took: 3019 ns
+20:26:25.892: [stream-my-heart] Face detection took: 87137002 ns
+20:26:25.892: [stream-my-heart] Heart rate update took: 2868 ns
+20:26:25.989: [stream-my-heart] Face detection took: 85558550 ns
+20:26:25.989: [stream-my-heart] Heart rate update took: 3073 ns
+20:26:26.080: [stream-my-heart] Face detection took: 86095450 ns
+20:26:26.080: [stream-my-heart] Heart rate update took: 2927 ns
+20:26:26.173: [stream-my-heart] Face detection took: 86374798 ns
+20:26:26.173: [stream-my-heart] Heart rate update took: 3675 ns
+20:26:26.264: [stream-my-heart] Face detection took: 86240864 ns
+20:26:26.264: [stream-my-heart] Heart rate update took: 5317 ns
+20:26:26.359: [stream-my-heart] Face detection took: 85642161 ns
+20:26:26.359: [stream-my-heart] Heart rate update took: 3685 ns
+20:26:26.456: [stream-my-heart] Face detection took: 85909209 ns
+20:26:26.456: [stream-my-heart] Heart rate update took: 3224 ns
+20:26:26.546: [stream-my-heart] Face detection took: 85798843 ns
+20:26:26.546: [stream-my-heart] Heart rate update took: 3791 ns
+20:26:26.641: [stream-my-heart] Face detection took: 86680232 ns
+20:26:26.641: [stream-my-heart] Heart rate update took: 4026 ns
+20:26:26.741: [stream-my-heart] Face detection took: 85453557 ns
+20:26:26.741: [stream-my-heart] Pre-filtering took: 178750 ns
+20:26:26.741: [stream-my-heart] PPG calculation took: 12945 ns
+20:26:26.741: [stream-my-heart] Post-filtering took: 116353 ns
+20:26:26.742: [stream-my-heart] Welch took: 367154 ns
+20:26:26.742: [stream-my-heart] Smoothing took: 196 ns
+20:26:26.742: [stream-my-heart] Heart rate calculation took: 770501 ns
+20:26:26.839: [stream-my-heart] Face detection took: 85953248 ns
+20:26:26.839: [stream-my-heart] Heart rate update took: 4606 ns
+20:26:26.929: [stream-my-heart] Face detection took: 85590143 ns
+20:26:26.929: [stream-my-heart] Heart rate update took: 1140 ns
+20:26:27.023: [stream-my-heart] Face detection took: 86003504 ns
+20:26:27.023: [stream-my-heart] Heart rate update took: 1182 ns
+20:26:27.117: [stream-my-heart] Face detection took: 86590972 ns
+20:26:27.117: [stream-my-heart] Heart rate update took: 1624 ns
+20:26:27.207: [stream-my-heart] Face detection took: 85569292 ns
+20:26:27.207: [stream-my-heart] Heart rate update took: 1225 ns
+20:26:27.307: [stream-my-heart] Face detection took: 86266909 ns
+20:26:27.307: [stream-my-heart] Heart rate update took: 1312 ns
+20:26:27.397: [stream-my-heart] Face detection took: 85851186 ns
+20:26:27.397: [stream-my-heart] Heart rate update took: 1811 ns
+20:26:27.492: [stream-my-heart] Face detection took: 86828482 ns
+20:26:27.493: [stream-my-heart] Heart rate update took: 1911 ns
+20:26:27.593: [stream-my-heart] Face detection took: 85928550 ns
+20:26:27.593: [stream-my-heart] Heart rate update took: 1651 ns
+20:26:27.690: [stream-my-heart] Face detection took: 86427636 ns
+20:26:27.690: [stream-my-heart] Heart rate update took: 2421 ns
+20:26:27.780: [stream-my-heart] Face detection took: 86224971 ns
+20:26:27.780: [stream-my-heart] Heart rate update took: 2441 ns
+20:26:27.878: [stream-my-heart] Face detection took: 87363973 ns
+20:26:27.878: [stream-my-heart] Heart rate update took: 1831 ns
+20:26:27.974: [stream-my-heart] Face detection took: 85449472 ns
+20:26:27.974: [stream-my-heart] Heart rate update took: 2435 ns
+20:26:28.073: [stream-my-heart] Face detection took: 85626205 ns
+20:26:28.073: [stream-my-heart] Heart rate update took: 2314 ns
+20:26:28.163: [stream-my-heart] Face detection took: 85702492 ns
+20:26:28.163: [stream-my-heart] Heart rate update took: 2248 ns
+20:26:28.258: [stream-my-heart] Face detection took: 87199498 ns
+20:26:28.258: [stream-my-heart] Heart rate update took: 3791 ns
+20:26:28.356: [stream-my-heart] Face detection took: 86748543 ns
+20:26:28.356: [stream-my-heart] Heart rate update took: 2565 ns
+20:26:28.447: [stream-my-heart] Face detection took: 86552477 ns
+20:26:28.448: [stream-my-heart] Heart rate update took: 2623 ns
+20:26:28.540: [stream-my-heart] Face detection took: 86174466 ns
+20:26:28.540: [stream-my-heart] Heart rate update took: 2859 ns
+20:26:28.630: [stream-my-heart] Face detection took: 85718116 ns
+20:26:28.630: [stream-my-heart] Heart rate update took: 2980 ns
+20:26:28.724: [stream-my-heart] Face detection took: 86529540 ns
+20:26:28.724: [stream-my-heart] Heart rate update took: 3636 ns
+20:26:28.824: [stream-my-heart] Face detection took: 87142332 ns
+20:26:28.824: [stream-my-heart] Heart rate update took: 2985 ns
+20:26:28.934: [stream-my-heart] Face detection took: 97504021 ns
+20:26:28.934: [stream-my-heart] Heart rate update took: 3738 ns
+20:26:29.047: [stream-my-heart] Face detection took: 100619436 ns
+20:26:29.047: [stream-my-heart] Heart rate update took: 3628 ns
+20:26:29.142: [stream-my-heart] Face detection took: 87019155 ns
+20:26:29.142: [stream-my-heart] Heart rate update took: 3720 ns
+20:26:29.238: [stream-my-heart] Face detection took: 90480668 ns
+20:26:29.238: [stream-my-heart] Heart rate update took: 4165 ns
+20:26:29.331: [stream-my-heart] Face detection took: 86748948 ns
+20:26:29.331: [stream-my-heart] Heart rate update took: 4244 ns
+20:26:29.432: [stream-my-heart] Face detection took: 89035237 ns
+20:26:29.432: [stream-my-heart] Heart rate update took: 3610 ns
+20:26:29.523: [stream-my-heart] Face detection took: 87027725 ns
+20:26:29.524: [stream-my-heart] Pre-filtering took: 174137 ns
+20:26:29.524: [stream-my-heart] PPG calculation took: 16648 ns
+20:26:29.524: [stream-my-heart] Post-filtering took: 134467 ns
+20:26:29.524: [stream-my-heart] Welch took: 499525 ns
+20:26:29.524: [stream-my-heart] Smoothing took: 216 ns
+20:26:29.524: [stream-my-heart] Heart rate calculation took: 906663 ns
+20:26:29.621: [stream-my-heart] Face detection took: 87193921 ns
+20:26:29.621: [stream-my-heart] Heart rate update took: 4517 ns
+20:26:29.712: [stream-my-heart] Face detection took: 85919353 ns
+20:26:29.712: [stream-my-heart] Heart rate update took: 1897 ns
+20:26:29.806: [stream-my-heart] Face detection took: 86961060 ns
+20:26:29.806: [stream-my-heart] Heart rate update took: 1750 ns
+20:26:29.900: [stream-my-heart] Face detection took: 88582889 ns
+20:26:29.900: [stream-my-heart] Heart rate update took: 2334 ns
+20:26:29.993: [stream-my-heart] Face detection took: 88463083 ns
+20:26:29.993: [stream-my-heart] Heart rate update took: 2063 ns
+20:26:30.085: [stream-my-heart] Face detection took: 86882552 ns
+20:26:30.085: [stream-my-heart] Heart rate update took: 2274 ns
+20:26:30.174: [stream-my-heart] Face detection took: 85657080 ns
+20:26:30.174: [stream-my-heart] Heart rate update took: 1974 ns
+20:26:30.268: [stream-my-heart] Face detection took: 86051842 ns
+20:26:30.268: [stream-my-heart] Heart rate update took: 3051 ns
+20:26:30.361: [stream-my-heart] Face detection took: 89316622 ns
+20:26:30.361: [stream-my-heart] Heart rate update took: 2531 ns
+20:26:30.463: [stream-my-heart] Face detection took: 86712308 ns
+20:26:30.463: [stream-my-heart] Heart rate update took: 2250 ns
+20:26:30.555: [stream-my-heart] Face detection took: 86548166 ns
+20:26:30.555: [stream-my-heart] Heart rate update took: 2441 ns
+20:26:30.645: [stream-my-heart] Face detection took: 86049225 ns
+20:26:30.645: [stream-my-heart] Heart rate update took: 3367 ns
+20:26:30.740: [stream-my-heart] Face detection took: 87012721 ns
+20:26:30.740: [stream-my-heart] Heart rate update took: 2194 ns
+20:26:30.832: [stream-my-heart] Face detection took: 87079350 ns
+20:26:30.832: [stream-my-heart] Heart rate update took: 4603 ns
+20:26:30.928: [stream-my-heart] Face detection took: 87033921 ns
+20:26:30.928: [stream-my-heart] Heart rate update took: 2735 ns
+20:26:31.022: [stream-my-heart] Face detection took: 86182734 ns
+20:26:31.022: [stream-my-heart] Heart rate update took: 2953 ns
+20:26:31.113: [stream-my-heart] Face detection took: 86426036 ns
+20:26:31.113: [stream-my-heart] Heart rate update took: 3579 ns
+20:26:31.209: [stream-my-heart] Face detection took: 86961969 ns
+20:26:31.209: [stream-my-heart] Heart rate update took: 3533 ns
+20:26:31.303: [stream-my-heart] Face detection took: 87036096 ns
+20:26:31.303: [stream-my-heart] Heart rate update took: 2938 ns
+20:26:31.393: [stream-my-heart] Face detection took: 86034890 ns
+20:26:31.393: [stream-my-heart] Heart rate update took: 3586 ns
+20:26:31.484: [stream-my-heart] Face detection took: 86381400 ns
+20:26:31.484: [stream-my-heart] Heart rate update took: 3846 ns
+20:26:31.574: [stream-my-heart] Face detection took: 86229172 ns
+20:26:31.574: [stream-my-heart] Heart rate update took: 3356 ns
+20:26:31.669: [stream-my-heart] Face detection took: 86423683 ns
+20:26:31.669: [stream-my-heart] Heart rate update took: 4168 ns
+20:26:31.763: [stream-my-heart] Face detection took: 85898120 ns
+20:26:31.763: [stream-my-heart] Heart rate update took: 3622 ns
+20:26:31.854: [stream-my-heart] Face detection took: 86088276 ns
+20:26:31.854: [stream-my-heart] Heart rate update took: 3552 ns
+20:26:31.945: [stream-my-heart] Face detection took: 86945806 ns
+20:26:31.945: [stream-my-heart] Heart rate update took: 3867 ns
+20:26:32.041: [stream-my-heart] Face detection took: 86752521 ns
+20:26:32.041: [stream-my-heart] Heart rate update took: 3675 ns
+20:26:32.141: [stream-my-heart] Face detection took: 86519165 ns
+20:26:32.141: [stream-my-heart] Heart rate update took: 4335 ns
+20:26:32.240: [stream-my-heart] Face detection took: 91582411 ns
+20:26:32.240: [stream-my-heart] Pre-filtering took: 202251 ns
+20:26:32.240: [stream-my-heart] PPG calculation took: 22916 ns
+20:26:32.241: [stream-my-heart] Post-filtering took: 159396 ns
+20:26:32.241: [stream-my-heart] Welch took: 662891 ns
+20:26:32.241: [stream-my-heart] Smoothing took: 112 ns
+20:26:32.241: [stream-my-heart] Heart rate calculation took: 1144717 ns
+20:26:32.342: [stream-my-heart] Face detection took: 86322323 ns
+20:26:32.342: [stream-my-heart] Heart rate update took: 7350 ns
+20:26:32.442: [stream-my-heart] Face detection took: 86755472 ns
+20:26:32.442: [stream-my-heart] Heart rate update took: 1489 ns
+20:26:32.544: [stream-my-heart] Face detection took: 86931221 ns
+20:26:32.544: [stream-my-heart] Heart rate update took: 1519 ns
+20:26:32.636: [stream-my-heart] Face detection took: 85676985 ns
+20:26:32.636: [stream-my-heart] Heart rate update took: 1763 ns
+20:26:32.735: [stream-my-heart] Face detection took: 85665492 ns
+20:26:32.735: [stream-my-heart] Heart rate update took: 1331 ns
+20:26:32.841: [stream-my-heart] Face detection took: 85729932 ns
+20:26:32.841: [stream-my-heart] Heart rate update took: 2137 ns
+20:26:32.934: [stream-my-heart] Face detection took: 85921605 ns
+20:26:32.934: [stream-my-heart] Heart rate update took: 2845 ns
+20:26:33.026: [stream-my-heart] Face detection took: 86059410 ns
+20:26:33.026: [stream-my-heart] Heart rate update took: 3304 ns
+20:26:33.123: [stream-my-heart] Face detection took: 85931926 ns
+20:26:33.123: [stream-my-heart] Heart rate update took: 2503 ns
+20:26:33.213: [stream-my-heart] Face detection took: 86150728 ns
+20:26:33.213: [stream-my-heart] Heart rate update took: 2264 ns
+20:26:33.307: [stream-my-heart] Face detection took: 85508451 ns
+20:26:33.307: [stream-my-heart] Heart rate update took: 2224 ns
+20:26:33.407: [stream-my-heart] Face detection took: 86617022 ns
+20:26:33.407: [stream-my-heart] Heart rate update took: 1951 ns
+20:26:33.497: [stream-my-heart] Face detection took: 85787138 ns
+20:26:33.497: [stream-my-heart] Heart rate update took: 2616 ns
+20:26:33.591: [stream-my-heart] Face detection took: 85963750 ns
+20:26:33.591: [stream-my-heart] Heart rate update took: 3171 ns
+20:26:33.688: [stream-my-heart] Face detection took: 85427980 ns
+20:26:33.688: [stream-my-heart] Heart rate update took: 2845 ns
+20:26:33.779: [stream-my-heart] Face detection took: 86509786 ns
+20:26:33.779: [stream-my-heart] Heart rate update took: 3426 ns
+20:26:33.875: [stream-my-heart] Face detection took: 87549482 ns
+20:26:33.875: [stream-my-heart] Heart rate update took: 2269 ns
+20:26:33.971: [stream-my-heart] Face detection took: 84929727 ns
+20:26:33.971: [stream-my-heart] Heart rate update took: 2829 ns
+20:26:34.078: [stream-my-heart] Face detection took: 86064914 ns
+20:26:34.079: [stream-my-heart] Heart rate update took: 2913 ns
+20:26:34.180: [stream-my-heart] Face detection took: 85531712 ns
+20:26:34.180: [stream-my-heart] Heart rate update took: 3456 ns
+20:26:34.297: [stream-my-heart] Face detection took: 86633760 ns
+20:26:34.297: [stream-my-heart] Heart rate update took: 3115 ns
+20:26:34.384: [stream-my-heart] Face detection took: 82409968 ns
+20:26:34.384: [stream-my-heart] Heart rate update took: 3055 ns
+20:26:34.474: [stream-my-heart] Face detection took: 86343498 ns
+20:26:34.474: [stream-my-heart] Heart rate update took: 3231 ns
+20:26:34.572: [stream-my-heart] Face detection took: 85852038 ns
+20:26:34.572: [stream-my-heart] Heart rate update took: 3475 ns
+20:26:34.662: [stream-my-heart] Face detection took: 85614783 ns
+20:26:34.662: [stream-my-heart] Heart rate update took: 3528 ns
+20:26:34.757: [stream-my-heart] Face detection took: 86190156 ns
+20:26:34.757: [stream-my-heart] Heart rate update took: 3447 ns
+20:26:34.847: [stream-my-heart] Face detection took: 86053415 ns
+20:26:34.847: [stream-my-heart] Heart rate update took: 3666 ns
+20:26:34.940: [stream-my-heart] Face detection took: 86053529 ns
+20:26:34.956: [stream-my-heart] Heart rate update took: 3702 ns
+20:26:35.046: [stream-my-heart] Face detection took: 85619689 ns
+20:26:35.046: [stream-my-heart] Pre-filtering took: 198149 ns
+20:26:35.046: [stream-my-heart] PPG calculation took: 19918 ns
+20:26:35.047: [stream-my-heart] Post-filtering took: 153951 ns
+20:26:35.047: [stream-my-heart] Welch took: 654528 ns
+20:26:35.047: [stream-my-heart] Smoothing took: 308 ns
+20:26:35.047: [stream-my-heart] Heart rate calculation took: 1114775 ns
+20:26:35.145: [stream-my-heart] Face detection took: 85884608 ns
+20:26:35.145: [stream-my-heart] Heart rate update took: 6806 ns
+20:26:35.243: [stream-my-heart] Face detection took: 85723230 ns
+20:26:35.243: [stream-my-heart] Heart rate update took: 1217 ns
+20:26:35.340: [stream-my-heart] Face detection took: 85664147 ns
+20:26:35.340: [stream-my-heart] Heart rate update took: 1280 ns
+20:26:35.431: [stream-my-heart] Face detection took: 86435087 ns
+20:26:35.431: [stream-my-heart] Heart rate update took: 1867 ns
+20:26:35.524: [stream-my-heart] Face detection took: 86063873 ns
+20:26:35.524: [stream-my-heart] Heart rate update took: 1634 ns
+20:26:35.624: [stream-my-heart] Face detection took: 86106675 ns
+20:26:35.624: [stream-my-heart] Heart rate update took: 2057 ns
+20:26:35.714: [stream-my-heart] Face detection took: 85397374 ns
+20:26:35.714: [stream-my-heart] Heart rate update took: 2006 ns
+20:26:35.804: [stream-my-heart] Face detection took: 84498276 ns
+20:26:35.804: [stream-my-heart] Heart rate update took: 26509 ns
+20:26:35.894: [stream-my-heart] Face detection took: 85589697 ns
+20:26:35.894: [stream-my-heart] Heart rate update took: 1634 ns
+20:26:35.984: [stream-my-heart] Face detection took: 85055030 ns
+20:26:35.984: [stream-my-heart] Heart rate update took: 1744 ns
+20:26:36.080: [stream-my-heart] Face detection took: 86678679 ns
+20:26:36.080: [stream-my-heart] Heart rate update took: 2628 ns
+20:26:36.174: [stream-my-heart] Face detection took: 86257998 ns
+20:26:36.174: [stream-my-heart] Heart rate update took: 2147 ns
+20:26:36.273: [stream-my-heart] Face detection took: 85840871 ns
+20:26:36.273: [stream-my-heart] Heart rate update took: 2078 ns
+20:26:36.363: [stream-my-heart] Face detection took: 85588788 ns
+20:26:36.363: [stream-my-heart] Heart rate update took: 2738 ns
+20:26:36.457: [stream-my-heart] Face detection took: 86699374 ns
+20:26:36.457: [stream-my-heart] Heart rate update took: 2263 ns
+20:26:36.548: [stream-my-heart] Face detection took: 86791043 ns
+20:26:36.548: [stream-my-heart] Heart rate update took: 2925 ns
+20:26:36.640: [stream-my-heart] Face detection took: 85628160 ns
+20:26:36.640: [stream-my-heart] Heart rate update took: 2528 ns
+20:26:36.731: [stream-my-heart] Face detection took: 86013518 ns
+20:26:36.731: [stream-my-heart] Heart rate update took: 2972 ns
+20:26:36.824: [stream-my-heart] Face detection took: 85400177 ns
+20:26:36.824: [stream-my-heart] Heart rate update took: 3095 ns
+20:26:36.897: ==== Shutting down ==================================================
+20:26:36.922: [stream-my-heart] Face detection took: 85781240 ns
+20:26:36.922: [stream-my-heart] Heart rate update took: 3319 ns
+20:26:37.009: [stream-my-heart] Face detection took: 84828703 ns
+20:26:37.009: [stream-my-heart] Heart rate update took: 3080 ns
+20:26:37.111: [stream-my-heart] Face detection took: 86619255 ns
+20:26:37.111: [stream-my-heart] Heart rate update took: 3014 ns
+20:26:37.131: [stream-my-heart] [remove_source] done removing Heart Rate Display source
+20:26:37.131: [stream-my-heart] [remove_source] done removing Heart Rate Graph source
+20:26:37.131: [stream-my-heart] [remove_source] done removing Heart Rate Icon source
+20:26:37.131: [stream-my-heart] [remove_source] done removing Heart Rate Mood source
+20:26:37.228: All scene data cleared
+20:26:37.228: ------------------------------------------------
+20:26:37.335: [stream-my-heart] plugin unloaded
+20:26:37.337: [obs-websocket] [obs_module_unload] Shutting down...
+20:26:37.337: Tried to call obs_frontend_remove_event_callback with no callbacks!
+20:26:37.337: [obs-websocket] [obs_module_unload] Finished shutting down.
+20:26:37.337: [Scripting] Total detached callbacks: 0
+20:26:37.338: Freeing OBS context data
+20:26:37.351: == Profiler Results =============================
+20:26:37.351: run_program_init: 1551.17 ms
+20:26:37.351:  ┣OBSApp::AppInit: 19.485 ms
+20:26:37.351:  ┃ ┗OBSApp::InitLocale: 1.671 ms
+20:26:37.352:  ┗OBSApp::OBSInit: 1337.28 ms
+20:26:37.352:    ┣obs_startup: 1.32 ms
+20:26:37.352:    ┗OBSBasic::OBSInit: 1119.25 ms
+20:26:37.352:      ┣OBSBasic::InitBasicConfig: 1.719 ms
+20:26:37.352:      ┣OBSBasic::ResetAudio: 0.279 ms
+20:26:37.352:      ┣OBSBasic::ResetVideo: 494.575 ms
+20:26:37.352:      ┃ ┗obs_init_graphics: 493.285 ms
+20:26:37.352:      ┃   ┗shader compilation: 408.786 ms
+20:26:37.352:      ┣OBSBasic::InitOBSCallbacks: 0.006 ms
+20:26:37.352:      ┣OBSBasic::InitHotkeys: 0.024 ms
+20:26:37.352:      ┣obs_load_all_modules2: 215.336 ms
+20:26:37.352:      ┃ ┣obs_init_module(aja-output-ui): 0.756 ms
+20:26:37.352:      ┃ ┣obs_init_module(aja): 0.554 ms
+20:26:37.352:      ┃ ┣obs_init_module(coreaudio-encoder): 0.004 ms
+20:26:37.352:      ┃ ┣obs_init_module(decklink-captions): 0 ms
+20:26:37.352:      ┃ ┣obs_init_module(decklink-output-ui): 0 ms
+20:26:37.352:      ┃ ┣obs_init_module(decklink): 0.065 ms
+20:26:37.352:      ┃ ┣obs_init_module(frontend-tools): 4.269 ms
+20:26:37.352:      ┃ ┣obs_init_module(image-source): 0.012 ms
+20:26:37.352:      ┃ ┣obs_init_module(mac-avcapture-legacy): 71.673 ms
+20:26:37.352:      ┃ ┣obs_init_module(mac-avcapture): 0.005 ms
+20:26:37.352:      ┃ ┣obs_init_module(mac-capture): 0.009 ms
+20:26:37.352:      ┃ ┣obs_init_module(mac-syphon): 0.001 ms
+20:26:37.352:      ┃ ┣obs_init_module(mac-videotoolbox): 0.019 ms
+20:26:37.352:      ┃ ┣obs_init_module(mac-virtualcam): 0.004 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-browser): 45.05 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-ffmpeg): 0.106 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-filters): 0.05 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-outputs): 0.007 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-transitions): 0.005 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-vst): 0.001 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-webrtc): 0.006 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-websocket): 6.614 ms
+20:26:37.352:      ┃ ┣obs_init_module(obs-x264): 0.001 ms
+20:26:37.352:      ┃ ┣obs_init_module(rtmp-services): 1.842 ms
+20:26:37.352:      ┃ ┣obs_init_module(text-freetype2): 0.031 ms
+20:26:37.352:      ┃ ┣obs_init_module(vlc-video): 0.235 ms
+20:26:37.352:      ┃ ┗obs_init_module(stream-my-heart): 0.029 ms
+20:26:37.352:      ┣OBSBasic::InitService: 2.188 ms
+20:26:37.352:      ┣OBSBasic::ResetOutputs: 16.785 ms
+20:26:37.352:      ┣OBSBasic::CreateHotkeys: 0.041 ms
+20:26:37.352:      ┣OBSBasic::InitPrimitives: 0.157 ms
+20:26:37.352:      ┗OBSBasic::Load: 245.576 ms
+20:26:37.352: obs_hotkey_thread(25 ms): min=0 ms, median=0 ms, max=0.018 ms, 99th percentile=0.001 ms, 100% below 25 ms
+20:26:37.352: audio_thread(Audio): min=0.005 ms, median=0.02 ms, max=1200.03 ms, 99th percentile=91.1 ms
+20:26:37.352: obs_graphics_thread(33.3333 ms): min=0.056 ms, median=94.448 ms, max=1217.89 ms, 99th percentile=200.308 ms, 26.5018% below 33.333 ms
+20:26:37.352:  ┣tick_sources: min=0 ms, median=0.012 ms, max=22.673 ms, 99th percentile=11.912 ms
+20:26:37.352:  ┣output_frame: min=0.049 ms, median=89.803 ms, max=1209.14 ms, 99th percentile=106.879 ms
+20:26:37.352:  ┃ ┗gs_context(video->graphics): min=0.049 ms, median=89.798 ms, max=1209.14 ms, 99th percentile=106.871 ms
+20:26:37.352:  ┃   ┣render_video: min=0.015 ms, median=89.742 ms, max=1209.08 ms, 99th percentile=106.688 ms
+20:26:37.352:  ┃   ┃ ┗render_main_texture: min=0.013 ms, median=89.739 ms, max=1209.08 ms, 99th percentile=106.686 ms
+20:26:37.352:  ┃   ┗gs_flush: min=0.033 ms, median=0.054 ms, max=0.599 ms, 99th percentile=0.459 ms
+20:26:37.352:  ┗render_displays: min=0.001 ms, median=2.074 ms, max=106.848 ms, 99th percentile=99.453 ms
+20:26:37.352: =================================================
+20:26:37.352: == Profiler Time Between Calls ==================
+20:26:37.352: obs_hotkey_thread(25 ms): min=25.019 ms, median=28.645 ms, max=54.822 ms, 10.219% within ±2% of 25 ms (0% lower, 89.781% higher)
+20:26:37.352: obs_graphics_thread(33.3333 ms): min=3.759 ms, median=94.471 ms, max=1217.9 ms, 19.8582% within ±2% of 33.333 ms (3.19149% lower, 76.9504% higher)
+20:26:37.352: =================================================
+20:26:37.357: Number of memory leaks: 284
