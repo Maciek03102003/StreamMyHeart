@@ -128,7 +128,7 @@ void MovingAvg::updateWindows(vector<double_t> frameAvg)
 	}
 }
 
-FrameRGB extractRGB(struct input_BGRA_data *bgraData)
+FrameRGB extractRGB(std::shared_ptr<struct input_BGRA_data> bgraData)
 {
 	uint8_t *data = bgraData->data;
 	uint32_t width = bgraData->width;
@@ -292,7 +292,7 @@ double MovingAvg::smoothHeartRate(double hr)
 
 double MovingAvg::calculateHeartRate(vector<double_t> avg, int preFilter, int ppg, int postFilter, bool smooth, int Fps,
 				     int sampleRate)
-{ // Assume frame in YUV format: struct obs_source_frame *source
+{
 	uint64_t start_heart_rate;
 	if (enableTiming) {
 		start_heart_rate = os_gettime_ns();

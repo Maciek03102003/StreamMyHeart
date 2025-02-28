@@ -24,6 +24,7 @@ void destroy_graph_source(void *data)
 	struct graph_source *graph = reinterpret_cast<struct graph_source *>(data);
 
 	if (graph) {
+		graph->isDisabled = true;
 		// Release the OBS source
 		if (graph->source) {
 			obs_source_release(graph->source);
@@ -72,7 +73,7 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	UNUSED_PARAMETER(effect);
 
 	struct graph_source *graphSource = reinterpret_cast<struct graph_source *>(data);
-	if (!graphSource || !graphSource->source) {
+	if (!graphSource || !graphSource->source || graphSource->isDisabled) {
 		return; // Ensure graphSource is valid
 	}
 
@@ -81,10 +82,15 @@ void graph_source_render(void *data, gs_effect_t *effect)
 	// Retrieve OBS settings for the heart rate monitor source
 	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
 	if (!heartRateSource) {
-		obs_log(LOG_INFO, "Failed to get heart rate source");
 		return;
 	}
 	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+
+	if (obs_data_get_bool(hrsSettings, "is disabled")) {
+		obs_data_release(hrsSettings);
+		obs_source_release(heartRateSource);
+		return;
+	}
 	int curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
 	obs_data_release(hrsSettings);
 	obs_source_release(heartRateSource);
@@ -98,15 +104,13 @@ void graph_source_render(void *data, gs_effect_t *effect)
 uint32_t get_color_code(int color_option)
 {
 	switch (color_option) {
-	case 0:                    // White
+	case 0:
 		return 0xFFFFFFFF; // RGBA: White
-	case 1:                    // Red
-		return 0xFFFF0000; // RGBA: Red
-	case 2:                    // Yellow
-		return 0xFFFFFF00; // RGBA: Yellow
-	case 3:                    // Green
-		return 0xFF00FF00; // RGBA: Green
-	case 4:                    // Blue
+	case 1:
+		return 0xFF000000; // RGBA: Black
+	case 2:
+		return 0xFF800080; // RGBA: Purple
+	case 3:
 		return 0xFF0000FF; // RGBA: Blue
 	default:
 		return 0xFFFFFFFF; // Default: White
@@ -122,15 +126,22 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	// Retrieve source width and height
 	uint32_t width = obs_source_get_width(graph_source->source);
 	uint32_t height = obs_source_get_height(graph_source->source);
+	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
+	if (!heartRateSource) {
+		obs_log(LOG_INFO, "Failed to get heart rate source");
+		return;
+	}
+	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+	int graphSize = obs_data_get_int(hrsSettings, "heartRateGraphSize");
 
 	// obs_log(LOG_INFO, "Graph source dimensions: Width = %u, Height = %u", width, height);
 
-	if (width == 0 || height == 0)
+	if (width == 0 || height == 0 || graphSize == 0)
 		return; // Avoid division by zero
 
 	// Maintain a buffer size of 10
 	if (curHeartRate > 0) {
-		while (graph_source->buffer.size() >= 10) {
+		while (graph_source->buffer.size() >= static_cast<size_t>(graphSize)) {
 			graph_source->buffer.erase(graph_source->buffer.begin());
 		}
 		graph_source->buffer.push_back(curHeartRate);
@@ -146,19 +157,42 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		gs_effect_destroy(active_effect);
 	}
 
-	obs_source_t *heartRateSource = get_heart_rate_monitor_filter();
-	if (!heartRateSource) {
-		obs_log(LOG_INFO, "Failed to get heart rate source");
-		return;
-	}
-	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
-
 	// Get base effect
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	while (gs_effect_loop(effect, "Solid")) {
-		// Set background colour
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF);
-		gs_draw_sprite(nullptr, 0, width, height);
+
+		int background = obs_data_get_int(hrsSettings, "graphPlaneDropdown");
+		if (background == 0) {
+			// Set background colour to white
+			gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF);
+			gs_draw_sprite(nullptr, 0, width, height);
+		} else if (background == 2) {
+			// **Draw background stripes for heart rate regions**
+			struct {
+				int min_hr, max_hr;
+				uint32_t color;
+			} heart_rate_zones[] = {
+				{50, 90, 0xFF00FF00},   // Green (Good)
+				{90, 120, 0xFFFFFF00},  // Yellow (Warning - High)
+				{120, 150, 0xFFFFA500}, // Orange (Caution - High)
+				{150, 180, 0xFFFF0000}  // Red (Bad - Too High)
+			};
+
+			for (size_t i = 0; i < sizeof(heart_rate_zones) / sizeof(heart_rate_zones[0]); i++) {
+				float top = height -
+					    (static_cast<float>(heart_rate_zones[i].max_hr - 50) / 260.0f) * height * 2;
+				float bottom = height - (static_cast<float>(heart_rate_zones[i].min_hr - 50) / 260.0f) *
+								height * 2;
+
+				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
+						    heart_rate_zones[i].color);
+				// Push matrix and translate to correct Y position
+				gs_matrix_push();
+				gs_matrix_translate3f(0, top, 0);                // Move to the correct position
+				gs_draw_sprite(nullptr, 0, width, bottom - top); // Draw stripe
+				gs_matrix_pop();                                 // Restore previous transformation
+			}
+		}
 
 		// Set color for the graph (Default: Red)
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
@@ -167,12 +201,13 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		// obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
 
 		// **Simulate thicker lines by drawing multiple parallel lines**
-		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 1.0f) {
+		// float interval = width / (graphSize - 1);
+		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.01f) {
 			gs_render_start(GS_LINESTRIP);
 
 			for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-				float x = (static_cast<float>(i) / 9.0f) * width;
-				float y = height - (static_cast<float>(graph_source->buffer[i]) / 200.0f) * height;
+				float x = (static_cast<float>(i) / (graphSize - 1)) * width;
+				float y = height - (static_cast<float>(graph_source->buffer[i] - 50)) * 2;
 
 				gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
 			}
@@ -228,21 +263,52 @@ void *create_graph_source_info(obs_data_t *settings, obs_source_t *source)
 	graph_src->source = source;
 	if (!source) {
 		obs_log(LOG_INFO, "current source in create graph source is null");
+		if (graph_src) {
+			bfree(graph_src);
+		}
 		return nullptr;
 	}
 
 	std::vector<int> buffer;
 	graph_src->buffer = buffer;
 
+	graph_src->isDisabled = false;
+
 	return graph_src;
 }
 uint32_t graph_source_info_get_width(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 250;
+	obs_source_t *hrs = get_heart_rate_monitor_filter();
+	if (!hrs) {
+		return 0;
+	}
+	obs_data_t *settings = obs_source_get_settings(hrs);
+	int size = obs_data_get_int(settings, "heartRateGraphSize");
+	obs_data_release(settings);
+	obs_source_release(hrs);
+	if (size < 20) {
+		return 260;
+	} else if (size < 30) {
+		return 520;
+	} else {
+		return 780;
+	}
 }
 uint32_t graph_source_info_get_height(void *data)
 {
 	UNUSED_PARAMETER(data);
-	return 250;
+	return 260;
+}
+
+void graphSourceActivate(void *data)
+{
+	struct graph_source *graphSource = reinterpret_cast<graph_source *>(data);
+	graphSource->isDisabled = false;
+}
+
+void graphSourceDeactivate(void *data)
+{
+	struct graph_source *graphSource = reinterpret_cast<graph_source *>(data);
+	graphSource->isDisabled = true;
 }

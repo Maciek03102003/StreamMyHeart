@@ -27,72 +27,72 @@ const char *getHeartRateSourceName(void *)
 	return obs_module_text("HeartRateMonitor");
 }
 
-static void create_graph_source(obs_scene_t *scene)
+static void createGraphSource(obs_scene_t *scene)
 {
-	obs_source_t *graph_source = obs_get_source_by_name(GRAPH_SOURCE_NAME);
-	if (graph_source) {
-		obs_source_release(graph_source); // source already exists, release it
+	obs_source_t *graphSource = obs_get_source_by_name(GRAPH_SOURCE_NAME);
+	if (graphSource) {
+		obs_source_release(graphSource); // source already exists, release it
 		return;
 	}
-	graph_source = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
-	if (!graph_source) {
+	graphSource = obs_source_create("heart_rate_graph", GRAPH_SOURCE_NAME, nullptr, nullptr);
+	if (!graphSource) {
 		return;
 	}
 
-	obs_scene_add(scene, graph_source);
-	obs_transform_info transform_info;
-	transform_info.pos.x = 260.0f;
-	transform_info.pos.y = 700.0f;
-	transform_info.bounds.x = 250.0f;
-	transform_info.bounds.y = 250.0f;
-	transform_info.bounds_type = OBS_BOUNDS_SCALE_INNER;
-	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 1.0f;
-	transform_info.scale.y = 1.0f;
-	transform_info.rot = 0.0f;
-	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, graph_source);
-	if (source_sceneitem != NULL) {
-		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
-		obs_sceneitem_release(source_sceneitem);
+	obs_scene_add(scene, graphSource);
+	obs_transform_info transformInfo;
+	transformInfo.pos.x = 260.0f;
+	transformInfo.pos.y = 700.0f;
+	transformInfo.bounds.x = 260.0f;
+	transformInfo.bounds.y = 260.0f;
+	transformInfo.bounds_type = OBS_BOUNDS_SCALE_INNER;
+	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
+	transformInfo.alignment = OBS_ALIGN_CENTER;
+	transformInfo.scale.x = 1.0f;
+	transformInfo.scale.y = 1.0f;
+	transformInfo.rot = 0.0f;
+	obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, graphSource);
+	if (sourceSceneItem != NULL) {
+		obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+		obs_sceneitem_release(sourceSceneItem);
 	}
-	obs_source_release(graph_source);
+	obs_source_release(graphSource);
 }
 
-static void create_image_source(obs_scene_t *scene)
+static void createImageSource(obs_scene_t *scene)
 {
-	obs_source_t *image_source = obs_get_source_by_name(IMAGE_SOURCE_NAME);
-	if (image_source) {
-		obs_source_release(image_source); // source already exists, release it
+	obs_source_t *imageSource = obs_get_source_by_name(IMAGE_SOURCE_NAME);
+	if (imageSource) {
+		obs_source_release(imageSource); // source already exists, release it
 		return;
 	}
 	// Create the heart rate image source (assuming a file path)
-	obs_data_t *image_settings = obs_data_create();
-	obs_data_set_string(image_settings, "file", obs_module_file("heart_rate.gif"));
-	image_source = obs_source_create("image_source", IMAGE_SOURCE_NAME, image_settings, nullptr);
-	obs_data_release(image_settings);
+	obs_data_t *imageSettings = obs_data_create();
+	obs_data_set_string(imageSettings, "file", obs_module_file("heart_rate.gif"));
+	imageSource = obs_source_create("image_source", IMAGE_SOURCE_NAME, imageSettings, nullptr);
+	obs_data_release(imageSettings);
 
-	obs_scene_add(scene, image_source);
+	obs_scene_add(scene, imageSource);
 
 	// set transform settings
-	obs_transform_info transform_info;
-	transform_info.pos.x = 260.0;
-	transform_info.pos.y = 700.0;
-	transform_info.bounds.x = 300.0;
-	transform_info.bounds.y = 400.0;
-	transform_info.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
-	transform_info.bounds_alignment = OBS_ALIGN_CENTER;
-	transform_info.alignment = OBS_ALIGN_CENTER;
-	transform_info.scale.x = 0.1;
-	transform_info.scale.y = 0.1;
-	transform_info.rot = 0.0;
-	obs_sceneitem_t *source_sceneitem = getSceneItemFromSource(scene, image_source);
-	if (source_sceneitem != NULL) {
-		obs_sceneitem_set_info2(source_sceneitem, &transform_info);
-		obs_sceneitem_release(source_sceneitem);
+	obs_transform_info transformInfo;
+	transformInfo.pos.x = 260.0;
+	transformInfo.pos.y = 700.0;
+	transformInfo.bounds.x = 300.0;
+	transformInfo.bounds.y = 400.0;
+	transformInfo.bounds_type = obs_bounds_type::OBS_BOUNDS_SCALE_INNER;
+	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
+	transformInfo.alignment = OBS_ALIGN_CENTER;
+	transformInfo.scale.x = 0.1;
+	transformInfo.scale.y = 0.1;
+	transformInfo.rot = 0.0;
+	obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, imageSource);
+	if (sourceSceneItem != NULL) {
+		obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+		obs_sceneitem_release(sourceSceneItem);
 	}
 
-	obs_source_release(image_source);
+	obs_source_release(imageSource);
 }
 
 static void createTextSource(obs_scene_t *scene)
@@ -216,10 +216,10 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	obs_scene_t *scene = obs_scene_from_source(sceneAsSource);
 
 	if (obs_data_get_bool(settings, "enable graph source")) {
-		create_graph_source(scene);
+		createGraphSource(scene);
 	}
 	if (obs_data_get_bool(settings, "enable image source")) {
-		create_image_source(scene);
+		createImageSource(scene);
 	}
 	if (obs_data_get_bool(settings, "enable text source")) {
 		createTextSource(scene);
@@ -234,12 +234,11 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 // Create function
 void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 {
-	// UNUSED_PARAMETER(settings);
-
 	void *data = bmalloc(sizeof(struct heartRateSource));
 	struct heartRateSource *hrs = new (data) heartRateSource();
 
 	hrs->source = source;
+	hrs->currentPpgAlgorithm = obs_data_get_int(settings, "ppg algorithm");
 
 	obs_enter_graphics();
 	char *effectFile = obs_module_file("test.effect");
@@ -304,6 +303,8 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
+	obs_data_set_default_bool(settings, "is disabled", false);
+	obs_data_set_default_int(settings, "heartRateGraphSize", 10);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -359,13 +360,13 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	if (!obs_data_get_bool(settings, "enable graph source")) {
 		removeSource(GRAPH_SOURCE_NAME);
 	} else {
-		create_graph_source(scene);
+		createGraphSource(scene);
 	}
 
 	if (!obs_data_get_bool(settings, "enable image source")) {
 		removeSource(IMAGE_SOURCE_NAME);
 	} else {
-		create_image_source(scene);
+		createImageSource(scene);
 	}
 
 	if (!obs_data_get_bool(settings, "enable mood source")) {
@@ -379,6 +380,9 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 
 	obs_property_t *graphLineDropdown = obs_properties_get(props, "graphLineDropdown");
 	obs_property_set_visible(graphLineDropdown, obs_data_get_bool(settings, "enable graph source"));
+
+	obs_property_t *heartRateGraphSize = obs_properties_get(props, "heartRateGraphSize");
+	obs_property_set_visible(heartRateGraphSize, obs_data_get_bool(settings, "enable graph source"));
 
 	obs_source_release(sceneAsSource);
 
@@ -451,19 +455,19 @@ obs_properties_t *heartRateSourceProperties(void *data)
 								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Red"), 1);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Yellow"), 2);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Green"), 3);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Blue"), 4);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Clear"), 1);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Coloured tiers"), 2);
 
 	obs_property_t *graphLineDropdown = obs_properties_add_list(props, "graphLineDropdown",
 								    obs_module_text("GraphLineDropdown"),
 								    OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
 	obs_property_list_add_int(graphLineDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Red"), 1);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Yellow"), 2);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Green"), 3);
-	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 4);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Black"), 1);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Purple"), 2);
+	obs_property_list_add_int(graphLineDropdown, obs_module_text("Blue"), 3);
+
+	obs_property_t *heartRateGraphSize = obs_properties_add_int(
+		props, "heartRateGraphSize", "number of history hreat rate displayed", 10, 30, 1);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
@@ -477,6 +481,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(graphLineDropdown, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
+	obs_property_set_modified_callback(heartRateGraphSize, updateProperties);
 
 	obs_data_release(settings);
 
@@ -487,12 +492,18 @@ void heartRateSourceActivate(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = false;
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
+	obs_data_set_bool(settings, "is disabled", false);
+	obs_data_release(settings);
 }
 
 void heartRateSourceDeactivate(void *data)
 {
 	struct heartRateSource *hrs = reinterpret_cast<heartRateSource *>(data);
 	hrs->isDisabled = true;
+	obs_data_t *settings = obs_source_get_settings(hrs->source);
+	obs_data_set_bool(settings, "is disabled", true);
+	obs_data_release(settings);
 }
 
 // Tick function
@@ -624,7 +635,12 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 
 	{
 		std::lock_guard<std::mutex> lock(hrs->bgraDataMutex);
-		struct input_BGRA_data *bgraData = (struct input_BGRA_data *)bzalloc(sizeof(struct input_BGRA_data));
+		std::shared_ptr<input_BGRA_data> bgraData(
+			static_cast<input_BGRA_data *>(bzalloc(sizeof(input_BGRA_data))), [](input_BGRA_data *p) {
+				if (p)
+					bfree(p);
+			});
+
 		bgraData->width = width;
 		bgraData->height = height;
 		bgraData->linesize = linesize;
@@ -676,18 +692,12 @@ std::string getMood(int heart_rate)
 	std::string mood;
 	if (heart_rate > 150) {
 		mood = "Extremely hyped";
-	} else if (heart_rate > 130) {
+	} else if (heart_rate > 120) {
 		mood = "Very Intense";
-	} else if (heart_rate > 110) {
-		mood = "Highly excited";
 	} else if (heart_rate > 90) {
-		mood = "Moderately excited";
-	} else if (heart_rate > 75) {
-		mood = "Slightly excited";
+		mood = "Excited";
 	} else if (heart_rate > 60) {
 		mood = "Normal";
-	} else if (heart_rate > 50) {
-		mood = "Very Calm";
 	} else {
 		mood = "Extremely calm";
 	}
@@ -698,7 +708,6 @@ std::string getMood(int heart_rate)
 void heartRateSourceRender(void *data, gs_effect_t *effect)
 {
 	UNUSED_PARAMETER(effect);
-	// obs_log(LOG_INFO, "START RENDERING");
 
 	struct heartRateSource *hrs = reinterpret_cast<struct heartRateSource *>(data);
 
@@ -755,7 +764,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	}
 
 	int64_t fps = obs_data_get_int(hrsSettings, "fps");
-	double heartRate = -1.0;
+	double heartRate;
 	bool noFaceDetected = false;
 	if (!(std::all_of(avg.begin(), avg.end(), [](double_t val) { return val == 0.0; }))) { // face detected
 		// Get the settings for calculating the heart rate
@@ -763,11 +772,17 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
 		bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
 		int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
-	
+
+		// Check if the ppg algorithm has changed
+		if (selectedPpgAlgorithm != hrs->currentPpgAlgorithm) {
+			movingAvg = MovingAvg(); // Create a new instance of MovingAvg
+			hrs->currentPpgAlgorithm = selectedPpgAlgorithm;
+		}
+
 		hrs->frameCount = 0; // reset frame count
 
 		heartRate = movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm,
-								selectedPostFiltering, true, fps);
+							 selectedPostFiltering, true, fps);
 	} else { // no face detected
 		hrs->frameCount += 1;
 		if (hrs->frameCount >= fps) { // if no face detected more than 1 second
@@ -785,15 +800,19 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		if (pos != std::string::npos) {
 			heartRateText.replace(pos, 4, std::to_string(static_cast<int>(std::round(heartRate))));
 		} else {
-			heartRateText = "Heart rate: " + std::to_string(static_cast<int>(std::round(heartRate))) + " BPM";
+			heartRateText =
+				"Heart rate: " + std::to_string(static_cast<int>(std::round(heartRate))) + " BPM";
 		}
 		moodText = "Mood: " + getMood(heartRate);
 	} else if (noFaceDetected) { // output "No Face Detected"
 		heartRateText = "No Face Detected";
 		moodText = "No Face Detected";
+	} else if (heartRate == -1.0) { // output "Calibrating..."
+		heartRateText = "Calibrating...";
+		moodText = "Calibrating...";
 	}
 
-	if (noFaceDetected || heartRate > 0.0) {
+	if (noFaceDetected || heartRate != 0.0) {
 		// Updating heart rate text source
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {
@@ -843,5 +862,4 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	} else {
 		skipVideoFilterIfSafe(hrs->source);
 	}
-	// obs_log(LOG_INFO, "FINISH RENDERING");
 }

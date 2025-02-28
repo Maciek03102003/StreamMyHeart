@@ -34,7 +34,7 @@ struct heartRateSource {
 	gs_stagesurf_t *stagesurface;
 	gs_effect_t *testing;
 #ifdef __cplusplus
-	input_BGRA_data *bgraData;
+	std::shared_ptr<struct input_BGRA_data> bgraData;
 	std::mutex bgraDataMutex;
 	std::unique_ptr<FaceDetection> faceDetection;
 #else
@@ -42,6 +42,7 @@ struct heartRateSource {
 	void *bgraDataMutex; // Placeholder for C compatibility
 	void *faceDetection;
 #endif
+	int64_t currentPpgAlgorithm;
 	bool isDisabled;
 	int frameCount;
 };

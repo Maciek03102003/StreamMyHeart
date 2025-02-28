@@ -25,7 +25,7 @@ void removeSource(const char *source_name)
 		}
 		obs_source_release(source); // Release the source reference
 	}
-	obs_log(LOG_INFO, "[remove_source] done removing %s source", source_name);
+	// obs_log(LOG_INFO, "[remove_source] done removing %s source", source_name);
 }
 
 void skipVideoFilterIfSafe(obs_source_t *source)
