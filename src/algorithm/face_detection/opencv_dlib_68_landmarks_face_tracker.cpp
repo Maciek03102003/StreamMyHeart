@@ -76,8 +76,9 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 
 	dlib::cv_image<unsigned char> dlibImg(frameGray);
 
-	bool resetFaceDetection = frameCount % frameUpdateInterval == 0;
-	bool runFaceDetection = !enableTracker || (enableTracker && (resetFaceDetection || !startedTracking));
+	bool resetFaceDetection = enableTracker ? frameCount % frameUpdateInterval == 0 : frameCount % 3 == 0;
+	bool runFaceDetection = (!enableTracker && resetFaceDetection) ||
+				(enableTracker && (resetFaceDetection || !startedTracking));
 
 	if (runFaceDetection) {
 		std::vector<rectangle> faces = detector(dlibImg);
@@ -142,13 +143,7 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 	cv::Scalar meanRGB = cv::mean(frameMat, maskMat);
 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
 
-	// if (frame_count == frameUpdateInterval && enableTracker) {
-	// 	obs_log(LOG_INFO, "Reset tracker!!!!");
-	// 	is_tracking = false;
-	// 	frame_count = 0;
-	// }
-	// obs_log(LOG_INFO, "Frame count: %d", frame_count);
-	if (enableTracker && resetFaceDetection) {
+	if (resetFaceDetection) {
 		frameCount = 0;
 	}
 	frameCount++;

@@ -24,6 +24,10 @@ private:
 	void initializeFaceCascade(bool evaluation);
 	cv::CascadeClassifier faceCascade, mouthCascade, leftEyeCascade, rightEyeCascade;
 	bool cascadeLoaded = false;
+	bool noFaceDetected = false;
+	cv::Mat maskMat;
+	int frameCount = 0;
+	std::vector<struct vec4> faceCoordinatesCopy;
 };
 
 #endif

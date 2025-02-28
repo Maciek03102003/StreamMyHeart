@@ -34,6 +34,13 @@ private:
 	std::vector<double_t> heartRates;
 	int numHeartRates = 8;
 
+	double uiHeartRate = -1.0;
+	int uiUpdateInterval;
+	double uiUpdateAmount = 0.0;
+	int framesSincePPG = 0;
+	int NUM_UPDATES = 10;
+	double prevHr;
+
 	std::vector<double_t> averageRGB(std::vector<std::vector<std::vector<uint8_t>>> rgb,
 					 std::vector<std::vector<bool>> skinKey = {});
 
@@ -45,6 +52,6 @@ private:
 
 public:
 	double calculateHeartRate(std::vector<double_t> avg, int preFilter = 1, int ppgAlgorithm = 1,
-				  int postFilter = 0, int Fps = 30, int sampleRate = 1, bool smooth = true);
+				  int postFilter = 0, bool smooth = true, int Fps = 30, int sampleRate = 1);
 };
 #endif
