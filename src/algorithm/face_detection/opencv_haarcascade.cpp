@@ -88,6 +88,26 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 	cv::Mat bgrFrame;
 	cv::cvtColor(croppedBgraFrame, bgrFrame, cv::COLOR_BGRA2BGR);
 
+	frameCount++;
+	bool resetFaceDetection = frameCount % 3 == 0;
+
+	if (!resetFaceDetection) {
+		if (noFaceDetected) {
+			return std::vector<double_t>(3, 0.0);
+		}
+		
+		// Now compute the mean color in the face region (where maskMat is nonzero)
+		cv::Scalar meanRGB = cv::mean(bgrFrame, maskMat);
+
+		// Convert the result to a vector<double_t> (B, G, R order)
+		std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
+
+		faceCoordinates = faceCoordinatesCopy;
+		return avgRGB;
+	} else {
+		frameCount = 0;
+	}
+
 	// Detect faces
 	std::vector<cv::Rect> faces;
 	faceCascade.detectMultiScale(bgrFrame, faces, 1.1, 10, 0, cv::Size(30, 30));
@@ -95,8 +115,12 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 	// Detect eyes and mouth within detected faces
 	cv::Rect initialFace;
 	if (!faces.empty()) {
+		noFaceDetected = false;
 		initialFace = faces[0]; // Assume first detected face is the target
 	} else {
+		noFaceDetected = true;
+		maskMat.release(); // Frees memory and makes it an empty matrix
+		faceCoordinatesCopy.clear(); // Clears all elements, size becomes 0
 		// If no face detected, return empty mask
 		return std::vector<double_t>(3, 0.0);
 	}
@@ -163,9 +187,11 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 		}
 	}
 
+	faceCoordinatesCopy = faceCoordinates;
+
 	// Instead of returning a 2D boolean mask, create an OpenCV mask image
 	// that we will use to compute the average RGB.
-	cv::Mat maskMat = cv::Mat::zeros(bgrFrame.size(), CV_8UC1);
+	maskMat = cv::Mat::zeros(bgrFrame.size(), CV_8UC1);
 
 	// Mark the entire face region (initialFace) as valid (white)
 	cv::rectangle(maskMat, initialFace, cv::Scalar(255), cv::FILLED);
