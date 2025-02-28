@@ -196,9 +196,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		// Set color for the graph (Default: Red)
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
-				    get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
-
-		// obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
+				    obs_data_get_int(hrsSettings, "graph line color"));
 
 		// **Simulate thicker lines by drawing multiple parallel lines**
 		// float interval = width / (graphSize - 1);

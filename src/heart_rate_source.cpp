@@ -302,7 +302,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
 	obs_data_set_default_int(settings, "graph plane dropdown", 1);
-	obs_data_set_default_int(settings, "graph line color", 0xFF0000);
+	obs_data_set_default_int(settings, "graph line color", 0x0000FF);
 	obs_data_set_default_int(settings, "pre-filtering method", 3);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
