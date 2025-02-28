@@ -764,7 +764,7 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 	}
 
 	int64_t fps = obs_data_get_int(hrsSettings, "fps");
-	double heartRate;
+	double heartRate = -1.0;
 	bool noFaceDetected = false;
 	if (!(std::all_of(avg.begin(), avg.end(), [](double_t val) { return val == 0.0; }))) { // face detected
 		// Get the settings for calculating the heart rate
