@@ -26,8 +26,8 @@ private:
 	dlib::frontal_face_detector detector;
 	dlib::shape_predictor sp;
 	int frameCount = 0;
-	dlib::rectangle detectedFace;
-	dlib::rectangle initialFace;
+	dlib::rectangle detectedFace; // only face detection
+	dlib::rectangle initialFace; // face tracking and detection
 };
 
 #endif // FACE_TRACKER_H
