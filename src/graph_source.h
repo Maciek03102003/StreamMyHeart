@@ -21,16 +21,16 @@ struct graph_source {
 	bool isDisabled;
 };
 
-const char *get_graph_source_name(void *);
-void *create_graph_source_info(obs_data_t *settings, obs_source_t *source);
-void destroy_graph_source(void *data);
-void graph_source_render(void *data, gs_effect_t *effect);
-uint32_t graph_source_info_get_width(void *data);
-uint32_t graph_source_info_get_height(void *data);
+const char *getGraphSourceName(void *);
+void *createGraphSourceInfo(obs_data_t *settings, obs_source_t *source);
+void destroyGraphSource(void *data);
+void graphSourceRender(void *data, gs_effect_t *effect);
+uint32_t graphSourceInfoGetWidth(void *data);
+uint32_t graphSourceInfoGetHeight(void *data);
 void graphSourceActivate(void *data);
 void graphSourceDeactivate(void *data);
 
-void draw_graph(struct graph_source *source, int curHeartRate);
+void drawGraph(struct graph_source *source, int curHeartRate);
 
 #ifdef __cplusplus
 }

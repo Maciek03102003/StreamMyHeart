@@ -23,15 +23,15 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <obs-module.h>
 
 OBS_DECLARE_MODULE()
-OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
+OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-GB")
 
 extern struct obs_source_info heartRateSourceInfo;
-extern struct obs_source_info graph_source_info;
+extern struct obs_source_info graphSourceInfo;
 
 bool obs_module_load(void)
 {
 	obs_register_source(&heartRateSourceInfo);
-	obs_register_source(&graph_source_info);
+	obs_register_source(&graphSourceInfo);
 
 	obs_log(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
 	return true;
