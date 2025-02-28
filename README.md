@@ -7,8 +7,6 @@ StreamMyHeart is designed to help live streamers monitor their heart rate withou
 
 > **Note:** This plugin should not be used for medical purposes and does not provide any medical advice.
 
-> **Warning:** This plugin consumes significant CPU resources.
-
 ## Download
 Download the latest installation packages from [here](https://github.com/Maciek03102003/StreamMyHeart/releases).
 
