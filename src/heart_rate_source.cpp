@@ -302,7 +302,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
 	obs_data_set_default_int(settings, "graph plane dropdown", 1);
-	obs_data_set_default_int(settings, "graph line color", 0x0000FF);
+	obs_data_set_default_int(settings, "graph line color", 0xFF0000FF);
 	obs_data_set_default_int(settings, "pre-filtering method", 3);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
@@ -461,7 +461,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Coloured tiers"), 2);
 
 	obs_property_t *graphLineColor =
-		obs_properties_add_color(props, "graph line color", obs_module_text("GraphLineColor"));
+		obs_properties_add_color_alpha(props, "graph line color", obs_module_text("GraphLineColor"));
 
 	obs_property_t *heartRateGraphSize = obs_properties_add_int(
 		props, "heart rate graph size", obs_module_text("HeartRateHistoryLength"), 10, 30, 1);
