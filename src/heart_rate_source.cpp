@@ -259,6 +259,7 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
 	// obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
 	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
+	hrs->frameCount = 0;
 
 	return hrs;
 }
@@ -758,16 +759,27 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		}
 	}
 
-	// Get the settings for calculating the heart rate
-	int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
-	int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
-	bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
-	int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
-	bool enableSmoothing = obs_data_get_bool(hrsSettings, "smoothing");
 	int64_t fps = obs_data_get_int(hrsSettings, "fps");
+	double heartRate = -1.0;
+	bool noFaceDetected = false;
+	if (!(std::all_of(avg.begin(), avg.end(), [](double_t val) { return val == 0.0; }))) { // face detected
+		// Get the settings for calculating the heart rate
+		int64_t selectedPpgAlgorithm = obs_data_get_int(hrsSettings, "ppg algorithm");
+		int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
+		bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
+		int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
+		bool enableSmoothing = obs_data_get_bool(hrsSettings, "smoothing");
 
-	double heartRate = movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm,
-							selectedPostFiltering, enableSmoothing, fps);
+		hrs->frameCount = 0; // reset frame count
+
+		heartRate = movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm,
+								selectedPostFiltering, enableSmoothing, fps);
+	} else { // no face detected
+		hrs->frameCount += 1;
+		if (hrs->frameCount >= fps) { // if no face detected more than 1 second
+			noFaceDetected = true;
+		}
+	}
 
 	std::string heartRateText;
 	std::string moodText;
@@ -777,11 +789,17 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		heartRateText = obs_data_get_string(hrsSettings, "heart rate text");
 		size_t pos = heartRateText.find("{hr}");
 		if (pos != std::string::npos) {
-			heartRateText.replace(pos, 4, std::to_string(obs_data_get_int(hrsSettings, "heart rate")));
+			heartRateText.replace(pos, 4, std::to_string(static_cast<int>(std::round(heartRate))));
+		} else {
+			heartRateText = "Heart rate: " + std::to_string(static_cast<int>(std::round(heartRate))) + " BPM";
 		}
-
 		moodText = "Mood: " + getMood(heartRate);
+	} else if (noFaceDetected) { // output "No Face Detected"
+		heartRateText = "No Face Detected";
+		moodText = "No Face Detected";
+	}
 
+	if (noFaceDetected || heartRate > 0.0) {
 		// Updating heart rate text source
 		obs_source_t *source = obs_get_source_by_name(TEXT_SOURCE_NAME);
 		if (source) {

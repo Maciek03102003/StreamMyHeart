@@ -43,6 +43,7 @@ struct heartRateSource {
 	void *faceDetection;
 #endif
 	bool isDisabled;
+	int frameCount;
 };
 
 // Function declarations
