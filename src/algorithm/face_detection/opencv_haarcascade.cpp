@@ -95,7 +95,7 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 		if (noFaceDetected) {
 			return std::vector<double_t>(3, 0.0);
 		}
-		
+
 		// Now compute the mean color in the face region (where maskMat is nonzero)
 		cv::Scalar meanRGB = cv::mean(bgrFrame, maskMat);
 
@@ -119,7 +119,7 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 		initialFace = faces[0]; // Assume first detected face is the target
 	} else {
 		noFaceDetected = true;
-		maskMat.release(); // Frees memory and makes it an empty matrix
+		maskMat.release();           // Frees memory and makes it an empty matrix
 		faceCoordinatesCopy.clear(); // Clears all elements, size becomes 0
 		// If no face detected, return empty mask
 		return std::vector<double_t>(3, 0.0);
