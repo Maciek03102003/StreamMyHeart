@@ -301,6 +301,8 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
+	obs_data_set_default_int(settings, "graphPlaneDropdown", 2);
+	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "heartRateGraphSize", 10);
 }
 

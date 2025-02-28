@@ -199,20 +199,35 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 				    get_color_code(obs_data_get_int(hrsSettings, "graphLineDropdown")));
 
 		// obs_log(LOG_INFO, "Drawing heart rate graph... %d values", graph_source->buffer.size());
+		if (graph_source->buffer.size() >= 2) {
+			// Thick lines using perpendicular offset
+			for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.1f) {
+				gs_render_start(GS_LINESTRIP);
 
-		// **Simulate thicker lines by drawing multiple parallel lines**
-		// float interval = width / (graphSize - 1);
-		for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.01f) {
-			gs_render_start(GS_LINESTRIP);
+				for (size_t i = 0; i < graph_source->buffer.size() - 1; i++) {
+					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
+					float y1 = height - (static_cast<float>(graph_source->buffer[i] - 50)) * 2;
+					float x2 = (static_cast<float>(i + 1) / (graphSize - 1)) * width;
+					float y2 = height - (static_cast<float>(graph_source->buffer[i + 1] - 50)) * 2;
 
-			for (size_t i = 0; i < graph_source->buffer.size(); i++) {
-				float x = (static_cast<float>(i) / (graphSize - 1)) * width;
-				float y = height - (static_cast<float>(graph_source->buffer[i] - 50)) * 2;
+					// Compute direction of the segment
+					float dx = x2 - x1;
+					float dy = y2 - y1;
+					float length = std::sqrt(dx * dx + dy * dy);
+					if (length == 0)
+						continue;
 
-				gs_vertex2f(x, y + offset); // Shift the line slightly to create thickness
+					// Compute perpendicular vector (normal)
+					float nx = -dy / length;
+					float ny = dx / length;
+
+					// Offset points perpendicular to the line
+					gs_vertex2f(x1 + nx * offset, y1 + ny * offset);
+					gs_vertex2f(x2 + nx * offset, y2 + ny * offset);
+				}
+
+				gs_render_stop(GS_LINESTRIP);
 			}
-
-			gs_render_stop(GS_LINESTRIP);
 		}
 
 		// **Draw X-Axis (Horizontal Line)**
@@ -224,25 +239,6 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		gs_vertex2f(width, height);
 
 		gs_render_stop(GS_LINES);
-
-		// **Draw Y-Axis (Vertical Line)**
-		gs_render_start(GS_LINES);
-
-		gs_vertex2f(0.0f, 0.0f); // Small offset from the left
-		gs_vertex2f(0.0f, height);
-
-		gs_render_stop(GS_LINES);
-
-		// **Draw Y-Axis Labels (20, 40, ..., 200)**
-		for (int i = 20; i <= 200; i += 20) {
-			float y = height - (static_cast<float>(i) / 200.0f) * height; // Scale Y position
-
-			// Tick mark for the label
-			gs_render_start(GS_LINES);
-			gs_vertex2f(-1.0f, y); // Left end of tick
-			gs_vertex2f(1.0f, y);  // Right end of tick
-			gs_render_stop(GS_LINES);
-		}
 	}
 
 	obs_data_release(hrsSettings);
