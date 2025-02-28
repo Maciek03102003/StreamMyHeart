@@ -194,9 +194,13 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 			}
 		}
 
-		// Set color for the graph (Default: Red)
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
-				    obs_data_get_int(hrsSettings, "graph line color"));
+		// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR and add the alpha channel
+		uint32_t graphLineBgrColor = obs_data_get_int(hrsSettings, "graph line color");
+		uint32_t graphLineRgbColor = ((graphLineBgrColor & 0xFF) << 16) | (graphLineBgrColor & 0xFF00) |
+					     ((graphLineBgrColor & 0xFF0000) >> 16) | 0xFF000000;
+
+		// Set color for the graph using the color from the color picker
+		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineRgbColor);
 
 		// **Simulate thicker lines by drawing multiple parallel lines**
 		// float interval = width / (graphSize - 1);
