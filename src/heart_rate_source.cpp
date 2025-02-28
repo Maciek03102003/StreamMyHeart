@@ -257,7 +257,6 @@ void *heartRateSourceCreate(obs_data_t *settings, obs_source_t *source)
 	createOBSHeartDisplaySourceIfNeeded(settings);
 
 	int64_t selectedFaceDetectionAlgorithm = obs_data_get_int(settings, "face detection algorithm");
-	// obs_log(LOG_INFO, "Selected face detection algorithm: %d", selectedFaceDetectionAlgorithm);
 	hrs->faceDetection = FaceDetection::create(static_cast<FaceDetectionAlgorithm>(selectedFaceDetectionAlgorithm));
 	hrs->frameCount = 0;
 
@@ -305,7 +304,6 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "graphLineDropdown", 1);
 	obs_data_set_default_int(settings, "pre-filtering method", 1);
 	obs_data_set_default_bool(settings, "post-filtering", true);
-	obs_data_set_default_bool(settings, "smoothing", true);
 }
 
 static bool updateProperties(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
@@ -432,9 +430,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	// Add boolean tick box for post-filtering
 	obs_properties_add_bool(props, "post-filtering", obs_module_text("PostFilteringAlgorithm"));
-
-	// Add boolean tick box for smoothing
-	obs_properties_add_bool(props, "smoothing", obs_module_text("SmoothAlgorithm"));
 
 	// Allow user to customise heart rate display text
 	obs_property_t *heartRateText =
@@ -768,12 +763,11 @@ void heartRateSourceRender(void *data, gs_effect_t *effect)
 		int64_t selectedPreFiltering = obs_data_get_int(hrsSettings, "pre-filtering method");
 		bool enablePostFiltering = obs_data_get_bool(hrsSettings, "post-filtering");
 		int64_t selectedPostFiltering = enablePostFiltering ? 1 : 0;
-		bool enableSmoothing = obs_data_get_bool(hrsSettings, "smoothing");
-
+	
 		hrs->frameCount = 0; // reset frame count
 
 		heartRate = movingAvg.calculateHeartRate(avg, selectedPreFiltering, selectedPpgAlgorithm,
-								selectedPostFiltering, enableSmoothing, fps);
+								selectedPostFiltering, true, fps);
 	} else { // no face detected
 		hrs->frameCount += 1;
 		if (hrs->frameCount >= fps) { // if no face detected more than 1 second
