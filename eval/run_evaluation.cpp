@@ -170,7 +170,7 @@ double calculateRMSE(const std::vector<double> &actual, const std::vector<double
 }
 
 std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect,
-					       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg,
+					       bool enableTracker, PreFilteringAlgorithm preFilter, PPGAlgorithm ppg,
 					       PostFilteringAlgorithm postFilter, bool smooth)
 {
 	cv::VideoCapture cap(videoData.videoPath);
@@ -199,7 +199,7 @@ std::vector<double> calculateHeartRateForVideo(const VideoData &videoData, FaceD
 
 		// Perform face detection
 		std::vector<double_t> avg =
-			faceDetection->detectFace(&bgraData, faceCoordinates, false, true, 60, true);
+			faceDetection->detectFace(&bgraData, faceCoordinates, false, enableTracker, 60, true);
 
 		// Calculate heart rate using your algorithm
 		double heartRate = movingAvg.calculateHeartRate(avg, static_cast<int>(preFilter), static_cast<int>(ppg),
@@ -228,11 +228,12 @@ std::string centerAlign(const std::string &text, int width)
 	return std::string(padLeft, ' ') + text + std::string(padRight, ' ');
 }
 
-void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect, PreFilteringAlgorithm preFilter,
-		  PPGAlgorithm ppg, PostFilteringAlgorithm postFilter, bool smooth, std::ofstream &outFile)
+void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect, bool enableTracker,
+		  PreFilteringAlgorithm preFilter, PPGAlgorithm ppg, PostFilteringAlgorithm postFilter, bool smooth,
+		  std::ofstream &outFile)
 {
 	std::vector<double> predicted =
-		calculateHeartRateForVideo(videoData, faceDetect, preFilter, ppg, postFilter, smooth);
+		calculateHeartRateForVideo(videoData, faceDetect, enableTracker, preFilter, ppg, postFilter, smooth);
 	double ourAlgorithmRMSE = calculateRMSE(videoData.groundTruthHeartRate, predicted);
 	double ourAlgorithmMAE = calculateMAE(videoData.groundTruthHeartRate, predicted);
 
@@ -263,16 +264,18 @@ void processVideo(const VideoData &videoData, FaceDetectionAlgorithm faceDetect,
 		<< "," << otherAlgorithmRMSEStr << "\n";
 }
 
-void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm faceDetect,
+void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm faceDetect, bool enableTracker,
 		       PreFilteringAlgorithm preFilter, PPGAlgorithm ppg, PostFilteringAlgorithm postFilter,
 		       bool smooth)
 {
 	std::vector<VideoData> videoDataList = readCSV(csvFilePath);
 
 	// Construct the results filename based on the parameters
-	std::string resultsFilename = "../../../../../eval/results/Iteration 3/" + toString(faceDetect) + "_" +
-				      toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + "_" +
-				      (smooth ? "SMOOTHING_ON" : "SMOOTHING_OFF") + ".csv";
+	std::string resultsFilename =
+		"../../../../../eval/results/Iteration 4/" + toString(faceDetect) +
+		(faceDetect == FaceDetectionAlgorithm::DLIB ? (enableTracker ? "_TRACKER_ON" : "_TRACKER_OFF") : "") +
+		"_" + toString(preFilter) + "_" + toString(ppg) + "_" + toString(postFilter) + "_" +
+		(smooth ? "SMOOTHING_ON" : "SMOOTHING_OFF") + ".csv";
 
 	// Print the table header
 	std::cout
@@ -290,7 +293,7 @@ void evaluateHeartRate(const std::string &csvFilePath, FaceDetectionAlgorithm fa
 	for (const auto &videoData : videoDataList) {
 		// Create a future for each video evaluation
 		futures.push_back(std::async(std::launch::async, processVideo, std::ref(videoData), faceDetect,
-					     preFilter, ppg, postFilter, smooth, std::ref(outFile)));
+					     enableTracker, preFilter, ppg, postFilter, smooth, std::ref(outFile)));
 	}
 
 	// Wait for all threads to complete
@@ -320,15 +323,25 @@ int main()
 								       PostFilteringAlgorithm::BUTTERWORTH_BANDPASS};
 
 	std::vector<bool> smoothingOptions = {false, true};
+	std::vector<bool> trackingOptions = {false, true};
 
 	for (FaceDetectionAlgorithm faceDetectionAlgorithm : faceDetectionAlgorithms) {
 		for (PPGAlgorithm ppgAlgorithm : ppgAlgorithms) {
 			for (PreFilteringAlgorithm preFilteringAlgorithm : preFilteringAlgorithms) {
 				for (PostFilteringAlgorithm postFilteringAlgorithm : postFilteringAlgorithms) {
 					for (bool smoothing : smoothingOptions) {
-						evaluateHeartRate(csvFilePath, faceDetectionAlgorithm,
-								  preFilteringAlgorithm, ppgAlgorithm,
-								  postFilteringAlgorithm, smoothing);
+						if (faceDetectionAlgorithm == FaceDetectionAlgorithm::DLIB) {
+							for (bool tracking : trackingOptions) {
+								evaluateHeartRate(csvFilePath, faceDetectionAlgorithm,
+										  tracking, preFilteringAlgorithm,
+										  ppgAlgorithm, postFilteringAlgorithm,
+										  smoothing);
+							}
+						} else {
+							evaluateHeartRate(csvFilePath, faceDetectionAlgorithm, false,
+									  preFilteringAlgorithm, ppgAlgorithm,
+									  postFilteringAlgorithm, smoothing);
+						}
 					}
 				}
 			}
