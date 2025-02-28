@@ -58,7 +58,9 @@ StreamMyHeart supports the latest OBS version 31.0.1.
 
 ### Low Resource Consumption
 - Advanced Algorithm (with face tracking)
-- PCA
+- None
+- Green
+- None
 
 ## Support and Feedback
 
