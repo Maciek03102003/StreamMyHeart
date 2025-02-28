@@ -7,8 +7,6 @@ StreamMyHeart is designed to help live streamers monitor their heart rate withou
 
 > **Note:** This plugin should not be used for medical purposes and does not provide any medical advice.
 
-> **Warning:** This plugin consumes significant CPU resources.
-
 ## Download
 Download the latest installation packages from [here](https://github.com/Maciek03102003/StreamMyHeart/releases).
 
@@ -19,6 +17,8 @@ Download the latest installation packages from [here](https://github.com/Maciek0
 
 3. To uninstall the plugin, use the uninstaller located in the OBS application folder.
 
+> **Note:** If OBS Studio was open during the installation, please restart it for the plugin to load.
+
 ### MacOS
 1. Double-click `.pkg` file to open the installer.
 
@@ -28,6 +28,8 @@ Download the latest installation packages from [here](https://github.com/Maciek0
     ```
     /Users/<user_name>/Library/Application\ Support/obs-studio/plugins
     ```
+
+> **Note:** If OBS Studio was open during the installation, please restart it for the plugin to load.
 
 ### OBS Version Support and Compatibility
 StreamMyHeart supports the latest OBS version 31.0.1.
@@ -45,9 +47,18 @@ StreamMyHeart supports the latest OBS version 31.0.1.
 5. The heart rate can be displayed as a text source or a graph source.
 
 ## Suggested Setting Combination
-Optimal Accuracy: We shall see
 
-Low Resource Consumption:  Advanced Algorithm (with face tracking) and PCA
+### Optimal Accuracy (Default)
+- Advanced Algorithm (with face tracking)
+- Zero Mean
+- Chrom
+- Post Filtering On
+
+### Low Resource Consumption
+- Advanced Algorithm (with face tracking)
+- None
+- Green
+- None
 
 ## Support and Feedback
 
