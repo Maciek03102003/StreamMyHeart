@@ -132,7 +132,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 		return;
 	}
 	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
-	int graphSize = obs_data_get_int(hrsSettings, "heartRateGraphSize");
+	int graphSize = obs_data_get_int(hrsSettings, "heart rate graph size");
 
 	// obs_log(LOG_INFO, "Graph source dimensions: Width = %u, Height = %u", width, height);
 
@@ -161,7 +161,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	while (gs_effect_loop(effect, "Solid")) {
 
-		int background = obs_data_get_int(hrsSettings, "graphPlaneDropdown");
+		int background = obs_data_get_int(hrsSettings, "graph plane dropdown");
 		if (background == 0) {
 			// Set background colour to white
 			gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFFFFFFFF);
@@ -217,7 +217,7 @@ void draw_graph(struct graph_source *graph_source, int curHeartRate)
 
 		// **Draw X-Axis (Horizontal Line)**
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
-				    get_color_code(obs_data_get_int(hrsSettings, "graphPlaneDropdown")));
+				    get_color_code(obs_data_get_int(hrsSettings, "graph plane dropdown")));
 		gs_render_start(GS_LINES);
 
 		gs_vertex2f(0.0f, height); // Midpoint of the height
@@ -284,7 +284,7 @@ uint32_t graph_source_info_get_width(void *data)
 		return 0;
 	}
 	obs_data_t *settings = obs_source_get_settings(hrs);
-	int size = obs_data_get_int(settings, "heartRateGraphSize");
+	int size = obs_data_get_int(settings, "heart rate graph size");
 	obs_data_release(settings);
 	obs_source_release(hrs);
 	if (size < 20) {
