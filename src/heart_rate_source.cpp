@@ -301,8 +301,9 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable graph source", true);
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
-	obs_data_set_default_int(settings, "graph plane dropdown", 1);
-	obs_data_set_default_int(settings, "graph line color", 0xFF0000FF);
+	obs_data_set_default_int(settings, "graph plane dropdown", 0);
+	obs_data_set_default_int(settings, "graph plane colour", 0xFFFFFFFF);
+	obs_data_set_default_int(settings, "graph line colour", 0xFF0000FF);
 	obs_data_set_default_int(settings, "pre-filtering method", 3);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
@@ -379,9 +380,13 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 
 	obs_property_t *graphPlaneDropdown = obs_properties_get(props, "graph plane dropdown");
 	obs_property_set_visible(graphPlaneDropdown, obs_data_get_bool(settings, "enable graph source"));
+	int graphPlaneOption = obs_data_get_int(settings, "graph plane dropdown");
 
-	obs_property_t *graphLineColor = obs_properties_get(props, "graph line color");
-	obs_property_set_visible(graphLineColor, obs_data_get_bool(settings, "enable graph source"));
+	obs_property_t *graphPlaneColour = obs_properties_get(props, "graph plane colour");
+	obs_property_set_visible(graphPlaneColour, graphPlaneOption == 2);
+
+	obs_property_t *graphLineColour = obs_properties_get(props, "graph line colour");
+	obs_property_set_visible(graphLineColour, obs_data_get_bool(settings, "enable graph source"));
 
 	obs_property_t *heartRateGraphSize = obs_properties_get(props, "heart rate graph size");
 	obs_property_set_visible(heartRateGraphSize, obs_data_get_bool(settings, "enable graph source"));
@@ -394,7 +399,6 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 obs_properties_t *heartRateSourceProperties(void *data)
 {
 	UNUSED_PARAMETER(data);
-	// obs_log(LOG_INFO, "heartRateSourceProperties");
 	obs_properties_t *props = obs_properties_create();
 
 	obs_properties_add_int(props, "fps", obs_module_text("fps"), 1, 120, 1);
@@ -456,12 +460,14 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graph plane dropdown",
 								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("White"), 0);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Clear"), 1);
-	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Coloured tiers"), 2);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("Clear"), 0);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("ColouredTiers"), 1);
+	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("CustomColour"), 2);
 
-	obs_property_t *graphLineColor =
-		obs_properties_add_color_alpha(props, "graph line color", obs_module_text("GraphLineColor"));
+	obs_property_t *graphPlaneColour = obs_properties_add_color_alpha(props, "graph plane colour", "");
+
+	obs_property_t *graphLineColour =
+		obs_properties_add_color_alpha(props, "graph line colour", obs_module_text("GraphLineColour"));
 
 	obs_property_t *heartRateGraphSize = obs_properties_add_int(
 		props, "heart rate graph size", obs_module_text("HeartRateHistoryLength"), 10, 30, 1);
@@ -475,7 +481,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(enableText, updateProperties);
 	obs_property_set_modified_callback(enableGraph, updateProperties);
 	obs_property_set_modified_callback(graphPlaneDropdown, updateProperties);
-	obs_property_set_modified_callback(graphLineColor, updateProperties);
+	obs_property_set_modified_callback(graphPlaneColour, updateProperties);
+	obs_property_set_modified_callback(graphLineColour, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
 	obs_property_set_modified_callback(heartRateGraphSize, updateProperties);
@@ -571,7 +578,7 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 
 	// Clear the rendering surface from the previous frame processing, with the specified background colour. The GS_CLEAR_COLOR flag indicates that the colour buffer should be cleared. This sets the colour to &background colour
 	gs_clear(GS_CLEAR_COLOR, &background, 0.0f,
-		 0); // Clears color/depth/stencil buffers
+		 0); // Clears colour/depth/stencil buffers
 
 	// Sets up an orthographic projection matrix. This matrix defines a 2D rendering space where objects are rendered without perspective distortion
 	// Parameters:
@@ -583,14 +590,14 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 	// 100.0f: The far clipping plane. The far clipping plane is the farthest plane from the camera. Objects farther from the camera than this plane are clipped (not rendered).It helps to limit the rendering distance and manage depth buffer precision by discarding objects that are too far away
 	gs_ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -100.0f, 100.0f);
 
-	// This function saves the current blend state onto a stack. The blend state includes settings that control how colors from different sources are combined during rendering. By pushing the current blend state, you can make temporary changes to the blend settings and later restore the original settings by popping the blend state from the stack
+	// This function saves the current blend state onto a stack. The blend state includes settings that control how colours from different sources are combined during rendering. By pushing the current blend state, you can make temporary changes to the blend settings and later restore the original settings by popping the blend state from the stack
 	gs_blend_state_push();
 
-	// This function sets the blend function for rendering. The blend function determines how the source (the new pixels being drawn) and the destination (the existing pixels in the framebuffer) colors are combined
+	// This function sets the blend function for rendering. The blend function determines how the source (the new pixels being drawn) and the destination (the existing pixels in the framebuffer) colours are combined
 	// Parameters:
-	// - GS_BLEND_ONE: The source color is used as-is. This means the source color is multiplied by 1
-	// - GS_BLEND_ZERO: The destination color is ignored. This means the destination color is multiplied by 0
-	// Effect: The combination of GS_BLEND_ONE and GS_BLEND_ZERO results in the source color completely replacing the destination color. This is equivalent to disabling blending, where the new pixels overwrite the existing pixels
+	// - GS_BLEND_ONE: The source colour is used as-is. This means the source colour is multiplied by 1
+	// - GS_BLEND_ZERO: The destination colour is ignored. This means the destination colour is multiplied by 0
+	// Effect: The combination of GS_BLEND_ONE and GS_BLEND_ZERO results in the source colour completely replacing the destination colour. This is equivalent to disabling blending, where the new pixels overwrite the existing pixels
 	gs_blend_function(GS_BLEND_ONE, GS_BLEND_ZERO);
 
 	// This function renders the video frame of the target source onto the current rendering surface

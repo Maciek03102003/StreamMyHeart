@@ -1,16 +1,16 @@
 #include <obs-module.h>
 #include "graph_source.h"
 
-struct obs_source_info graph_source_info = {
+struct obs_source_info graphSourceInfo = {
 	.id = "heart_rate_graph",
 	.type = OBS_SOURCE_TYPE_INPUT,
 	.output_flags = OBS_SOURCE_VIDEO,
-	.get_name = get_graph_source_name,
-	.create = create_graph_source_info,
-	.destroy = destroy_graph_source,
+	.get_name = getGraphSourceName,
+	.create = createGraphSourceInfo,
+	.destroy = destroyGraphSource,
 	.activate = graphSourceActivate,
 	.deactivate = graphSourceDeactivate,
-	.video_render = graph_source_render,
-	.get_width = graph_source_info_get_width,
-	.get_height = graph_source_info_get_height,
+	.video_render = graphSourceRender,
+	.get_width = graphSourceInfoGetWidth,
+	.get_height = graphSourceInfoGetHeight,
 };

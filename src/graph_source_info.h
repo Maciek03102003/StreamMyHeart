@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-extern struct obs_source_info graph_source_info;
+extern struct obs_source_info graphSourceInfo;
 
 #ifdef __cplusplus
 }
