@@ -92,10 +92,10 @@ void graphSourceRender(void *data, gs_effect_t *effect)
 	obs_source_release(heartRateSource);
 
 	// Draw the graph using the retrieved heart rate
-	drawGraph(graphSource, curHeartRate);
+	drawGraph(graphSource, curHeartRate, graphSource->ecg);
 }
 
-void drawGraph(struct graph_source *graphSource, int curHeartRate)
+void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
 	if (!graphSource || !graphSource->source)
 		return; // Null check to avoid crashes
@@ -188,26 +188,67 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate)
 			for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.1f) {
 				gs_render_start(GS_LINESTRIP);
 
-				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
-					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
-					float y1 = height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
-					float x2 = (static_cast<float>(i + 1) / (graphSize - 1)) * width;
-					float y2 = height - (static_cast<float>(graphSource->buffer[i + 1] - 50)) * 2;
+				if (ecg) {
+					obs_log(LOG_INFO, "ecg %s", std::to_string(graphSource->buffer.size()));
+					for (size_t i = 0; i < graphSource->buffer.size(); i++) {
+						obs_log(LOG_INFO, "ecg %s", std::to_string(graphSource->buffer[i]));
+						float hr_start =
+							(static_cast<float>(i) / (float)graphSource->buffer.size()) *
+							width;
+						float hr_end = (static_cast<float>(i + 1) /
+								(float)(graphSource->buffer.size())) *
+							       width;
+						float hr_width = hr_end - hr_start;
 
-					// Compute direction of the segment
-					float dx = x2 - x1;
-					float dy = y2 - y1;
-					float length = std::sqrt(dx * dx + dy * dy);
-					if (length == 0)
-						continue;
+						double normalizedHR = (graphSource->buffer[i] - 50) / (180 - 50);
+						double peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
+						size_t numPeaks =
+							std::ceil((graphSource->buffer[i] - 50) / (180 - 50) * 10) + 1;
+						for (size_t j = 0; j < numPeaks; j++) {
+							float x_start =
+								hr_start +
+								(static_cast<float>(j) / (float)numPeaks) * hr_width;
+							float x_end = hr_start +
+								      (static_cast<float>(j + 1) / (float)numPeaks) *
+									      hr_width;
+							float seg_width = (x_end - x_start) / 6;
 
-					// Compute perpendicular vector (normal)
-					float nx = -dy / length;
-					float ny = dx / length;
+							// Horizontal start
+							gs_vertex2f(x_start, height / 2);
+							// Slope start
+							gs_vertex2f(x_start + seg_width * 2, height / 2);
+							// Positive peak
+							gs_vertex2f(x_start + seg_width * 3, height / 2 - peakHeight);
+							// Negative peak
+							gs_vertex2f(x_end - seg_width, height / 2 + peakHeight);
+							// Slope end
+							gs_vertex2f(x_end, height / 2);
+						}
+					}
+				} else {
+					for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
+						float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
+						float y1 =
+							height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
+						float x2 = (static_cast<float>(i + 1) / (graphSize - 1)) * width;
+						float y2 = height -
+							   (static_cast<float>(graphSource->buffer[i + 1] - 50)) * 2;
 
-					// Offset points perpendicular to the line
-					gs_vertex2f(x1 + nx * offset, y1 + ny * offset);
-					gs_vertex2f(x2 + nx * offset, y2 + ny * offset);
+						// Compute direction of the segment
+						float dx = x2 - x1;
+						float dy = y2 - y1;
+						float length = std::sqrt(dx * dx + dy * dy);
+						if (length == 0)
+							continue;
+
+						// Compute perpendicular vector (normal)
+						float nx = -dy / length;
+						float ny = dx / length;
+
+						// Offset points perpendicular to the line
+						gs_vertex2f(x1 + nx * offset, y1 + ny * offset);
+						gs_vertex2f(x2 + nx * offset, y2 + ny * offset);
+					}
 				}
 
 				gs_render_stop(GS_LINESTRIP);
@@ -254,7 +295,12 @@ const char *getGraphSourceName(void *)
 	return GRAPH_SOURCE_NAME;
 }
 
-void *createGraphSourceInfo(obs_data_t *settings, obs_source_t *source)
+const char *getECGSourceName(void *)
+{
+	return ECG_SOURCE_NAME;
+}
+
+static void *createGeneralGraphSourceInfo(obs_source_t *source, bool ecg)
 {
 	void *data = bmalloc(sizeof(struct graph_source));
 	struct graph_source *graphSrc = new (data) graph_source();
@@ -271,9 +317,21 @@ void *createGraphSourceInfo(obs_data_t *settings, obs_source_t *source)
 	graphSrc->buffer = buffer;
 
 	graphSrc->isDisabled = false;
+	graphSrc->ecg = ecg;
 
 	return graphSrc;
 }
+
+void *createGraphSourceInfo(obs_data_t *settings, obs_source_t *source)
+{
+	return createGeneralGraphSourceInfo(source, false);
+}
+
+void *createECGSourceInfo(obs_data_t *settings, obs_source_t *source)
+{
+	return createGeneralGraphSourceInfo(source, true);
+}
+
 uint32_t graphSourceInfoGetWidth(void *data)
 {
 	UNUSED_PARAMETER(data);

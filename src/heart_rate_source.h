@@ -19,6 +19,7 @@ extern "C" {
 #define GRAPH_SOURCE_NAME obs_module_text("HeartRateGraph")
 #define IMAGE_SOURCE_NAME obs_module_text("HeartRateIcon")
 #define MOOD_SOURCE_NAME obs_module_text("HeartRateMood")
+#define ECG_SOURCE_NAME obs_module_text("HeartRateECG")
 
 extern bool enableTiming;
 struct input_BGRA_data {

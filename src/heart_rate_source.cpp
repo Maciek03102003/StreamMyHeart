@@ -59,6 +59,38 @@ static void createGraphSource(obs_scene_t *scene)
 	obs_source_release(graphSource);
 }
 
+static void createECGSource(obs_scene_t *scene)
+{
+	obs_source_t *graphSource = obs_get_source_by_name(ECG_SOURCE_NAME);
+	if (graphSource) {
+		obs_source_release(graphSource); // source already exists, release it
+		return;
+	}
+	graphSource = obs_source_create("heart_rate_ecg", ECG_SOURCE_NAME, nullptr, nullptr);
+	if (!graphSource) {
+		return;
+	}
+
+	obs_scene_add(scene, graphSource);
+	obs_transform_info transformInfo;
+	transformInfo.pos.x = 260.0f;
+	transformInfo.pos.y = 700.0f;
+	transformInfo.bounds.x = 260.0f;
+	transformInfo.bounds.y = 260.0f;
+	transformInfo.bounds_type = OBS_BOUNDS_SCALE_INNER;
+	transformInfo.bounds_alignment = OBS_ALIGN_CENTER;
+	transformInfo.alignment = OBS_ALIGN_CENTER;
+	transformInfo.scale.x = 1.0f;
+	transformInfo.scale.y = 1.0f;
+	transformInfo.rot = 0.0f;
+	obs_sceneitem_t *sourceSceneItem = getSceneItemFromSource(scene, graphSource);
+	if (sourceSceneItem != NULL) {
+		obs_sceneitem_set_info2(sourceSceneItem, &transformInfo);
+		obs_sceneitem_release(sourceSceneItem);
+	}
+	obs_source_release(graphSource);
+}
+
 static void createImageSource(obs_scene_t *scene)
 {
 	obs_source_t *imageSource = obs_get_source_by_name(IMAGE_SOURCE_NAME);
@@ -229,6 +261,9 @@ static void createOBSHeartDisplaySourceIfNeeded(obs_data_t *settings)
 	if (obs_data_get_bool(settings, "enable mood source")) {
 		createMoodSource(scene);
 	}
+	if (obs_data_get_bool(settings, "enable ecg source")) {
+		createECGSource(scene);
+	}
 
 	obs_source_release(sceneAsSource);
 }
@@ -273,6 +308,7 @@ void heartRateSourceDestroy(void *data)
 	removeSource(GRAPH_SOURCE_NAME);
 	removeSource(IMAGE_SOURCE_NAME);
 	removeSource(MOOD_SOURCE_NAME);
+  removeSource(ECG_SOURCE_NAME);
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -301,6 +337,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable graph source", true);
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
+	obs_data_set_default_bool(settings, "enable ecg source", true);
 	obs_data_set_default_int(settings, "graph plane dropdown", 0);
 	obs_data_set_default_int(settings, "graph plane colour", 0xFFFFFFFF);
 	obs_data_set_default_int(settings, "graph line colour", 0xFF0000FF);
@@ -378,6 +415,12 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		createMoodSource(scene);
 	}
 
+	if (!obs_data_get_bool(settings, "enable ecg source")) {
+		removeSource(ECG_SOURCE_NAME);
+	} else {
+		createECGSource(scene);
+	}
+
 	obs_property_t *graphPlaneDropdown = obs_properties_get(props, "graph plane dropdown");
 	obs_property_set_visible(graphPlaneDropdown, obs_data_get_bool(settings, "enable graph source"));
 	int graphPlaneOption = obs_data_get_int(settings, "graph plane dropdown");
@@ -453,6 +496,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 		obs_properties_add_bool(props, "enable image source", obs_module_text("ImageSourceEnable"));
 	obs_property_t *enableMood =
 		obs_properties_add_bool(props, "enable mood source", obs_module_text("MoodSourceEnable"));
+	obs_property_t *enableECG =
+		obs_properties_add_bool(props, "enable ecg source", obs_module_text("ECGSourceEnable"));
 
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("GraphSourceEnable"));
@@ -485,6 +530,7 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(graphLineColour, updateProperties);
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
+	obs_property_set_modified_callback(enableECG, updateProperties);
 	obs_property_set_modified_callback(heartRateGraphSize, updateProperties);
 
 	obs_data_release(settings);

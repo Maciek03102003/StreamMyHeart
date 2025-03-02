@@ -19,6 +19,7 @@ struct graph_source {
 	std::vector<int> buffer;
 #endif
 	bool isDisabled;
+	bool ecg;
 };
 
 const char *getGraphSourceName(void *);
@@ -30,7 +31,10 @@ uint32_t graphSourceInfoGetHeight(void *data);
 void graphSourceActivate(void *data);
 void graphSourceDeactivate(void *data);
 
-void drawGraph(struct graph_source *source, int curHeartRate);
+void drawGraph(struct graph_source *source, int curHeartRate, bool ecg);
+
+const char *getECGSourceName(void *);
+void *createECGSourceInfo(obs_data_t *settings, obs_source_t *source);
 
 #ifdef __cplusplus
 }
