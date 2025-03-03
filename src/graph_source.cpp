@@ -9,6 +9,8 @@
 #include <util/platform.h>
 #include <vector>
 #include <sstream>
+#include <algorithm>
+#include <random>
 #include "plugin-support.h"
 #include "obs_utils.h"
 #include "graph_source.h"
@@ -94,6 +96,15 @@ void graphSourceRender(void *data, gs_effect_t *effect)
 	// Draw the graph using the retrieved heart rate
 	drawGraph(graphSource, curHeartRate, graphSource->ecg);
 }
+
+static float getRandomFloat(float min, float max) {
+  static std::random_device rd;  // Seed
+  static std::mt19937 gen(rd()); // Mersenne Twister RNG
+  std::uniform_real_distribution<float> dist(min, max);
+  return dist(gen);
+}
+
+static 
 
 void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
@@ -183,76 +194,75 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 
 		// Set colour for the graph using the colour from the colour picker
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
-		if (graphSource->buffer.size() >= 2) {
-			// Thick lines using perpendicular offset
-			for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.1f) {
-				gs_render_start(GS_LINESTRIP);
+		if (graphSource->buffer.size() >= 3) {
+      gs_render_start(GS_LINESTRIP);
+      if (ecg) {
+        float totalHr = -150;
+        for (size_t i = 0; i < 3; i++) {
+          totalHr += (float)graphSource->buffer[i];
+        }
+        float hr_start = 0;
+        float hr_end = 0;
+        for (size_t i = 0; i < 3; i++) {
+          hr_start = hr_end;
+          hr_end += (float)(graphSource->buffer[i] - 50) / totalHr * width;
+          float hr_width = hr_end - hr_start;
 
-				if (ecg) {
-					obs_log(LOG_INFO, "ecg %s", std::to_string(graphSource->buffer.size()));
-					for (size_t i = 0; i < graphSource->buffer.size(); i++) {
-						obs_log(LOG_INFO, "ecg %s", std::to_string(graphSource->buffer[i]));
-						float hr_start =
-							(static_cast<float>(i) / (float)graphSource->buffer.size()) *
-							width;
-						float hr_end = (static_cast<float>(i + 1) /
-								(float)(graphSource->buffer.size())) *
-							       width;
-						float hr_width = hr_end - hr_start;
+          float normalizedHR =
+            (float)(graphSource->buffer[i] - 50) / (float)(180 - 50);
+          float peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
+          float numPeaks = (float)(normalizedHR * 10.0 + 1.0);
 
-						double normalizedHR = (graphSource->buffer[i] - 50) / (180 - 50);
-						double peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
-						size_t numPeaks =
-							std::ceil((graphSource->buffer[i] - 50) / (180 - 50) * 10) + 1;
-						for (size_t j = 0; j < numPeaks; j++) {
-							float x_start =
-								hr_start +
-								(static_cast<float>(j) / (float)numPeaks) * hr_width;
-							float x_end = hr_start +
-								      (static_cast<float>(j + 1) / (float)numPeaks) *
-									      hr_width;
-							float seg_width = (x_end - x_start) / 6;
+          for (float j = 0; j < std::floor(numPeaks); j++) {
+            float x_start =
+              hr_start +
+              (static_cast<float>(j) / (float)numPeaks) * hr_width;
+            float x_end = hr_start +
+                    (static_cast<float>(j + 1) / (float)numPeaks) *
+                      hr_width;
+            float seg_width = (x_end - x_start) / 6;
 
-							// Horizontal start
-							gs_vertex2f(x_start, height / 2);
-							// Slope start
-							gs_vertex2f(x_start + seg_width * 2, height / 2);
-							// Positive peak
-							gs_vertex2f(x_start + seg_width * 3, height / 2 - peakHeight);
-							// Negative peak
-							gs_vertex2f(x_end - seg_width, height / 2 + peakHeight);
-							// Slope end
-							gs_vertex2f(x_end, height / 2);
-						}
-					}
-				} else {
-					for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
-						float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
-						float y1 =
-							height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
-						float x2 = (static_cast<float>(i + 1) / (graphSize - 1)) * width;
-						float y2 = height -
-							   (static_cast<float>(graphSource->buffer[i + 1] - 50)) * 2;
+            // Horizontal start
+            gs_vertex2f(x_start, height / 2);
+            // Slope start
+            gs_vertex2f(x_start + seg_width * 2, height / 2);
+            // Positive peak
+            gs_vertex2f(x_start + seg_width * 3, height / 2 - peakHeight + getRandomFloat(0, 0.5 * peakHeight));
+            // Negative peak
+            gs_vertex2f(x_end - seg_width, height / 2 + peakHeight - getRandomFloat(0, 0.5 * peakHeight));
+            // Slope end
+            gs_vertex2f(x_end, height / 2);
+          }
+        }
+      } else {
+        for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
+          float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
+          float y1 =
+            height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
+          float x2 = (static_cast<float>(i + 1) / (graphSize - 1)) * width;
+          float y2 = height -
+              (static_cast<float>(graphSource->buffer[i + 1] - 50)) * 2;
 
-						// Compute direction of the segment
-						float dx = x2 - x1;
-						float dy = y2 - y1;
-						float length = std::sqrt(dx * dx + dy * dy);
-						if (length == 0)
-							continue;
+          // Compute direction of the segment
+          float dx = x2 - x1;
+          float dy = y2 - y1;
+          float length = std::sqrt(dx * dx + dy * dy);
+          if (length == 0)
+            continue;
 
-						// Compute perpendicular vector (normal)
-						float nx = -dy / length;
-						float ny = dx / length;
+          // Compute perpendicular vector (normal)
+          float nx = -dy / length;
+          float ny = dx / length;
 
-						// Offset points perpendicular to the line
-						gs_vertex2f(x1 + nx * offset, y1 + ny * offset);
-						gs_vertex2f(x2 + nx * offset, y2 + ny * offset);
-					}
-				}
+          // Offset points perpendicular to the line
+          for (float offset = -LINE_THICKNESS / 2; offset <= LINE_THICKNESS / 2; offset += 0.1f) {
+            gs_vertex2f(x1 + nx * offset, y1 + ny * offset);
+            gs_vertex2f(x2 + nx * offset, y2 + ny * offset);
+          }
+        }
+      }
 
-				gs_render_stop(GS_LINESTRIP);
-			}
+      gs_render_stop(GS_LINESTRIP);
 		}
 
 		// **Draw X-Axis (Horizontal Line)**
