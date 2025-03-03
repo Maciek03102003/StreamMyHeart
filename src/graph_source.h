@@ -33,11 +33,16 @@ void graphSourceDeactivate(void *data);
 
 void drawGraph(struct graph_source *source, int curHeartRate, bool ecg);
 
+
 const char *getECGSourceName(void *);
 void *createECGSourceInfo(obs_data_t *settings, obs_source_t *source);
+float getDeltaTime();
 
 #ifdef __cplusplus
 }
+
+std::vector<float> generate_ecg_waveform(int heartRate, int width);
+
 #endif
 
 #endif

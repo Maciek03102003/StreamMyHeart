@@ -16,6 +16,8 @@
 #include "graph_source.h"
 #include "graph_source_info.h"
 #include "heart_rate_source.h"
+#include <chrono>
+
 
 #define LINE_THICKNESS 3.0f
 
@@ -131,6 +133,59 @@ static void thickenLines(const std::vector<std::pair<float, float>> &points)
 	gs_render_stop(GS_LINESTRIP);
 }
 
+std::vector<float> generate_ecg_waveform(int heartRate, int width)
+{
+	std::vector<float> waveform(width, 0.0f);
+
+	// ECG timing parameters based on heart rate
+	float cycle_length = 60.0f / heartRate * width; // ECG cycle in pixels
+	float p_wave_start = 0.15f * cycle_length;
+	float q_wave_start = 0.3f * cycle_length;
+	float r_wave_start = 0.35f * cycle_length;
+	float s_wave_start = 0.4f * cycle_length;
+	float t_wave_start = 0.6f * cycle_length;
+
+	// Generate waveform pattern
+	for (int i = 0; i < width; i++) {
+		float pos = static_cast<float>(i) / cycle_length; // Normalize position in cycle
+
+		// P wave: small upward bump
+		if (pos > 0.1f && pos < 0.2f)
+			waveform[i] = 0.05f * sin((pos - 0.15f) * M_PI * 10);
+
+		// Q wave: small downward dip
+		else if (pos > 0.3f && pos < 0.32f)
+			waveform[i] = -0.1f;
+
+		// R wave: large upward spike
+		else if (pos > 0.35f && pos < 0.37f)
+			waveform[i] = 0.6f;
+
+		// S wave: small downward dip after R wave
+		else if (pos > 0.4f && pos < 0.42f)
+			waveform[i] = -0.2f;
+
+		// T wave: broad, small positive bump
+		else if (pos > 0.6f && pos < 0.8f)
+			waveform[i] = 0.1f * sin((pos - 0.7f) * M_PI * 5);
+	}
+
+	return waveform;
+}
+
+
+// Define a function to get delta time
+float getDeltaTime() {
+    static auto lastTime = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    
+    std::chrono::duration<float> elapsed = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    return elapsed.count(); // Return time in seconds
+}
+
+
 void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
 	if (!graphSource || !graphSource->source)
@@ -220,54 +275,103 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 		// Set colour for the graph using the colour from the colour picker
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
 		if (graphSource->buffer.size() >= 3) {
+			obs_log(LOG_INFO, "1");
+
 			std::vector<std::pair<float, float>> points;
 			if (ecg) {
-				float totalHr = -150;
-				for (size_t i = 0; i < 3; i++) {
-					totalHr += (float)graphSource->buffer[i];
+				float baseHeight = height / 2;
+				float beatsPerSecond = curHeartRate / 60.0f;
+				float deltaTime = getDeltaTime(); // Get frame time
+			
+				float waveSpeed = width * beatsPerSecond * deltaTime; // Movement speed
+			
+				// Generate ECG waveform
+				static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width);
+			
+				// Compute phase shift (how much the wave moves per frame)
+				static float waveOffset = 0.0f;
+				waveOffset += waveSpeed;
+			
+				if (waveOffset >= width) {
+					waveOffset -= width; // Wrap around
+					ecg_wave = generate_ecg_waveform(curHeartRate, width); // Regenerate wave
 				}
-				float hr_start = 0;
-				float hr_end = 0;
-				for (size_t i = 0; i < 3; i++) {
-					hr_start = hr_end;
-					hr_end += (float)(graphSource->buffer[i] - 50) / totalHr * width;
-					float hr_width = hr_end - hr_start;
-
-					float normalizedHR = (float)(graphSource->buffer[i] - 50) / (float)(180 - 50);
-					float peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
-					float numPeaks = (float)(normalizedHR * 10.0 + 1.0);
-
-					for (float j = 0; j < std::floor(numPeaks); j++) {
-						float x_start =
-							hr_start + (static_cast<float>(j) / (float)numPeaks) * hr_width;
-						float x_end = hr_start +
-							      (static_cast<float>(j + 1) / (float)numPeaks) * hr_width;
-						float seg_width = (x_end - x_start) / 6;
-
-						// Horizontal start
-						points.push_back({x_start, height / 2});
-            if (getRandomFloat(0.0f, 1.0f) < 0.5f) {
-              float bumpStart = x_start + seg_width * getRandomFloat(0.2f, 0.8f);
-              float bumpEnd = x_start + seg_width * getRandomFloat(1.2f, 1.8f);
-              float bumpHeight = height / 2 + height * getRandomFloat(-0.01f, 0.01f);
-              points.push_back({bumpStart, height / 2});
-              points.push_back({bumpStart + (bumpEnd - bumpStart) * getRandomFloat(0.1f, 0.9f), bumpHeight});
-              points.push_back({bumpEnd, height / 2});
-            }
-						// Slope start
-						points.push_back({x_start + seg_width * 2, height / 2});
-						// Positive peak
-						points.push_back({x_start + seg_width * 3,
-								  height / 2 - peakHeight +
-									  getRandomFloat(0.0f, 0.5f * peakHeight)});
-						// Negative peak
-						points.push_back({x_end - seg_width,
-								  height / 2 + peakHeight -
-									  getRandomFloat(0.0f, 0.5f * peakHeight)});
-						// Slope end
-						points.push_back({x_end, height / 2});
-					}
+			
+				// Draw the waveform with shifting effect
+				for (size_t i = 0; i < width; i++) {
+					// Compute shifted index, wrapping around when needed
+					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % width;
+			
+					float x = static_cast<float>(i);
+					float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+					points.push_back({x, y});
 				}
+			
+
+			
+			// if (ecg) {
+            //     float baseHeight = height / 2;
+            //     float beatsPerSecond = curHeartRate / 60.0f;
+            //     float waveWidth = width; // Full width for one ECG cycle
+                
+            //     // Generate ECG waveform
+            //     std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width);
+                
+            //     // Store the wave points for drawing
+            //     for (size_t i = 0; i < width; i++) {
+            //         float x = static_cast<float>(i);
+            //         float y = baseHeight - (ecg_wave[i] * height * 0.4f); // Scale ECG wave height
+            //         points.push_back({x, y});
+            //     }
+
+	
+			// if (ecg) {
+			// 	float totalHr = -150;
+			// 	for (size_t i = 0; i < 3; i++) {
+			// 		totalHr += (float)graphSource->buffer[i];
+			// 	}
+			// 	float hr_start = 0;
+			// 	float hr_end = 0;
+			// 	for (size_t i = 0; i < 3; i++) {
+			// 		hr_start = hr_end;
+			// 		hr_end += (float)(graphSource->buffer[i] - 50) / totalHr * width;
+			// 		float hr_width = hr_end - hr_start;
+
+			// 		float normalizedHR = (float)(graphSource->buffer[i] - 50) / (float)(180 - 50);
+			// 		float peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
+			// 		float numPeaks = (float)(normalizedHR * 10.0 + 1.0);
+
+			// 		for (float j = 0; j < std::floor(numPeaks); j++) {
+			// 			float x_start =
+			// 				hr_start + (static_cast<float>(j) / (float)numPeaks) * hr_width;
+			// 			float x_end = hr_start +
+			// 				      (static_cast<float>(j + 1) / (float)numPeaks) * hr_width;
+			// 			float seg_width = (x_end - x_start) / 6;
+
+			// 			// Horizontal start
+			// 			points.push_back({x_start, height / 2});
+			// 			if (getRandomFloat(0.0f, 1.0f) < 0.5f) {
+			// 			float bumpStart = x_start + seg_width * getRandomFloat(0.2f, 0.8f);
+			// 			float bumpEnd = x_start + seg_width * getRandomFloat(1.2f, 1.8f);
+			// 			float bumpHeight = height / 2 + height * getRandomFloat(-0.01f, 0.01f);
+			// 			points.push_back({bumpStart, height / 2});
+			// 			points.push_back({bumpStart + (bumpEnd - bumpStart) * getRandomFloat(0.1f, 0.9f), bumpHeight});
+			// 			points.push_back({bumpEnd, height / 2});
+			// 			}
+			// 			// Slope start
+			// 			points.push_back({x_start + seg_width * 2, height / 2});
+			// 			// Positive peak
+			// 			points.push_back({x_start + seg_width * 3,
+			// 					  height / 2 - peakHeight +
+			// 						  getRandomFloat(0.0f, 0.5f * peakHeight)});
+			// 			// Negative peak
+			// 			points.push_back({x_end - seg_width,
+			// 					  height / 2 + peakHeight -
+			// 						  getRandomFloat(0.0f, 0.5f * peakHeight)});
+			// 			// Slope end
+			// 			points.push_back({x_end, height / 2});
+			// 		}
+			// 	}
 			} else {
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
@@ -275,6 +379,8 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					points.push_back({x1, y1});
 				}
 			}
+			obs_log(LOG_INFO, "5");
+
 			thickenLines(points);
 		}
 
