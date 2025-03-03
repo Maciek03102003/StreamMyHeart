@@ -246,6 +246,14 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 
 						// Horizontal start
 						points.push_back({x_start, height / 2});
+            if (getRandomFloat(0.0f, 1.0f) < 0.5f) {
+              float bumpStart = x_start + seg_width * getRandomFloat(0.2f, 0.8f);
+              float bumpEnd = x_start + seg_width * getRandomFloat(1.2f, 1.8f);
+              float bumpHeight = height / 2 + height * getRandomFloat(-0.01f, 0.01f);
+              points.push_back({bumpStart, height / 2});
+              points.push_back({bumpStart + (bumpEnd - bumpStart) * getRandomFloat(0.1f, 0.9f), bumpHeight});
+              points.push_back({bumpEnd, height / 2});
+            }
 						// Slope start
 						points.push_back({x_start + seg_width * 2, height / 2});
 						// Positive peak
