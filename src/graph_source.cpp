@@ -20,6 +20,9 @@
 
 
 #define LINE_THICKNESS 3.0f
+#define UPDATE_FREQUENCY 15
+
+static int frameCount = 0;
 
 // Destroy function for graph source
 void destroyGraphSource(void *data)
@@ -79,21 +82,27 @@ void graphSourceRender(void *data, gs_effect_t *effect)
 		return; // Ensure graphSource is valid
 	}
 
-	// Retrieve OBS settings for the heart rate monitor source
-	obs_source_t *heartRateSource = getHeartRateMonitorFilter();
-	if (!heartRateSource) {
-		return;
-	}
-	obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
+	int curHeartRate = -1;
+	
+	if (graphSource->ecg || frameCount % UPDATE_FREQUENCY == 0) {
+		obs_log(LOG_INFO, "Frame count for %s: %s", std::to_string(graphSource->ecg), std::to_string(frameCount));
+		// Retrieve OBS settings for the heart rate monitor source
+		obs_source_t *heartRateSource = getHeartRateMonitorFilter();
+		if (!heartRateSource) {
+			return;
+		}
+		obs_data_t *hrsSettings = obs_source_get_settings(heartRateSource);
 
-	if (obs_data_get_bool(hrsSettings, "is disabled")) {
+		if (obs_data_get_bool(hrsSettings, "is disabled")) {
+			obs_data_release(hrsSettings);
+			obs_source_release(heartRateSource);
+			return;
+		}
+		curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
 		obs_data_release(hrsSettings);
 		obs_source_release(heartRateSource);
-		return;
 	}
-	int curHeartRate = obs_data_get_int(hrsSettings, "heart rate"); // Retrieve heart rate
-	obs_data_release(hrsSettings);
-	obs_source_release(heartRateSource);
+	frameCount++; 
 
 	// Draw the graph using the retrieved heart rate
 	drawGraph(graphSource, curHeartRate, graphSource->ecg);
@@ -278,100 +287,75 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			obs_log(LOG_INFO, "1");
 
 			std::vector<std::pair<float, float>> points;
+			// if (ecg) {
+			// 	float baseHeight = height / 2;
+			// 	float beatsPerSecond = curHeartRate / 100.0f; 
+			// 	float deltaTime = getDeltaTime(); // Get frame time
+			
+			// 	float waveSpeed = width * beatsPerSecond * deltaTime; // Movement speed
+			
+			// 	// Generate ECG waveform
+			// 	static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width);
+			
+			// 	// Compute phase shift (how much the wave moves per frame)
+			// 	static float waveOffset = 0.0f;
+			// 	waveOffset += waveSpeed;
+			
+			// 	if (waveOffset >= width) {
+			// 		waveOffset -= width; // Wrap around
+			// 		ecg_wave = generate_ecg_waveform(curHeartRate, width); // Regenerate wave
+			// 	}
+			
+			// 	// Draw the waveform with shifting effect
+			// 	for (size_t i = 0; i < width; i++) {
+			// 		// Compute shifted index, wrapping around when needed
+			// 		size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % width;
+			
+			// 		float x = static_cast<float>(i);
+			// 		float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+			// 		points.push_back({x, y});
+			// 	}
+
 			if (ecg) {
 				float baseHeight = height / 2;
-				float beatsPerSecond = curHeartRate / 60.0f;
+				float beatsPerSecond = curHeartRate / 100.0f; 
 				float deltaTime = getDeltaTime(); // Get frame time
 			
-				float waveSpeed = width * beatsPerSecond * deltaTime; // Movement speed
+				float waveSpeed = (width / 2) * beatsPerSecond * deltaTime; // Movement speed
 			
-				// Generate ECG waveform
-				static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width);
+				// Generate ECG waveform for one cycle (only once, reuse for efficiency)
+				static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width / 2);
 			
 				// Compute phase shift (how much the wave moves per frame)
 				static float waveOffset = 0.0f;
 				waveOffset += waveSpeed;
 			
-				if (waveOffset >= width) {
-					waveOffset -= width; // Wrap around
-					ecg_wave = generate_ecg_waveform(curHeartRate, width); // Regenerate wave
+				if (waveOffset >= width / 2) {
+					waveOffset -= width / 2; // Wrap around within half width
 				}
 			
-				// Draw the waveform with shifting effect
-				for (size_t i = 0; i < width; i++) {
-					// Compute shifted index, wrapping around when needed
-					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % width;
+				// **Clear the points before drawing**
+				points.clear();
 			
+				// **Draw first wave**
+				for (size_t i = 0; i < width / 2; i++) {
+					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
+					
 					float x = static_cast<float>(i);
 					float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+			
 					points.push_back({x, y});
 				}
 			
-
+				// **Draw second wave immediately after the first one**
+				for (size_t i = 0; i < width / 2; i++) {
+					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
 			
-			// if (ecg) {
-            //     float baseHeight = height / 2;
-            //     float beatsPerSecond = curHeartRate / 60.0f;
-            //     float waveWidth = width; // Full width for one ECG cycle
-                
-            //     // Generate ECG waveform
-            //     std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width);
-                
-            //     // Store the wave points for drawing
-            //     for (size_t i = 0; i < width; i++) {
-            //         float x = static_cast<float>(i);
-            //         float y = baseHeight - (ecg_wave[i] * height * 0.4f); // Scale ECG wave height
-            //         points.push_back({x, y});
-            //     }
-
-	
-			// if (ecg) {
-			// 	float totalHr = -150;
-			// 	for (size_t i = 0; i < 3; i++) {
-			// 		totalHr += (float)graphSource->buffer[i];
-			// 	}
-			// 	float hr_start = 0;
-			// 	float hr_end = 0;
-			// 	for (size_t i = 0; i < 3; i++) {
-			// 		hr_start = hr_end;
-			// 		hr_end += (float)(graphSource->buffer[i] - 50) / totalHr * width;
-			// 		float hr_width = hr_end - hr_start;
-
-			// 		float normalizedHR = (float)(graphSource->buffer[i] - 50) / (float)(180 - 50);
-			// 		float peakHeight = height * 0.2 + (normalizedHR * height * 0.3);
-			// 		float numPeaks = (float)(normalizedHR * 10.0 + 1.0);
-
-			// 		for (float j = 0; j < std::floor(numPeaks); j++) {
-			// 			float x_start =
-			// 				hr_start + (static_cast<float>(j) / (float)numPeaks) * hr_width;
-			// 			float x_end = hr_start +
-			// 				      (static_cast<float>(j + 1) / (float)numPeaks) * hr_width;
-			// 			float seg_width = (x_end - x_start) / 6;
-
-			// 			// Horizontal start
-			// 			points.push_back({x_start, height / 2});
-			// 			if (getRandomFloat(0.0f, 1.0f) < 0.5f) {
-			// 			float bumpStart = x_start + seg_width * getRandomFloat(0.2f, 0.8f);
-			// 			float bumpEnd = x_start + seg_width * getRandomFloat(1.2f, 1.8f);
-			// 			float bumpHeight = height / 2 + height * getRandomFloat(-0.01f, 0.01f);
-			// 			points.push_back({bumpStart, height / 2});
-			// 			points.push_back({bumpStart + (bumpEnd - bumpStart) * getRandomFloat(0.1f, 0.9f), bumpHeight});
-			// 			points.push_back({bumpEnd, height / 2});
-			// 			}
-			// 			// Slope start
-			// 			points.push_back({x_start + seg_width * 2, height / 2});
-			// 			// Positive peak
-			// 			points.push_back({x_start + seg_width * 3,
-			// 					  height / 2 - peakHeight +
-			// 						  getRandomFloat(0.0f, 0.5f * peakHeight)});
-			// 			// Negative peak
-			// 			points.push_back({x_end - seg_width,
-			// 					  height / 2 + peakHeight -
-			// 						  getRandomFloat(0.0f, 0.5f * peakHeight)});
-			// 			// Slope end
-			// 			points.push_back({x_end, height / 2});
-			// 		}
-			// 	}
+					float x = static_cast<float>(i + width / 2); // Offset x-position for second wave
+					float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+			
+					points.push_back({x, y});
+				}
 			} else {
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
