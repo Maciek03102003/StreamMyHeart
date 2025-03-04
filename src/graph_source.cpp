@@ -370,11 +370,21 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				// Set colour for the graph using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgLineArgbColour);
 			} else {
+				// for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
+				// 	float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
+				// 	float y1 = height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
+				// 	points.push_back({x1, y1});
+				// }
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
-					float y1 = height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
+				
+					// Increase the difference scaling (was *2, now *4 for more contrast)
+					float y1 = height - std::clamp(std::round((static_cast<float>(graphSource->buffer[i] - 50)) * 3.5f)
+					, 0.0f, static_cast<float>(height));
+				
 					points.push_back({x1, y1});
 				}
+				
 
 				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
 				uint32_t graphLineAbgrColour = obs_data_get_int(hrsSettings, "graph line colour");
