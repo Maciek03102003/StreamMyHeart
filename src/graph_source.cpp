@@ -20,6 +20,7 @@
 
 #define LINE_THICKNESS 3.0f
 #define UPDATE_FREQUENCY 15
+#define PIXEL_PER_HR 3.5f
 
 static int frameCount = 0;
 
@@ -348,7 +349,7 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					float y1 = height -
 						   std::clamp(std::round((static_cast<float>(graphSource->buffer[i] -
 											     50)) *
-									 3.5f),
+									 PIXEL_PER_HR),
 							      0.0f, static_cast<float>(height));
 
 					points.push_back({x1, y1});
@@ -371,32 +372,25 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			thickenLines(points);
 		}
 
-		// **Draw X-Axis (Horizontal Line)**
+		std::vector<std::pair<float, float>> points;
 		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF000000);
-		gs_render_start(GS_LINES);
+		// Draw X-Axis (Horizontal Line)
+		points.push_back({0.0f, height});
+		points.push_back({width, height});
+		thickenLines(points);
+		// Draw Y-Axis (Vertical Line)
+		points.clear();
+		points.push_back({0.0f, 0.0f});
+		points.push_back({0.0f, height});
+		thickenLines(points);
 
-		gs_vertex2f(0.0f, height); // Midpoint of the height
-		gs_vertex2f(width, height);
-
-		gs_render_stop(GS_LINES);
-
-		// **Draw Y-Axis (Vertical Line)**
-		gs_render_start(GS_LINES);
-
-		gs_vertex2f(0.0f, 0.0f); // Small offset from the left
-		gs_vertex2f(0.0f, height);
-
-		gs_render_stop(GS_LINES);
-
-		// **Draw Y-Axis Labels (20, 40, ..., 200)**
-		for (int i = 20; i <= 200; i += 20) {
-			float y = height - (static_cast<float>(i) / 200.0f) * height; // Scale Y position
-
-			// Tick mark for the label
-			gs_render_start(GS_LINES);
-			gs_vertex2f(-1.0f, y); // Left end of tick
-			gs_vertex2f(1.0f, y);  // Right end of tick
-			gs_render_stop(GS_LINES);
+		// **Draw Y-Axis Labels (60, 80, ..., 180)**
+		for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
+			float y = height - i * PIXEL_PER_HR;
+			points.clear();
+			points.push_back({0.0f, y});
+			points.push_back({5.0f, y});
+			thickenLines(points);
 		}
 	}
 
@@ -475,6 +469,7 @@ uint32_t graphSourceInfoGetHeight(void *data)
 
 uint32_t ecgSourceInfoGetWidth(void *data)
 {
+	UNUSED_PARAMETER(data);
 	return 260;
 }
 
