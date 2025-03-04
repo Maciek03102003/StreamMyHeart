@@ -275,14 +275,7 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			gs_draw_sprite(nullptr, 0, width, height);
 		}
 
-		// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
-		uint32_t graphLineAbgrColour = obs_data_get_int(hrsSettings, "graph line colour");
-		uint32_t graphLineArgbColour = (graphLineAbgrColour & 0xFF000000) |
-					       ((graphLineAbgrColour & 0xFF) << 16) | (graphLineAbgrColour & 0xFF00) |
-					       ((graphLineAbgrColour & 0xFF0000) >> 16);
-
-		// Set colour for the graph using the colour from the colour picker
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
+		
 		if (graphSource->buffer.size() >= 3) {
 			obs_log(LOG_INFO, "1");
 
@@ -317,6 +310,17 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			// 	}
 
 			if (ecg) {
+				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
+				uint32_t ecgBackgroundAbgrColour = obs_data_get_int(hrsSettings, "ecg background colour");
+				uint32_t ecgBackgroundArgbColour = (ecgBackgroundAbgrColour & 0xFF000000) |
+					((ecgBackgroundAbgrColour & 0xFF) << 16) | (ecgBackgroundAbgrColour & 0xFF00) |
+					((ecgBackgroundAbgrColour & 0xFF0000) >> 16);
+
+				// Set colour for the graph using the colour from the colour picker
+				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgBackgroundArgbColour);
+				gs_draw_sprite(nullptr, 0, width, height); // Draw stripe
+
+				
 				float baseHeight = height / 2;
 				float beatsPerSecond = curHeartRate / 100.0f; 
 				float deltaTime = getDeltaTime(); // Get frame time
@@ -356,12 +360,30 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			
 					points.push_back({x, y});
 				}
+
+				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
+				uint32_t ecgLineAbgrColour = obs_data_get_int(hrsSettings, "ecg line colour");
+				uint32_t ecgLineArgbColour = (ecgLineAbgrColour & 0xFF000000) |
+					((ecgLineAbgrColour & 0xFF) << 16) | (ecgLineAbgrColour & 0xFF00) |
+					((ecgLineAbgrColour & 0xFF0000) >> 16);
+
+				// Set colour for the graph using the colour from the colour picker
+				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgLineArgbColour);
 			} else {
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
 					float y1 = height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
 					points.push_back({x1, y1});
 				}
+
+				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
+				uint32_t graphLineAbgrColour = obs_data_get_int(hrsSettings, "graph line colour");
+				uint32_t graphLineArgbColour = (graphLineAbgrColour & 0xFF000000) |
+					((graphLineAbgrColour & 0xFF) << 16) | (graphLineAbgrColour & 0xFF00) |
+					((graphLineAbgrColour & 0xFF0000) >> 16);
+
+				// Set colour for the graph using the colour from the colour picker
+				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
 			}
 			obs_log(LOG_INFO, "5");
 

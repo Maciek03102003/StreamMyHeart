@@ -73,7 +73,7 @@ static void createECGSource(obs_scene_t *scene)
 
 	obs_scene_add(scene, graphSource);
 	obs_transform_info transformInfo;
-	transformInfo.pos.x = 260.0f;
+	transformInfo.pos.x = 360.0f;
 	transformInfo.pos.y = 700.0f;
 	transformInfo.bounds.x = 260.0f;
 	transformInfo.bounds.y = 260.0f;
@@ -108,7 +108,7 @@ static void createImageSource(obs_scene_t *scene)
 
 	// set transform settings
 	obs_transform_info transformInfo;
-	transformInfo.pos.x = 260.0;
+	transformInfo.pos.x = 460.0;
 	transformInfo.pos.y = 700.0;
 	transformInfo.bounds.x = 300.0;
 	transformInfo.bounds.y = 400.0;
@@ -308,7 +308,7 @@ void heartRateSourceDestroy(void *data)
 	removeSource(GRAPH_SOURCE_NAME);
 	removeSource(IMAGE_SOURCE_NAME);
 	removeSource(MOOD_SOURCE_NAME);
-  removeSource(ECG_SOURCE_NAME);
+  	removeSource(ECG_SOURCE_NAME);
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -338,6 +338,8 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", true);
 	obs_data_set_default_bool(settings, "enable ecg source", true);
+	obs_data_set_default_int(settings, "ecg line colour", 0xFFFFFFFF);
+	obs_data_set_default_int(settings, "ecg background colour", 0xFF0000FF);
 	obs_data_set_default_int(settings, "graph plane dropdown", 0);
 	obs_data_set_default_int(settings, "graph plane colour", 0xFFFFFFFF);
 	obs_data_set_default_int(settings, "graph line colour", 0xFF0000FF);
@@ -434,6 +436,12 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	obs_property_t *heartRateGraphSize = obs_properties_get(props, "heart rate graph size");
 	obs_property_set_visible(heartRateGraphSize, obs_data_get_bool(settings, "enable graph source"));
 
+	obs_property_t *ecgLineColour = obs_properties_get(props, "ecg line colour");
+	obs_property_set_visible(ecgLineColour, obs_data_get_bool(settings, "enable ecg source"));
+
+	obs_property_t *ecgBackgroundColour = obs_properties_get(props, "ecg background colour");
+	obs_property_set_visible(ecgBackgroundColour, obs_data_get_bool(settings, "enable ecg source"));
+
 	obs_source_release(sceneAsSource);
 
 	return true; // Forces the UI to refresh
@@ -498,6 +506,10 @@ obs_properties_t *heartRateSourceProperties(void *data)
 		obs_properties_add_bool(props, "enable mood source", obs_module_text("MoodSourceEnable"));
 	obs_property_t *enableECG =
 		obs_properties_add_bool(props, "enable ecg source", obs_module_text("ECGSourceEnable"));
+	obs_property_t *ecgLineColour =
+		obs_properties_add_color_alpha(props, "ecg line colour", obs_module_text("ECGLineColour"));
+	obs_property_t *ecgBackgroundColour =
+		obs_properties_add_color_alpha(props, "ecg background colour", obs_module_text("ECGBackgroundColour"));
 
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("GraphSourceEnable"));
@@ -531,6 +543,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_set_modified_callback(enableImage, updateProperties);
 	obs_property_set_modified_callback(enableMood, updateProperties);
 	obs_property_set_modified_callback(enableECG, updateProperties);
+	obs_property_set_modified_callback(ecgLineColour, updateProperties);
+	obs_property_set_modified_callback(ecgBackgroundColour, updateProperties);
 	obs_property_set_modified_callback(heartRateGraphSize, updateProperties);
 
 	obs_data_release(settings);
