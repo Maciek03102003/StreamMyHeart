@@ -106,14 +106,6 @@ void graphSourceRender(void *data, gs_effect_t *effect)
 	drawGraph(graphSource, curHeartRate, graphSource->ecg);
 }
 
-static float getRandomFloat(float min, float max)
-{
-	static std::random_device rd;  // Seed
-	static std::mt19937 gen(rd()); // Mersenne Twister RNG
-	std::uniform_real_distribution<float> dist(min, max);
-	return dist(gen);
-}
-
 static void thickenLines(const std::vector<std::pair<float, float>> &points)
 {
 	gs_render_start(GS_LINESTRIP);
