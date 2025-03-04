@@ -479,9 +479,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	obs_property_t *heartRateGraphSize = obs_properties_add_int(
 		props, "heart rate graph size", obs_module_text("HeartRateHistoryLength"), 10, 30, 1);
-	obs_properties_add_text(props, "heart rate graph explain",
-		obs_module_text("HeartRateHistoryLengthExplain"),
-		OBS_TEXT_INFO);
+	obs_properties_add_text(props, "heart rate graph explain", obs_module_text("HeartRateHistoryLengthExplain"),
+				OBS_TEXT_INFO);
 
 	obs_properties_t *algorithmSettings = algorithmProperties();
 	obs_properties_add_group(props, "algorithm settings", obs_module_text("AdvanceSettings"), OBS_GROUP_NORMAL,
