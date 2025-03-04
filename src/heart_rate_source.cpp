@@ -308,7 +308,7 @@ void heartRateSourceDestroy(void *data)
 	removeSource(GRAPH_SOURCE_NAME);
 	removeSource(IMAGE_SOURCE_NAME);
 	removeSource(MOOD_SOURCE_NAME);
-  	removeSource(ECG_SOURCE_NAME);
+	removeSource(ECG_SOURCE_NAME);
 
 	if (hrs) {
 		hrs->isDisabled = true;
@@ -336,7 +336,7 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable text source", true);
 	obs_data_set_default_bool(settings, "enable graph source", true);
 	obs_data_set_default_bool(settings, "enable image source", false);
-	obs_data_set_default_bool(settings, "enable mood source", true);
+	obs_data_set_default_bool(settings, "enable mood source", false);
 	obs_data_set_default_bool(settings, "enable ecg source", true);
 	obs_data_set_default_int(settings, "ecg line colour", 0xFFFFFFFF);
 	obs_data_set_default_int(settings, "ecg background colour", 0xFF0000FF);
@@ -447,13 +447,9 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	return true; // Forces the UI to refresh
 }
 
-obs_properties_t *heartRateSourceProperties(void *data)
+static obs_properties_t *algorithmProperties()
 {
-	UNUSED_PARAMETER(data);
 	obs_properties_t *props = obs_properties_create();
-
-	obs_properties_add_int(props, "fps", obs_module_text("fps"), 1, 120, 1);
-
 	// Set the face detection algorithm
 	obs_property_t *dropdown = obs_properties_add_list(props, "face detection algorithm",
 							   obs_module_text("FaceDetectionAlgorithm"),
@@ -491,6 +487,18 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	// Add boolean tick box for post-filtering
 	obs_properties_add_bool(props, "post-filtering", obs_module_text("PostFilteringAlgorithm"));
+	obs_property_set_modified_callback(dropdown, updateProperties);
+	obs_property_set_modified_callback(enableTracker, updateProperties);
+	obs_property_set_modified_callback(ppgDropdown, updateProperties);
+	return props;
+}
+
+obs_properties_t *heartRateSourceProperties(void *data)
+{
+	UNUSED_PARAMETER(data);
+	obs_properties_t *props = obs_properties_create();
+
+	obs_properties_add_int(props, "fps", obs_module_text("fps"), 1, 120, 1);
 
 	// Allow user to customise heart rate display text
 	obs_property_t *heartRateText =
@@ -528,12 +536,15 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	obs_property_t *heartRateGraphSize = obs_properties_add_int(
 		props, "heart rate graph size", obs_module_text("HeartRateHistoryLength"), 10, 30, 1);
+	obs_properties_add_text(props, "heart rate graph explain", obs_module_text("HeartRateHistoryLengthExplain"),
+				OBS_TEXT_INFO);
+
+	obs_properties_t *algorithmSettings = algorithmProperties();
+	obs_properties_add_group(props, "algorithm settings", obs_module_text("AdvanceSettings"), OBS_GROUP_NORMAL,
+				 algorithmSettings);
 
 	obs_data_t *settings = obs_source_get_settings((obs_source_t *)data);
 
-	obs_property_set_modified_callback(dropdown, updateProperties);
-	obs_property_set_modified_callback(enableTracker, updateProperties);
-	obs_property_set_modified_callback(ppgDropdown, updateProperties);
 	obs_property_set_modified_callback(heartRateText, updateProperties);
 	obs_property_set_modified_callback(enableText, updateProperties);
 	obs_property_set_modified_callback(enableGraph, updateProperties);
