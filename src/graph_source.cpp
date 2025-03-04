@@ -139,6 +139,7 @@ static void thickenLines(const std::vector<std::pair<float, float>> &points)
 			gs_vertex2f(x2 + nx * offset, y2 + ny * offset);
 		}
 	}
+
 	gs_render_stop(GS_LINESTRIP);
 }
 
@@ -383,7 +384,12 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					, 0.0f, static_cast<float>(height));
 				
 					points.push_back({x1, y1});
+					if (i == graphSource->buffer.size() - 2) {
+						points.push_back({width, y1});
+					}
 				}
+
+				
 				
 
 				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
