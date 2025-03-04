@@ -373,7 +373,6 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 		}
 
 		std::vector<std::pair<float, float>> points;
-		gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), 0xFF000000);
 		// Draw X-Axis (Horizontal Line)
 		points.push_back({0.0f, height});
 		points.push_back({width, height});
