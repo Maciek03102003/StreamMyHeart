@@ -25,6 +25,6 @@ struct obs_source_info ecgSourceInfo = {
 	.activate = graphSourceActivate,
 	.deactivate = graphSourceDeactivate,
 	.video_render = graphSourceRender,
-	.get_width = graphSourceInfoGetWidth,
+	.get_width = ecgSourceInfoGetWidth,
 	.get_height = graphSourceInfoGetHeight,
 };

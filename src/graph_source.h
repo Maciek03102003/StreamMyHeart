@@ -33,9 +33,9 @@ void graphSourceDeactivate(void *data);
 
 void drawGraph(struct graph_source *source, int curHeartRate, bool ecg);
 
-
 const char *getECGSourceName(void *);
 void *createECGSourceInfo(obs_data_t *settings, obs_source_t *source);
+uint32_t ecgSourceInfoGetWidth(void *data);
 float getDeltaTime();
 
 #ifdef __cplusplus

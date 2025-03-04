@@ -18,7 +18,6 @@
 #include "heart_rate_source.h"
 #include <chrono>
 
-
 #define LINE_THICKNESS 3.0f
 #define UPDATE_FREQUENCY 15
 
@@ -83,9 +82,8 @@ void graphSourceRender(void *data, gs_effect_t *effect)
 	}
 
 	int curHeartRate = -1;
-	
+
 	if (graphSource->ecg || frameCount % UPDATE_FREQUENCY == 0) {
-		obs_log(LOG_INFO, "Frame count for %s: %s", std::to_string(graphSource->ecg), std::to_string(frameCount));
 		// Retrieve OBS settings for the heart rate monitor source
 		obs_source_t *heartRateSource = getHeartRateMonitorFilter();
 		if (!heartRateSource) {
@@ -102,7 +100,7 @@ void graphSourceRender(void *data, gs_effect_t *effect)
 		obs_data_release(hrsSettings);
 		obs_source_release(heartRateSource);
 	}
-	frameCount++; 
+	frameCount++;
 
 	// Draw the graph using the retrieved heart rate
 	drawGraph(graphSource, curHeartRate, graphSource->ecg);
@@ -149,11 +147,11 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 
 	// ECG timing parameters based on heart rate
 	float cycle_length = 60.0f / heartRate * width; // ECG cycle in pixels
-	float p_wave_start = 0.15f * cycle_length;
-	float q_wave_start = 0.3f * cycle_length;
-	float r_wave_start = 0.35f * cycle_length;
-	float s_wave_start = 0.4f * cycle_length;
-	float t_wave_start = 0.6f * cycle_length;
+	// float p_wave_start = 0.15f * cycle_length;
+	// float q_wave_start = 0.3f * cycle_length;
+	// float r_wave_start = 0.35f * cycle_length;
+	// float s_wave_start = 0.4f * cycle_length;
+	// float t_wave_start = 0.6f * cycle_length;
 
 	// Generate waveform pattern
 	for (int i = 0; i < width; i++) {
@@ -183,18 +181,17 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 	return waveform;
 }
 
-
 // Define a function to get delta time
-float getDeltaTime() {
-    static auto lastTime = std::chrono::high_resolution_clock::now();
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    
-    std::chrono::duration<float> elapsed = currentTime - lastTime;
-    lastTime = currentTime;
-    
-    return elapsed.count(); // Return time in seconds
-}
+float getDeltaTime()
+{
+	static auto lastTime = std::chrono::high_resolution_clock::now();
+	auto currentTime = std::chrono::high_resolution_clock::now();
 
+	std::chrono::duration<float> elapsed = currentTime - lastTime;
+	lastTime = currentTime;
+
+	return elapsed.count(); // Return time in seconds
+}
 
 void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
@@ -276,97 +273,73 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			gs_draw_sprite(nullptr, 0, width, height);
 		}
 
-		
 		if (graphSource->buffer.size() >= 3) {
-			obs_log(LOG_INFO, "1");
+			// obs_log(LOG_INFO, "1");
 
 			std::vector<std::pair<float, float>> points;
-			// if (ecg) {
-			// 	float baseHeight = height / 2;
-			// 	float beatsPerSecond = curHeartRate / 100.0f; 
-			// 	float deltaTime = getDeltaTime(); // Get frame time
-			
-			// 	float waveSpeed = width * beatsPerSecond * deltaTime; // Movement speed
-			
-			// 	// Generate ECG waveform
-			// 	static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width);
-			
-			// 	// Compute phase shift (how much the wave moves per frame)
-			// 	static float waveOffset = 0.0f;
-			// 	waveOffset += waveSpeed;
-			
-			// 	if (waveOffset >= width) {
-			// 		waveOffset -= width; // Wrap around
-			// 		ecg_wave = generate_ecg_waveform(curHeartRate, width); // Regenerate wave
-			// 	}
-			
-			// 	// Draw the waveform with shifting effect
-			// 	for (size_t i = 0; i < width; i++) {
-			// 		// Compute shifted index, wrapping around when needed
-			// 		size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % width;
-			
-			// 		float x = static_cast<float>(i);
-			// 		float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
-			// 		points.push_back({x, y});
-			// 	}
 
 			if (ecg) {
 				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
-				uint32_t ecgBackgroundAbgrColour = obs_data_get_int(hrsSettings, "ecg background colour");
+				uint32_t ecgBackgroundAbgrColour =
+					obs_data_get_int(hrsSettings, "ecg background colour");
 				uint32_t ecgBackgroundArgbColour = (ecgBackgroundAbgrColour & 0xFF000000) |
-					((ecgBackgroundAbgrColour & 0xFF) << 16) | (ecgBackgroundAbgrColour & 0xFF00) |
-					((ecgBackgroundAbgrColour & 0xFF0000) >> 16);
+								   ((ecgBackgroundAbgrColour & 0xFF) << 16) |
+								   (ecgBackgroundAbgrColour & 0xFF00) |
+								   ((ecgBackgroundAbgrColour & 0xFF0000) >> 16);
 
 				// Set colour for the graph using the colour from the colour picker
-				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgBackgroundArgbColour);
+				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
+						    ecgBackgroundArgbColour);
 				gs_draw_sprite(nullptr, 0, width, height); // Draw stripe
 
-				
 				float baseHeight = height / 2;
-				float beatsPerSecond = curHeartRate / 100.0f; 
+				float beatsPerSecond = curHeartRate / 100.0f;
 				float deltaTime = getDeltaTime(); // Get frame time
-			
+
 				float waveSpeed = (width / 2) * beatsPerSecond * deltaTime; // Movement speed
-			
+
 				// Generate ECG waveform for one cycle (only once, reuse for efficiency)
 				static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width / 2);
-			
+
 				// Compute phase shift (how much the wave moves per frame)
 				static float waveOffset = 0.0f;
 				waveOffset += waveSpeed;
-			
+
 				if (waveOffset >= width / 2) {
 					waveOffset -= width / 2; // Wrap around within half width
 				}
-			
+
 				// **Clear the points before drawing**
 				points.clear();
-			
+
 				// **Draw first wave**
 				for (size_t i = 0; i < width / 2; i++) {
 					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
-					
+
 					float x = static_cast<float>(i);
-					float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
-			
+					float y = baseHeight -
+						  (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+
 					points.push_back({x, y});
 				}
-			
+
 				// **Draw second wave immediately after the first one**
 				for (size_t i = 0; i < width / 2; i++) {
 					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
-			
-					float x = static_cast<float>(i + width / 2); // Offset x-position for second wave
-					float y = baseHeight - (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
-			
+
+					float x =
+						static_cast<float>(i + width / 2); // Offset x-position for second wave
+					float y = baseHeight -
+						  (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+
 					points.push_back({x, y});
 				}
 
 				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
 				uint32_t ecgLineAbgrColour = obs_data_get_int(hrsSettings, "ecg line colour");
-				uint32_t ecgLineArgbColour = (ecgLineAbgrColour & 0xFF000000) |
-					((ecgLineAbgrColour & 0xFF) << 16) | (ecgLineAbgrColour & 0xFF00) |
-					((ecgLineAbgrColour & 0xFF0000) >> 16);
+				uint32_t ecgLineArgbColour =
+					(ecgLineAbgrColour & 0xFF000000) | ((ecgLineAbgrColour & 0xFF) << 16) |
+					(ecgLineAbgrColour & 0xFF00) | ((ecgLineAbgrColour & 0xFF0000) >> 16);
 
 				// Set colour for the graph using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgLineArgbColour);
@@ -378,30 +351,30 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				// }
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
-				
+
 					// Increase the difference scaling (was *2, now *4 for more contrast)
-					float y1 = height - std::clamp(std::round((static_cast<float>(graphSource->buffer[i] - 50)) * 3.5f)
-					, 0.0f, static_cast<float>(height));
-				
+					float y1 = height -
+						   std::clamp(std::round((static_cast<float>(graphSource->buffer[i] -
+											     50)) *
+									 3.5f),
+							      0.0f, static_cast<float>(height));
+
 					points.push_back({x1, y1});
 					if (i == graphSource->buffer.size() - 2) {
 						points.push_back({width, y1});
 					}
 				}
 
-				
-				
-
 				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
 				uint32_t graphLineAbgrColour = obs_data_get_int(hrsSettings, "graph line colour");
-				uint32_t graphLineArgbColour = (graphLineAbgrColour & 0xFF000000) |
-					((graphLineAbgrColour & 0xFF) << 16) | (graphLineAbgrColour & 0xFF00) |
-					((graphLineAbgrColour & 0xFF0000) >> 16);
+				uint32_t graphLineArgbColour =
+					(graphLineAbgrColour & 0xFF000000) | ((graphLineAbgrColour & 0xFF) << 16) |
+					(graphLineAbgrColour & 0xFF00) | ((graphLineAbgrColour & 0xFF0000) >> 16);
 
 				// Set colour for the graph using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
 			}
-			obs_log(LOG_INFO, "5");
+			// obs_log(LOG_INFO, "5");
 
 			thickenLines(points);
 		}
@@ -505,6 +478,11 @@ uint32_t graphSourceInfoGetWidth(void *data)
 uint32_t graphSourceInfoGetHeight(void *data)
 {
 	UNUSED_PARAMETER(data);
+	return 260;
+}
+
+uint32_t ecgSourceInfoGetWidth(void *data)
+{
 	return 260;
 }
 
