@@ -262,7 +262,6 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 		}
 
 		if (graphSource->buffer.size() >= 3) {
-			// obs_log(LOG_INFO, "1");
 
 			std::vector<std::pair<float, float>> points;
 
@@ -370,7 +369,7 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				points.push_back({0.0f, height});
 				thickenLines(points);
 
-				// // **Draw Y-Axis Labels (60, 80, ..., 180)**
+				// **Draw Y-Axis Labels (60, 80, ..., 180)**
 				for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
 					float y = height - i * PIXEL_PER_HR;
 					points.clear();
