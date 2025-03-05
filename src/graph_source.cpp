@@ -336,21 +336,27 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 
 				// Set colour for the graph using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgLineArgbColour);
+				thickenLines(points);
 			} else {
-				// for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
-				// 	float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
-				// 	float y1 = height - (static_cast<float>(graphSource->buffer[i] - 50)) * 2;
-				// 	points.push_back({x1, y1});
-				// }
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
 
-					// Increase the difference scaling (was *2, now *4 for more contrast)
-					float y1 = height -
-						   std::clamp(std::round((static_cast<float>(graphSource->buffer[i] -
-											     50)) *
-									 PIXEL_PER_HR),
-							      0.0f, static_cast<float>(height));
+					// Calculate the y1 value in the zoomed in middle interval representation
+					float y1;
+					if (graphSource->buffer[i] <= 70) {
+						y1 = height - static_cast<float>(graphSource->buffer[i] - 50);
+					} else if (graphSource->buffer[i] <= 110) {
+						y1 = height - 20 - (static_cast<float>(graphSource->buffer[i] - 70) * 4);
+					} else {
+						y1 = height - 20 - 160 - static_cast<float>(graphSource->buffer[i] - 110);
+					}
+
+					// // Increase the difference scaling (was *2, now *4 for more contrast)
+					// float y1 = height -
+					// 	   std::clamp(std::round((static_cast<float>(graphSource->buffer[i] -
+					// 						     50)) *
+					// 				 PIXEL_PER_HR),
+					// 		      0.0f, static_cast<float>(height));
 
 					points.push_back({x1, y1});
 					if (i == graphSource->buffer.size() - 2) {
@@ -366,30 +372,39 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 
 				// Set colour for the graph using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
+				thickenLines(points);
+
+				std::vector<std::pair<float, float>> points;
+				// Draw X-Axis (Horizontal Line)
+				points.push_back({0.0f, height});
+				points.push_back({width, height});
+				thickenLines(points);
+				// Draw Y-Axis (Vertical Line)
+				points.clear();
+				points.push_back({0.0f, 0.0f});
+				points.push_back({0.0f, height});
+				thickenLines(points);
+
+				// **Draw Y-Axis Labels (70, ..., 190)**
+				for (float i = 20; i <= height; i += 20) {
+					if (i == 20 || i == 100 || i >= 180) {
+						float y = height - i;
+						points.clear();
+						points.push_back({0.0f, y});
+						points.push_back({5.0f, y});
+						thickenLines(points);
+					}
+				}
+
+				// // **Draw Y-Axis Labels (60, 80, ..., 180)**
+				// for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
+				// 	float y = height - i * PIXEL_PER_HR;
+				// 	points.clear();
+				// 	points.push_back({0.0f, y});
+				// 	points.push_back({5.0f, y});
+				// 	thickenLines(points);
+				// }
 			}
-			// obs_log(LOG_INFO, "5");
-
-			thickenLines(points);
-		}
-
-		std::vector<std::pair<float, float>> points;
-		// Draw X-Axis (Horizontal Line)
-		points.push_back({0.0f, height});
-		points.push_back({width, height});
-		thickenLines(points);
-		// Draw Y-Axis (Vertical Line)
-		points.clear();
-		points.push_back({0.0f, 0.0f});
-		points.push_back({0.0f, height});
-		thickenLines(points);
-
-		// **Draw Y-Axis Labels (60, 80, ..., 180)**
-		for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
-			float y = height - i * PIXEL_PER_HR;
-			points.clear();
-			points.push_back({0.0f, y});
-			points.push_back({5.0f, y});
-			thickenLines(points);
 		}
 	}
 
