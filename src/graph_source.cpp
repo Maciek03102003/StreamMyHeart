@@ -140,11 +140,6 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 
 	// ECG timing parameters based on heart rate
 	float cycle_length = 60.0f / heartRate * width; // ECG cycle in pixels
-	// float p_wave_start = 0.15f * cycle_length;
-	// float q_wave_start = 0.3f * cycle_length;
-	// float r_wave_start = 0.35f * cycle_length;
-	// float s_wave_start = 0.4f * cycle_length;
-	// float t_wave_start = 0.6f * cycle_length;
 
 	// Generate waveform pattern
 	for (int i = 0; i < width; i++) {
@@ -341,24 +336,12 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				for (size_t i = 0; i < graphSource->buffer.size() - 1; i++) {
 					float x1 = (static_cast<float>(i) / (graphSize - 1)) * width;
 
-					// Calculate the y1 value in the zoomed in middle interval representation
-					float y1;
-					if (graphSource->buffer[i] <= 70) {
-						y1 = height - static_cast<float>(graphSource->buffer[i] - 50);
-					} else if (graphSource->buffer[i] <= 110) {
-						y1 = height - 20 -
-						     (static_cast<float>(graphSource->buffer[i] - 70) * 4);
-					} else {
-						y1 = height - 20 - 160 -
-						     static_cast<float>(graphSource->buffer[i] - 110);
-					}
-
-					// // Increase the difference scaling (was *2, now *4 for more contrast)
-					// float y1 = height -
-					// 	   std::clamp(std::round((static_cast<float>(graphSource->buffer[i] -
-					// 						     50)) *
-					// 				 PIXEL_PER_HR),
-					// 		      0.0f, static_cast<float>(height));
+					// Increase the difference scaling (was *2, now *4 for more contrast)
+					float y1 = height -
+						   std::clamp(std::round((static_cast<float>(graphSource->buffer[i] -
+											     50)) *
+									 PIXEL_PER_HR),
+							      0.0f, static_cast<float>(height));
 
 					points.push_back({x1, y1});
 					if (i == graphSource->buffer.size() - 2) {
@@ -386,17 +369,6 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				points.push_back({0.0f, 0.0f});
 				points.push_back({0.0f, height});
 				thickenLines(points);
-
-				// **Draw Y-Axis Labels (70, ..., 190)**
-				// for (float i = 20; i <= height; i += 20) {
-				// 	if (i == 20 || i == 100 || i >= 180) {
-				// 		float y = height - i;
-				// 		points.clear();
-				// 		points.push_back({0.0f, y});
-				// 		points.push_back({5.0f, y});
-				// 		thickenLines(points);
-				// 	}
-				// }
 
 				// // **Draw Y-Axis Labels (60, 80, ..., 180)**
 				for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
