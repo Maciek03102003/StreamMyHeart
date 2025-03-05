@@ -14,3 +14,17 @@ struct obs_source_info graphSourceInfo = {
 	.get_width = graphSourceInfoGetWidth,
 	.get_height = graphSourceInfoGetHeight,
 };
+
+struct obs_source_info ecgSourceInfo = {
+	.id = "heart_rate_ecg",
+	.type = OBS_SOURCE_TYPE_INPUT,
+	.output_flags = OBS_SOURCE_VIDEO,
+	.get_name = getECGSourceName,
+	.create = createECGSourceInfo,
+	.destroy = destroyGraphSource,
+	.activate = graphSourceActivate,
+	.deactivate = graphSourceDeactivate,
+	.video_render = graphSourceRender,
+	.get_width = ecgSourceInfoGetWidth,
+	.get_height = graphSourceInfoGetHeight,
+};
