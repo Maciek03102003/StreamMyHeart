@@ -334,12 +334,12 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_int(settings, "heart rate", -1);
 	obs_data_set_default_string(settings, "heart rate text", "Heart rate: {hr} BPM");
 	obs_data_set_default_bool(settings, "enable text source", true);
-	obs_data_set_default_bool(settings, "enable graph source", true);
+	obs_data_set_default_bool(settings, "enable graph source", false);
 	obs_data_set_default_bool(settings, "enable image source", false);
 	obs_data_set_default_bool(settings, "enable mood source", false);
 	obs_data_set_default_bool(settings, "enable ecg source", false);
-	obs_data_set_default_int(settings, "ecg line colour", 0xFFFFFFFF);
-	obs_data_set_default_int(settings, "ecg background colour", 0xFF0000FF);
+	obs_data_set_default_int(settings, "ecg line colour", 0xFF0000FF);
+	obs_data_set_default_int(settings, "ecg background colour", 0x00FFFFFF);
 	obs_data_set_default_int(settings, "graph plane dropdown", 0);
 	obs_data_set_default_int(settings, "graph plane colour", 0xFFFFFFFF);
 	obs_data_set_default_int(settings, "graph line colour", 0xFF0000FF);
@@ -432,11 +432,11 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 	obs_property_set_visible(graphPlaneDropdown, obs_data_get_bool(settings, "enable graph source"));
 	int graphPlaneOption = obs_data_get_int(settings, "graph plane dropdown");
 
-	obs_property_t *graphPlaneColour = obs_properties_get(props, "graph plane colour");
-	obs_property_set_visible(graphPlaneColour, graphPlaneOption == 2);
-
 	obs_property_t *graphLineColour = obs_properties_get(props, "graph line colour");
 	obs_property_set_visible(graphLineColour, obs_data_get_bool(settings, "enable graph source"));
+
+	obs_property_t *graphPlaneColour = obs_properties_get(props, "graph plane colour");
+	obs_property_set_visible(graphPlaneColour, graphPlaneOption == 2);
 
 	obs_property_t *heartRateGraphSize = obs_properties_get(props, "heart rate graph size");
 	obs_property_set_visible(heartRateGraphSize, obs_data_get_bool(settings, "enable graph source"));
@@ -507,14 +507,13 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	obs_properties_add_int(props, "fps", obs_module_text("fps"), 1, 120, 1);
 
-	// Allow user to customise heart rate display text
+	obs_property_t *enableText =
+		obs_properties_add_bool(props, "enable text source", obs_module_text("TextSourceEnable"));
 	obs_property_t *heartRateText =
 		obs_properties_add_text(props, "heart rate text", obs_module_text("HeartRateText"), OBS_TEXT_DEFAULT);
 	obs_property_t *heartRateTextExplain = obs_properties_add_text(
 		props, "heart rate text explain", obs_module_text("HeartRateTextExplain"), OBS_TEXT_INFO);
 
-	obs_property_t *enableText =
-		obs_properties_add_bool(props, "enable text source", obs_module_text("TextSourceEnable"));
 	obs_property_t *enableImage =
 		obs_properties_add_bool(props, "enable image source", obs_module_text("ImageSourceEnable"));
 	obs_property_t *enableMood =
