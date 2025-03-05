@@ -33,7 +33,7 @@ bool obs_module_load(void)
 {
 	obs_register_source(&heartRateSourceInfo);
 	obs_register_source(&graphSourceInfo);
-  obs_register_source(&ecgSourceInfo);
+	obs_register_source(&ecgSourceInfo);
 
 	obs_log(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
 	return true;
