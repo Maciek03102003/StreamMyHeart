@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 extern struct obs_source_info graphSourceInfo;
+extern struct obs_source_info ecgSourceInfo;
 
 #ifdef __cplusplus
 }

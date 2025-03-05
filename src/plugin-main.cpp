@@ -27,11 +27,13 @@ OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-GB")
 
 extern struct obs_source_info heartRateSourceInfo;
 extern struct obs_source_info graphSourceInfo;
+extern struct obs_source_info ecgSourceInfo;
 
 bool obs_module_load(void)
 {
 	obs_register_source(&heartRateSourceInfo);
 	obs_register_source(&graphSourceInfo);
+	obs_register_source(&ecgSourceInfo);
 
 	obs_log(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
 	return true;
