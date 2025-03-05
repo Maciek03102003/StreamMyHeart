@@ -20,7 +20,7 @@
 
 #define LINE_THICKNESS 3.0f
 #define UPDATE_FREQUENCY 15
-#define PIXEL_PER_HR 3.5f
+#define PIXEL_PER_HR 2.0f
 
 static int frameCount = 0;
 
@@ -376,8 +376,8 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphLineArgbColour);
 				thickenLines(points);
 
-				std::vector<std::pair<float, float>> points;
 				// Draw X-Axis (Horizontal Line)
+				points.clear();
 				points.push_back({0.0f, height});
 				points.push_back({width, height});
 				thickenLines(points);
