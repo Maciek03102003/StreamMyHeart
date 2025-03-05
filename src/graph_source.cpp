@@ -346,9 +346,11 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					if (graphSource->buffer[i] <= 70) {
 						y1 = height - static_cast<float>(graphSource->buffer[i] - 50);
 					} else if (graphSource->buffer[i] <= 110) {
-						y1 = height - 20 - (static_cast<float>(graphSource->buffer[i] - 70) * 4);
+						y1 = height - 20 -
+						     (static_cast<float>(graphSource->buffer[i] - 70) * 4);
 					} else {
-						y1 = height - 20 - 160 - static_cast<float>(graphSource->buffer[i] - 110);
+						y1 = height - 20 - 160 -
+						     static_cast<float>(graphSource->buffer[i] - 110);
 					}
 
 					// // Increase the difference scaling (was *2, now *4 for more contrast)
@@ -386,24 +388,24 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				thickenLines(points);
 
 				// **Draw Y-Axis Labels (70, ..., 190)**
-				for (float i = 20; i <= height; i += 20) {
-					if (i == 20 || i == 100 || i >= 180) {
-						float y = height - i;
-						points.clear();
-						points.push_back({0.0f, y});
-						points.push_back({5.0f, y});
-						thickenLines(points);
-					}
-				}
+				// for (float i = 20; i <= height; i += 20) {
+				// 	if (i == 20 || i == 100 || i >= 180) {
+				// 		float y = height - i;
+				// 		points.clear();
+				// 		points.push_back({0.0f, y});
+				// 		points.push_back({5.0f, y});
+				// 		thickenLines(points);
+				// 	}
+				// }
 
 				// // **Draw Y-Axis Labels (60, 80, ..., 180)**
-				// for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
-				// 	float y = height - i * PIXEL_PER_HR;
-				// 	points.clear();
-				// 	points.push_back({0.0f, y});
-				// 	points.push_back({5.0f, y});
-				// 	thickenLines(points);
-				// }
+				for (float i = 10; i <= std::min(130.0f, height / PIXEL_PER_HR); i += 20) {
+					float y = height - i * PIXEL_PER_HR;
+					points.clear();
+					points.push_back({0.0f, y});
+					points.push_back({5.0f, y});
+					thickenLines(points);
+				}
 			}
 		}
 	}
