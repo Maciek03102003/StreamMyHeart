@@ -262,13 +262,11 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      
-      - name: Set Up MSVC 2022
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x86
-          toolset: 14.42
-      
+
+      - name: Show MSVC Version
+        shell: cmd
+        run: cl
+
       - name: Set Up Environment 🔧
         id: setup
         run: |
