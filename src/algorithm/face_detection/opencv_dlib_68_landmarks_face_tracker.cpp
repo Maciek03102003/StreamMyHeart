@@ -80,9 +80,14 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 	bool runFaceDetection = (!enableTracker && resetFaceDetection) ||
 				(enableTracker && (resetFaceDetection || !startedTracking));
 
+	if (resetFaceDetection) {
+		frameCount = 0;
+	}
+	frameCount++;
+
 	if (runFaceDetection) {
 		std::vector<rectangle> faces = detector(dlibImg);
-
+		faceDetected = !faces.empty();
 		if (!faces.empty()) {
 			detectedFace = faces[0];
 			initialFace = faces[0];
@@ -95,6 +100,9 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 			return std::vector<double_t>(3, 0.0); // No face detected
 		}
 	} else if (enableTracker) {
+		if (!faceDetected) {
+			return std::vector<double_t>(3, 0.0); // No face tracked
+		}
 		tracker.update(dlibImg);
 		initialFace = tracker.get_position();
 	}
@@ -142,11 +150,6 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 
 	cv::Scalar meanRGB = cv::mean(frameMat, maskMat);
 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
-
-	if (resetFaceDetection) {
-		frameCount = 0;
-	}
-	frameCount++;
 
 	return avgRGB;
 }

@@ -88,25 +88,25 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 	cv::Mat bgrFrame;
 	cv::cvtColor(croppedBgraFrame, bgrFrame, cv::COLOR_BGRA2BGR);
 
-	// frameCount++;
-	// bool resetFaceDetection = frameCount % 3 == 0;
+	bool resetFaceDetection = frameCount % 3 == 0;
+	frameCount++;
 
-	// if (!resetFaceDetection) {
-	// 	if (noFaceDetected) {
-	// 		return std::vector<double_t>(3, 0.0);
-	// 	}
+	if (!resetFaceDetection) {
+		if (noFaceDetected || maskMat.empty()) {
+			return std::vector<double_t>(3, 0.0);
+		}
 
-	// 	// Now compute the mean color in the face region (where maskMat is nonzero)
-	// 	cv::Scalar meanRGB = cv::mean(bgrFrame, maskMat);
+		// Now compute the mean color in the face region (where maskMat is nonzero)
+		cv::Scalar meanRGB = cv::mean(bgrFrame, maskMat);
 
-	// 	// Convert the result to a vector<double_t> (B, G, R order)
-	// 	std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
+		// Convert the result to a vector<double_t> (B, G, R order)
+		std::vector<double_t> avgRGB = {meanRGB[0], meanRGB[1], meanRGB[2]};
 
-	// 	faceCoordinates = faceCoordinatesCopy;
-	// 	return avgRGB;
-	// } else {
-	// 	frameCount = 0;
-	// }
+		faceCoordinates = faceCoordinatesCopy;
+		return avgRGB;
+	} else {
+		frameCount = 0;
+	}
 
 	// Detect faces
 	std::vector<cv::Rect> faces;
