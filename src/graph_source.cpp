@@ -24,6 +24,8 @@
 
 static int frameCount = 0;
 
+std::vector<std::vector<float>> ecg_waves;
+
 // Destroy function for graph source
 void destroyGraphSource(void *data)
 {
@@ -138,12 +140,14 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 {
 	std::vector<float> waveform(width, 0.0f);
 
-	// ECG timing parameters based on heart rate
-	float cycle_length = 60.0f / heartRate * width; // ECG cycle in pixels
+	// Dynamically calculate the number of cycles based on the heart rate
+	int numCycles = (heartRate - 50) / 20 + 1;                  // Number of cycles based on heart rate
+	float cycle_length = width / static_cast<float>(numCycles); // ECG cycle length in pixels
 
 	// Generate waveform pattern
 	for (int i = 0; i < width; i++) {
-		float pos = static_cast<float>(i) / cycle_length; // Normalize position in cycle
+		// Normalize position within one cycle
+		float pos = fmod(i, cycle_length) / cycle_length;
 
 		// P wave: small upward bump
 		if (pos > 0.1f && pos < 0.2f)
@@ -170,16 +174,16 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 }
 
 // Define a function to get delta time
-float getDeltaTime()
-{
-	static auto lastTime = std::chrono::high_resolution_clock::now();
-	auto currentTime = std::chrono::high_resolution_clock::now();
+// float getDeltaTime()
+// {
+// 	static auto lastTime = std::chrono::high_resolution_clock::now();
+// 	auto currentTime = std::chrono::high_resolution_clock::now();
 
-	std::chrono::duration<float> elapsed = currentTime - lastTime;
-	lastTime = currentTime;
+// 	std::chrono::duration<float> elapsed = currentTime - lastTime;
+// 	lastTime = currentTime;
 
-	return elapsed.count(); // Return time in seconds
-}
+// 	return elapsed.count(); // Return time in seconds
+// }
 
 void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
@@ -279,45 +283,46 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 						    ecgBackgroundArgbColour);
 				gs_draw_sprite(nullptr, 0, width, height); // Draw stripe
 
+				// Baseline for ECG
 				float baseHeight = height / 2;
-				float beatsPerSecond = curHeartRate / 100.0f;
-				float deltaTime = getDeltaTime(); // Get frame time
 
-				float waveSpeed = (width / 2) * beatsPerSecond * deltaTime; // Movement speed
+				float waveSpeed = 6.0f;
 
-				// Generate ECG waveform for one cycle (only once, reuse for efficiency)
-				static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width / 2);
-
-				// Compute phase shift (how much the wave moves per frame)
+				// Initialize waveOffset as a static variable to retain its state between frames
 				static float waveOffset = 0.0f;
+
+				// Update waveOffset smoothly based on waveSpeed
 				waveOffset += waveSpeed;
 
-				if (waveOffset >= width / 2) {
-					waveOffset -= width / 2; // Wrap around within half width
+				if (ecg_waves.empty()) {
+					ecg_waves.push_back(generate_ecg_waveform(
+						graphSource->buffer[graphSource->buffer.size() - 2], width));
+					ecg_waves.push_back(generate_ecg_waveform(
+						graphSource->buffer[graphSource->buffer.size() - 1], width));
+				} else if (waveOffset >= width) {
+					waveOffset -= width;
+					ecg_waves.erase(ecg_waves.begin());
+					ecg_waves.push_back(generate_ecg_waveform(
+						graphSource->buffer[graphSource->buffer.size() - 1], width));
 				}
 
-				// **Clear the points before drawing**
+				// Clear points before drawing
 				points.clear();
 
-				// **Draw first wave**
-				for (size_t i = 0; i < width / 2; i++) {
-					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
+				// Draw waves across the full width, accounting for multiple cycles
+				for (size_t i = 0; i < width; i++) {
+					// Calculate the index for the shifted wave
+					float value;
+					if (i + static_cast<size_t>(waveOffset) < static_cast<size_t>(width)) {
+						size_t shiftedIndex = (i + static_cast<size_t>(waveOffset));
+						value = ecg_waves[0][shiftedIndex];
+					} else {
+						size_t shiftedIndex = (i + static_cast<size_t>(waveOffset) - width);
+						value = ecg_waves[1][shiftedIndex];
+					}
 
 					float x = static_cast<float>(i);
-					float y = baseHeight -
-						  (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
-
-					points.push_back({x, y});
-				}
-
-				// **Draw second wave immediately after the first one**
-				for (size_t i = 0; i < width / 2; i++) {
-					size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
-
-					float x =
-						static_cast<float>(i + width / 2); // Offset x-position for second wave
-					float y = baseHeight -
-						  (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
+					float y = baseHeight - (value * height * 0.4f); // Scale ECG wave height
 
 					points.push_back({x, y});
 				}
