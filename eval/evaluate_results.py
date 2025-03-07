@@ -19,7 +19,7 @@ face_detection_mean = face_detection['Duration (ns)'].mean()
 face_detection_std = face_detection['Duration (ns)'].std()
 print(f"Face detection mean: {face_detection_mean}, std: {face_detection_std}")
 
-heart_rate_calculation = df_track[(df_track['Function'] == 'Heart rate calculation') | (df_track['Function'] == 'Heart rate update')]
+heart_rate_calculation = df_track[(df_track['Function'] == 'Heart rate calculation')]
 heart_rate_calculation_mean = heart_rate_calculation['Duration (ns)'].mean()
 heart_rate_calculation_std = heart_rate_calculation['Duration (ns)'].std()
 print(f"Heart rate calculation mean: {heart_rate_calculation_mean}, std: {heart_rate_calculation_std}")
