@@ -141,8 +141,7 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 	std::vector<float> waveform(width, 0.0f);
 
 	// Dynamically calculate the number of cycles based on the heart rate
-	int numCycles = (heartRate - 50) / 20 + 1; // Number of cycles based on heart rate
-	obs_log(LOG_INFO, "Num cycles: %s", std::to_string(numCycles));
+	int numCycles = (heartRate - 50) / 20 + 1;                  // Number of cycles based on heart rate
 	float cycle_length = width / static_cast<float>(numCycles); // ECG cycle length in pixels
 
 	// Generate waveform pattern
@@ -175,16 +174,16 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 }
 
 // Define a function to get delta time
-float getDeltaTime()
-{
-	static auto lastTime = std::chrono::high_resolution_clock::now();
-	auto currentTime = std::chrono::high_resolution_clock::now();
+// float getDeltaTime()
+// {
+// 	static auto lastTime = std::chrono::high_resolution_clock::now();
+// 	auto currentTime = std::chrono::high_resolution_clock::now();
 
-	std::chrono::duration<float> elapsed = currentTime - lastTime;
-	lastTime = currentTime;
+// 	std::chrono::duration<float> elapsed = currentTime - lastTime;
+// 	lastTime = currentTime;
 
-	return elapsed.count(); // Return time in seconds
-}
+// 	return elapsed.count(); // Return time in seconds
+// }
 
 void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
@@ -284,19 +283,10 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 						    ecgBackgroundArgbColour);
 				gs_draw_sprite(nullptr, 0, width, height); // Draw stripe
 
-				// Get frame time
-				float deltaTime = getDeltaTime();
-
 				// Baseline for ECG
 				float baseHeight = height / 2;
 
-				// Calculate the number of cycles based on heart rate.
-				// We'll keep it proportional but limit the maximum and minimum visible cycles for smoother changes.
-				int numVisibleCycles = std::max(
-					2, std::min(10, static_cast<int>(curHeartRate /
-									 10.0f))); // Adjust multiplier as needed
-
-				float waveSpeed = 10.0f;
+				float waveSpeed = 6.0f;
 
 				// Initialize waveOffset as a static variable to retain its state between frames
 				static float waveOffset = 0.0f;
