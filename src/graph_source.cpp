@@ -136,80 +136,43 @@ static void thickenLines(const std::vector<std::pair<float, float>> &points)
 	gs_render_stop(GS_LINESTRIP);
 }
 
-// std::vector<float> generate_ecg_waveform(int heartRate, int width)
-// {
-// 	std::vector<float> waveform(width, 0.0f);
-
-// 	// ECG timing parameters based on heart rate
-// 	float cycle_length = 60.0f / heartRate * width; // ECG cycle in pixels
-
-// 	// Generate waveform pattern
-// 	for (int i = 0; i < width; i++) {
-// 		float pos = static_cast<float>(i) / cycle_length; // Normalize position in cycle
-
-// 		// P wave: small upward bump
-// 		if (pos > 0.1f && pos < 0.2f)
-// 			waveform[i] = 0.05f * sin((pos - 0.15f) * M_PI * 10);
-
-// 		// Q wave: small downward dip
-// 		else if (pos > 0.3f && pos < 0.32f)
-// 			waveform[i] = -0.1f;
-
-// 		// R wave: large upward spike
-// 		else if (pos > 0.35f && pos < 0.37f)
-// 			waveform[i] = 0.6f;
-
-// 		// S wave: small downward dip after R wave
-// 		else if (pos > 0.4f && pos < 0.42f)
-// 			waveform[i] = -0.2f;
-
-// 		// T wave: broad, small positive bump
-// 		else if (pos > 0.6f && pos < 0.8f)
-// 			waveform[i] = 0.1f * sin((pos - 0.7f) * M_PI * 5);
-// 	}
-
-// 	return waveform;
-// }
-
 std::vector<float> generate_ecg_waveform(int heartRate, int width)
 {
-    std::vector<float> waveform(width, 0.0f);
+	std::vector<float> waveform(width, 0.0f);
 
-    // Dynamically calculate the number of cycles based on the heart rate
-    int numCycles = (heartRate - 50) / 20 + 1; // Number of cycles based on heart rate
-		obs_log(LOG_INFO, "Num cycles: %s", std::to_string(numCycles));
-    float cycle_length = width / static_cast<float>(numCycles); // ECG cycle length in pixels
+	// Dynamically calculate the number of cycles based on the heart rate
+	int numCycles = (heartRate - 50) / 20 + 1; // Number of cycles based on heart rate
+	obs_log(LOG_INFO, "Num cycles: %s", std::to_string(numCycles));
+	float cycle_length = width / static_cast<float>(numCycles); // ECG cycle length in pixels
 
-    // Generate waveform pattern
-    for (int i = 0; i < width; i++) {
-        // Normalize position within one cycle
-        float pos = fmod(i, cycle_length) / cycle_length;
+	// Generate waveform pattern
+	for (int i = 0; i < width; i++) {
+		// Normalize position within one cycle
+		float pos = fmod(i, cycle_length) / cycle_length;
 
-        // P wave: small upward bump
-        if (pos > 0.1f && pos < 0.2f)
-            waveform[i] = 0.05f * sin((pos - 0.15f) * M_PI * 10);
+		// P wave: small upward bump
+		if (pos > 0.1f && pos < 0.2f)
+			waveform[i] = 0.05f * sin((pos - 0.15f) * M_PI * 10);
 
-        // Q wave: small downward dip
-        else if (pos > 0.3f && pos < 0.32f)
-            waveform[i] = -0.1f;
+		// Q wave: small downward dip
+		else if (pos > 0.3f && pos < 0.32f)
+			waveform[i] = -0.1f;
 
-        // R wave: large upward spike
-        else if (pos > 0.35f && pos < 0.37f)
-            waveform[i] = 0.6f;
+		// R wave: large upward spike
+		else if (pos > 0.35f && pos < 0.37f)
+			waveform[i] = 0.6f;
 
-        // S wave: small downward dip after R wave
-        else if (pos > 0.4f && pos < 0.42f)
-            waveform[i] = -0.2f;
+		// S wave: small downward dip after R wave
+		else if (pos > 0.4f && pos < 0.42f)
+			waveform[i] = -0.2f;
 
-        // T wave: broad, small positive bump
-        else if (pos > 0.6f && pos < 0.8f)
-            waveform[i] = 0.1f * sin((pos - 0.7f) * M_PI * 5);
-    }
+		// T wave: broad, small positive bump
+		else if (pos > 0.6f && pos < 0.8f)
+			waveform[i] = 0.1f * sin((pos - 0.7f) * M_PI * 5);
+	}
 
-    return waveform;
+	return waveform;
 }
-
-
 
 // Define a function to get delta time
 float getDeltaTime()
@@ -321,58 +284,17 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 						    ecgBackgroundArgbColour);
 				gs_draw_sprite(nullptr, 0, width, height); // Draw stripe
 
-				// float baseHeight = height / 2;
-				// float beatsPerSecond = curHeartRate / 100.0f;
-				// float deltaTime = getDeltaTime(); // Get frame time
-
-				// float waveSpeed = (width / 2) * beatsPerSecond * deltaTime; // Movement speed
-
-				// // Generate ECG waveform for one cycle (only once, reuse for efficiency)
-				// static std::vector<float> ecg_wave = generate_ecg_waveform(curHeartRate, width / 2);
-
-				// // Compute phase shift (how much the wave moves per frame)
-				// static float waveOffset = 0.0f;
-				// waveOffset += waveSpeed;
-
-				// if (waveOffset >= width / 2) {
-				// 	waveOffset -= width / 2; // Wrap around within half width
-				// }
-
-				// // **Clear the points before drawing**
-				// points.clear();
-
-				// // **Draw first wave**
-				// for (size_t i = 0; i < width / 2; i++) {
-				// 	size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
-
-				// 	float x = static_cast<float>(i);
-				// 	float y = baseHeight -
-				// 		  (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
-
-				// 	points.push_back({x, y});
-				// }
-
-				// // **Draw second wave immediately after the first one**
-				// for (size_t i = 0; i < width / 2; i++) {
-				// 	size_t shiftedIndex = (i + static_cast<size_t>(waveOffset)) % (width / 2);
-
-				// 	float x =
-				// 		static_cast<float>(i + width / 2); // Offset x-position for second wave
-				// 	float y = baseHeight -
-				// 		  (ecg_wave[shiftedIndex] * height * 0.4f); // Scale ECG wave height
-
-				// 	points.push_back({x, y});
-				// }
-
-								// Get frame time
+				// Get frame time
 				float deltaTime = getDeltaTime();
 
 				// Baseline for ECG
 				float baseHeight = height / 2;
 
-				// Calculate the number of cycles based on heart rate. 
+				// Calculate the number of cycles based on heart rate.
 				// We'll keep it proportional but limit the maximum and minimum visible cycles for smoother changes.
-				int numVisibleCycles = std::max(2, std::min(10, static_cast<int>(curHeartRate / 10.0f)));  // Adjust multiplier as needed
+				int numVisibleCycles = std::max(
+					2, std::min(10, static_cast<int>(curHeartRate /
+									 10.0f))); // Adjust multiplier as needed
 
 				float waveSpeed = 10.0f;
 
@@ -381,14 +303,17 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 
 				// Update waveOffset smoothly based on waveSpeed
 				waveOffset += waveSpeed;
-								
+
 				if (ecg_waves.empty()) {
-					ecg_waves.push_back(generate_ecg_waveform(graphSource->buffer[graphSource->buffer.size() - 2], width));
-					ecg_waves.push_back(generate_ecg_waveform(graphSource->buffer[graphSource->buffer.size() - 1], width));
+					ecg_waves.push_back(generate_ecg_waveform(
+						graphSource->buffer[graphSource->buffer.size() - 2], width));
+					ecg_waves.push_back(generate_ecg_waveform(
+						graphSource->buffer[graphSource->buffer.size() - 1], width));
 				} else if (waveOffset >= width) {
 					waveOffset -= width;
-					ecg_waves.erase(ecg_waves.begin()); 
-					ecg_waves.push_back(generate_ecg_waveform(graphSource->buffer[graphSource->buffer.size() - 1], width));
+					ecg_waves.erase(ecg_waves.begin());
+					ecg_waves.push_back(generate_ecg_waveform(
+						graphSource->buffer[graphSource->buffer.size() - 1], width));
 				}
 
 				// Clear points before drawing
@@ -397,7 +322,7 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 				// Draw waves across the full width, accounting for multiple cycles
 				for (size_t i = 0; i < width; i++) {
 					// Calculate the index for the shifted wave
-					float value; 
+					float value;
 					if (i + static_cast<size_t>(waveOffset) < static_cast<size_t>(width)) {
 						size_t shiftedIndex = (i + static_cast<size_t>(waveOffset));
 						value = ecg_waves[0][shiftedIndex];
@@ -407,14 +332,10 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					}
 
 					float x = static_cast<float>(i);
-					float y = baseHeight - (value * height * 0.4f);  // Scale ECG wave height
+					float y = baseHeight - (value * height * 0.4f); // Scale ECG wave height
 
 					points.push_back({x, y});
 				}
-
-
-
-
 
 				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
 				uint32_t ecgLineAbgrColour = obs_data_get_int(hrsSettings, "ecg line colour");
