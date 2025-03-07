@@ -15,6 +15,8 @@ def rank_csv_files(directory):
     rmseMeans = {}
     haarCascadeRmse = []
     dlibRmse = []
+    faceTrackingOnRmse = []
+    faceTrackingOffRmse = []
     preFilteringNoneRmse = []
     preFilteringBandpassRmse = []
     preFilteringDetrendRmse = []
@@ -27,7 +29,7 @@ def rank_csv_files(directory):
     smoothingOnRmse = []
     smoothingOffRmse = []
     for filename in os.listdir(directory):
-        if filename.endswith('.csv'):
+        if filename.endswith('.csv') and filename != 'mean_rmse_results.csv':
             filePath = os.path.join(directory, filename)
             parts = filename.split('_')
             meanRmse = calculate_mean_rmse(filePath)
@@ -39,12 +41,17 @@ def rank_csv_files(directory):
                 dlibRmse.append(meanRmse)
                 
             preFiltering = 0
+            faceTracking = 0
             if "HAAR_CASCADE" in filename:
                 preFiltering = parts[2]
             else:
-                preFiltering = parts[1]
-
-            print(preFiltering)
+                preFiltering = parts[3]
+                faceTracking = parts[2]
+                        
+            if faceTracking == "ON":
+                faceTrackingOnRmse.append(meanRmse)
+            else:
+                faceTrackingOffRmse.append(meanRmse)
                 
             if preFiltering == "NONE":
                 preFilteringNoneRmse.append(meanRmse)
@@ -82,6 +89,12 @@ def rank_csv_files(directory):
         meanRmseDlib = np.mean(dlibRmse)
         print(f"\nMean RMSE with Haar cascade: {meanRmseHaar:.4f}")
         print(f"Mean RMSE with DLIB: {meanRmseDlib:.4f}")
+    
+    if faceTrackingOnRmse and faceTrackingOffRmse:
+        meanRmseFaceTrackingOn = np.mean(faceTrackingOnRmse)
+        meanRmseFaceTrackingOff = np.mean(faceTrackingOffRmse)
+        print(f"\nMean RMSE with face tracking on: {meanRmseFaceTrackingOn:.4f}")
+        print(f"Mean RMSE with face tracking off: {meanRmseFaceTrackingOff:.4f}")
         
     if preFilteringNoneRmse and preFilteringBandpassRmse and preFilteringDetrendRmse and preFilteringZeroMeanRmse:
         meanRmsePreFilteringNone = np.mean(preFilteringNoneRmse)
@@ -121,4 +134,4 @@ def rank_csv_files(directory):
             writer.writerow([filename[:-4], meanRmse])
         
 if __name__ == "__main__":
-    rank_csv_files('results/Iteration 3/')
+    rank_csv_files('results/Iteration 4/')
