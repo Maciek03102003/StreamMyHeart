@@ -630,12 +630,16 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 		return false;
 	}
 
+	obs_enter_graphics();
+
 	// Resets the texture renderer and begins rendering with the specified width and height
 	gs_texrender_reset(hrs->texrender);
 	if (!hrs->texrender) {
+		obs_leave_graphics();
 		return false;
 	}
 	if (!gs_texrender_begin(hrs->texrender, width, height)) {
+		obs_leave_graphics();
 		return false;
 	}
 
@@ -710,6 +714,7 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 	uint32_t linesize;   // The number of bytes per line (or row) of the image data
 	// The gs_stagesurface_map function creates a mapping between the GPU memory and the CPU memory. This allows the CPU to access the pixel data directly from the GPU memory
 	if (!gs_stagesurface_map(hrs->stagesurface, &video_data, &linesize)) {
+		obs_leave_graphics();
 		return false;
 	}
 
@@ -730,6 +735,8 @@ static bool getBGRAFromStageSurface(struct heartRateSource *hrs)
 
 	// Use gs_stagesurface_unmap to unmap the stage surface, releasing the mapped memory.
 	gs_stagesurface_unmap(hrs->stagesurface);
+
+	obs_leave_graphics();
 	return true;
 }
 

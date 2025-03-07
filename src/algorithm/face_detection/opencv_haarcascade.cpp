@@ -88,11 +88,11 @@ std::vector<double_t> HaarCascadeFaceDetection::detectFace(std::shared_ptr<struc
 	cv::Mat bgrFrame;
 	cv::cvtColor(croppedBgraFrame, bgrFrame, cv::COLOR_BGRA2BGR);
 
-	frameCount++;
 	bool resetFaceDetection = frameCount % 3 == 0;
+	frameCount++;
 
 	if (!resetFaceDetection) {
-		if (noFaceDetected) {
+		if (noFaceDetected || maskMat.empty()) {
 			return std::vector<double_t>(3, 0.0);
 		}
 
