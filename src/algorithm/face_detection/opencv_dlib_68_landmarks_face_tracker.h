@@ -22,6 +22,7 @@ private:
 	std::mutex detectionMutex;
 	bool isLoaded = false;
 	bool startedTracking = false;
+  bool faceDetected = false; 
 	char *faceLandmarkPath;
 	dlib::correlation_tracker tracker;
 	dlib::frontal_face_detector detector;

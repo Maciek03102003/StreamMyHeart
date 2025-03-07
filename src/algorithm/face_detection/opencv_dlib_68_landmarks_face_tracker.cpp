@@ -79,7 +79,7 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 	bool resetFaceDetection = enableTracker ? frameCount % frameUpdateInterval == 0 : frameCount % 3 == 0;
 	bool runFaceDetection = (!enableTracker && resetFaceDetection) ||
 				(enableTracker && (resetFaceDetection || !startedTracking));
-	
+
 	if (resetFaceDetection) {
 		frameCount = 0;
 	}
@@ -87,7 +87,7 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 
 	if (runFaceDetection) {
 		std::vector<rectangle> faces = detector(dlibImg);
-
+		faceDetected = !faces.empty();
 		if (!faces.empty()) {
 			detectedFace = faces[0];
 			initialFace = faces[0];
@@ -100,6 +100,9 @@ std::vector<double_t> DlibFaceDetection::detectFace(std::shared_ptr<struct input
 			return std::vector<double_t>(3, 0.0); // No face detected
 		}
 	} else if (enableTracker) {
+		if (!faceDetected) {
+			return std::vector<double_t>(3, 0.0); // No face tracked
+		}
 		tracker.update(dlibImg);
 		initialFace = tracker.get_position();
 	}
