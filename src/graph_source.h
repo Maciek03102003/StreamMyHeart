@@ -41,7 +41,7 @@ float getDeltaTime();
 #ifdef __cplusplus
 }
 
-std::vector<float> generate_ecg_waveform(int heartRate, int width);
+std::vector<float> generateEcgWaveform(int heartRate, int width);
 
 #endif
 

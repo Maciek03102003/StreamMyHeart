@@ -24,7 +24,7 @@
 
 static int frameCount = 0;
 
-std::vector<std::vector<float>> ecg_waves;
+std::vector<std::vector<float>> ecgWaves;
 
 // Destroy function for graph source
 void destroyGraphSource(void *data)
@@ -136,7 +136,7 @@ static void thickenLines(const std::vector<std::pair<float, float>> &points)
 	gs_render_stop(GS_LINESTRIP);
 }
 
-std::vector<float> generate_ecg_waveform(int heartRate, int width)
+std::vector<float> generateEcgWaveform(int heartRate, int width)
 {
 	std::vector<float> waveform(width, 0.0f);
 
@@ -172,18 +172,6 @@ std::vector<float> generate_ecg_waveform(int heartRate, int width)
 
 	return waveform;
 }
-
-// Define a function to get delta time
-// float getDeltaTime()
-// {
-// 	static auto lastTime = std::chrono::high_resolution_clock::now();
-// 	auto currentTime = std::chrono::high_resolution_clock::now();
-
-// 	std::chrono::duration<float> elapsed = currentTime - lastTime;
-// 	lastTime = currentTime;
-
-// 	return elapsed.count(); // Return time in seconds
-// }
 
 void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 {
@@ -225,44 +213,47 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 	// Get base effect
 	gs_effect_t *effect = obs_get_base_effect(OBS_EFFECT_SOLID);
 	while (gs_effect_loop(effect, "Solid")) {
+		if (!ecg) {
+			int background = obs_data_get_int(hrsSettings, "graph plane dropdown");
+			if (background == 1) {
+				// **Draw background stripes for heart rate regions**
+				struct {
+					int minHr, maxHr;
+					uint32_t colour;
+				} heartRateZones[] = {
+					{50, 90, 0xFF00FF00},   // Green (Good)
+					{90, 120, 0xFFFFFF00},  // Yellow (Warning - High)
+					{120, 150, 0xFFFFA500}, // Orange (Caution - High)
+					{150, 180, 0xFFFF0000}  // Red (Bad - Too High)
+				};
 
-		int background = obs_data_get_int(hrsSettings, "graph plane dropdown");
-		if (background == 1) {
-			// **Draw background stripes for heart rate regions**
-			struct {
-				int minHr, maxHr;
-				uint32_t colour;
-			} heartRateZones[] = {
-				{50, 90, 0xFF00FF00},   // Green (Good)
-				{90, 120, 0xFFFFFF00},  // Yellow (Warning - High)
-				{120, 150, 0xFFFFA500}, // Orange (Caution - High)
-				{150, 180, 0xFFFF0000}  // Red (Bad - Too High)
-			};
+				for (size_t i = 0; i < sizeof(heartRateZones) / sizeof(heartRateZones[0]); i++) {
+					float top =
+						height - (static_cast<float>(heartRateZones[i].maxHr - 50) / 260.0f) *
+								 height * 2;
+					float bottom =
+						height - (static_cast<float>(heartRateZones[i].minHr - 50) / 260.0f) *
+								 height * 2;
 
-			for (size_t i = 0; i < sizeof(heartRateZones) / sizeof(heartRateZones[0]); i++) {
-				float top = height -
-					    (static_cast<float>(heartRateZones[i].maxHr - 50) / 260.0f) * height * 2;
-				float bottom = height -
-					       (static_cast<float>(heartRateZones[i].minHr - 50) / 260.0f) * height * 2;
+					gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
+							    heartRateZones[i].colour);
+					// Push matrix and translate to correct Y position
+					gs_matrix_push();
+					gs_matrix_translate3f(0, top, 0);                // Move to the correct position
+					gs_draw_sprite(nullptr, 0, width, bottom - top); // Draw stripe
+					gs_matrix_pop(); // Restore previous transformation
+				}
+			} else if (background == 2) {
+				// Get the colour of the graph plane from the colour picker, convert it to ARGB instead of ABGR
+				uint32_t graphPlaneAbgrColour = obs_data_get_int(hrsSettings, "graph plane colour");
+				uint32_t graphPlaneArgbColour =
+					(graphPlaneAbgrColour & 0xFF000000) | ((graphPlaneAbgrColour & 0xFF) << 16) |
+					(graphPlaneAbgrColour & 0xFF00) | ((graphPlaneAbgrColour & 0xFF0000) >> 16);
 
-				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
-						    heartRateZones[i].colour);
-				// Push matrix and translate to correct Y position
-				gs_matrix_push();
-				gs_matrix_translate3f(0, top, 0);                // Move to the correct position
-				gs_draw_sprite(nullptr, 0, width, bottom - top); // Draw stripe
-				gs_matrix_pop();                                 // Restore previous transformation
+				// Set background colour to chosen colour
+				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphPlaneArgbColour);
+				gs_draw_sprite(nullptr, 0, width, height);
 			}
-		} else if (background == 2) {
-			// Get the colour of the graph plane from the colour picker, convert it to ARGB instead of ABGR
-			uint32_t graphPlaneAbgrColour = obs_data_get_int(hrsSettings, "graph plane colour");
-			uint32_t graphPlaneArgbColour =
-				(graphPlaneAbgrColour & 0xFF000000) | ((graphPlaneAbgrColour & 0xFF) << 16) |
-				(graphPlaneAbgrColour & 0xFF00) | ((graphPlaneAbgrColour & 0xFF0000) >> 16);
-
-			// Set background colour to chosen colour
-			gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), graphPlaneArgbColour);
-			gs_draw_sprite(nullptr, 0, width, height);
 		}
 
 		if (graphSource->buffer.size() >= 3) {
@@ -270,7 +261,7 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 			std::vector<std::pair<float, float>> points;
 
 			if (ecg) {
-				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
+				// Get the colour of the ecg background from the colour picker, convert it to RGB instead of BGR
 				uint32_t ecgBackgroundAbgrColour =
 					obs_data_get_int(hrsSettings, "ecg background colour");
 				uint32_t ecgBackgroundArgbColour = (ecgBackgroundAbgrColour & 0xFF000000) |
@@ -278,7 +269,7 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 								   (ecgBackgroundAbgrColour & 0xFF00) |
 								   ((ecgBackgroundAbgrColour & 0xFF0000) >> 16);
 
-				// Set colour for the graph using the colour from the colour picker
+				// Set colour for the ecg using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"),
 						    ecgBackgroundArgbColour);
 				gs_draw_sprite(nullptr, 0, width, height); // Draw stripe
@@ -288,21 +279,21 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 
 				float waveSpeed = 6.0f;
 
-				// Initialize waveOffset as a static variable to retain its state between frames
+				// Initialise waveOffset as a static variable to retain its state between frames
 				static float waveOffset = 0.0f;
 
 				// Update waveOffset smoothly based on waveSpeed
 				waveOffset += waveSpeed;
 
-				if (ecg_waves.empty()) {
-					ecg_waves.push_back(generate_ecg_waveform(
+				if (ecgWaves.empty()) {
+					ecgWaves.push_back(generateEcgWaveform(
 						graphSource->buffer[graphSource->buffer.size() - 2], width));
-					ecg_waves.push_back(generate_ecg_waveform(
+					ecgWaves.push_back(generateEcgWaveform(
 						graphSource->buffer[graphSource->buffer.size() - 1], width));
 				} else if (waveOffset >= width) {
 					waveOffset -= width;
-					ecg_waves.erase(ecg_waves.begin());
-					ecg_waves.push_back(generate_ecg_waveform(
+					ecgWaves.erase(ecgWaves.begin());
+					ecgWaves.push_back(generateEcgWaveform(
 						graphSource->buffer[graphSource->buffer.size() - 1], width));
 				}
 
@@ -315,10 +306,10 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					float value;
 					if (i + static_cast<size_t>(waveOffset) < static_cast<size_t>(width)) {
 						size_t shiftedIndex = (i + static_cast<size_t>(waveOffset));
-						value = ecg_waves[0][shiftedIndex];
+						value = ecgWaves[0][shiftedIndex];
 					} else {
 						size_t shiftedIndex = (i + static_cast<size_t>(waveOffset) - width);
-						value = ecg_waves[1][shiftedIndex];
+						value = ecgWaves[1][shiftedIndex];
 					}
 
 					float x = static_cast<float>(i);
@@ -327,13 +318,13 @@ void drawGraph(struct graph_source *graphSource, int curHeartRate, bool ecg)
 					points.push_back({x, y});
 				}
 
-				// Get the colour of the graph line from the colour picker, convert it to RGB instead of BGR
+				// Get the colour of the ecg line from the colour picker, convert it to RGB instead of BGR
 				uint32_t ecgLineAbgrColour = obs_data_get_int(hrsSettings, "ecg line colour");
 				uint32_t ecgLineArgbColour =
 					(ecgLineAbgrColour & 0xFF000000) | ((ecgLineAbgrColour & 0xFF) << 16) |
 					(ecgLineAbgrColour & 0xFF00) | ((ecgLineAbgrColour & 0xFF0000) >> 16);
 
-				// Set colour for the graph using the colour from the colour picker
+				// Set colour for the ecg line using the colour from the colour picker
 				gs_effect_set_color(gs_effect_get_param_by_name(effect, "color"), ecgLineArgbColour);
 				thickenLines(points);
 			} else {
