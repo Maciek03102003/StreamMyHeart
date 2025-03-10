@@ -340,9 +340,9 @@ void heartRateSourceDefaults(obs_data_t *settings)
 	obs_data_set_default_bool(settings, "enable ecg source", false);
 	obs_data_set_default_int(settings, "ecg line colour", 0xFF0000FF);
 	obs_data_set_default_int(settings, "ecg background colour", 0x00FFFFFF);
+	obs_data_set_default_int(settings, "graph line colour", 0xFF0000FF);
 	obs_data_set_default_int(settings, "graph plane dropdown", 0);
 	obs_data_set_default_int(settings, "graph plane colour", 0xFFFFFFFF);
-	obs_data_set_default_int(settings, "graph line colour", 0xFF0000FF);
 	obs_data_set_default_int(settings, "pre-filtering method", 3);
 	obs_data_set_default_bool(settings, "post-filtering", true);
 	obs_data_set_default_bool(settings, "is disabled", false);
@@ -428,15 +428,16 @@ static bool updateProperties(obs_properties_t *props, obs_property_t *property, 
 		obs_source_release(text_source);
 	}
 
+	obs_property_t *graphLineColour = obs_properties_get(props, "graph line colour");
+	obs_property_set_visible(graphLineColour, obs_data_get_bool(settings, "enable graph source"));
+
 	obs_property_t *graphPlaneDropdown = obs_properties_get(props, "graph plane dropdown");
 	obs_property_set_visible(graphPlaneDropdown, obs_data_get_bool(settings, "enable graph source"));
 	int graphPlaneOption = obs_data_get_int(settings, "graph plane dropdown");
 
-	obs_property_t *graphLineColour = obs_properties_get(props, "graph line colour");
-	obs_property_set_visible(graphLineColour, obs_data_get_bool(settings, "enable graph source"));
-
 	obs_property_t *graphPlaneColour = obs_properties_get(props, "graph plane colour");
-	obs_property_set_visible(graphPlaneColour, graphPlaneOption == 2);
+	obs_property_set_visible(graphPlaneColour,
+				 graphPlaneOption == 2 && obs_data_get_bool(settings, "enable graph source"));
 
 	obs_property_t *heartRateGraphSize = obs_properties_get(props, "heart rate graph size");
 	obs_property_set_visible(heartRateGraphSize, obs_data_get_bool(settings, "enable graph source"));
@@ -521,6 +522,8 @@ obs_properties_t *heartRateSourceProperties(void *data)
 
 	obs_property_t *enableGraph =
 		obs_properties_add_bool(props, "enable graph source", obs_module_text("GraphSourceEnable"));
+	obs_property_t *graphLineColour =
+		obs_properties_add_color_alpha(props, "graph line colour", obs_module_text("GraphLineColour"));
 	obs_property_t *graphPlaneDropdown = obs_properties_add_list(props, "graph plane dropdown",
 								     obs_module_text("GraphPlaneDropdown"),
 								     OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
@@ -528,8 +531,6 @@ obs_properties_t *heartRateSourceProperties(void *data)
 	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("ColouredTiers"), 1);
 	obs_property_list_add_int(graphPlaneDropdown, obs_module_text("CustomColour"), 2);
 	obs_property_t *graphPlaneColour = obs_properties_add_color_alpha(props, "graph plane colour", "");
-	obs_property_t *graphLineColour =
-		obs_properties_add_color_alpha(props, "graph line colour", obs_module_text("GraphLineColour"));
 	obs_property_t *heartRateGraphSize = obs_properties_add_int(
 		props, "heart rate graph size", obs_module_text("HeartRateHistoryLength"), 10, 30, 1);
 	obs_property_t *heartRateGraphSizeExplain = obs_properties_add_text(
